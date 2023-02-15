@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <group android:id="@+id/ground1">
+        <item
+            android:id="@+id/main_menu_register"
+            android:icon="@android:drawable/ic_delete"
+            android:title="注册账号"
+            app:showAsAction="ifRoom" />
+        <item
+            android:id="@+id/main_menu_login"
+            android:icon="@android:drawable/ic_delete"
+            android:title="登录"
+            app:showAsAction="ifRoom" />
+        <item
+            android:id="@+id/main_menu_manager"
+            android:icon="@android:drawable/ic_delete"
+            android:title="智慧管理"
+            app:showAsAction="ifRoom" />
+        <item
+            android:id="@+id/main_menu_clean_cache"
+            android:icon="@android:drawable/ic_delete"
+            android:title="清理缓存"
+            app:showAsAction="ifRoom" />
+        <item
+            android:id="@+id/main_menu_repoter"
+            android:icon="@android:drawable/ic_delete"
+            android:title="意见反馈"
+            app:showAsAction="ifRoom" />
+    </group>
+    <group android:id="@+id/ground2">
+        <item
+            android:id="@+id/main_menu_group"
+            android:icon="@android:drawable/ic_delete"
+            android:title="突梦群"
+            app:showAsAction="ifRoom" />
+        <item
+            android:id="@+id/main_menu_tuisong"
+            android:icon="@android:drawable/ic_delete"
+            android:title="接受推送"
+            app:showAsAction="ifRoom" />
+    </group>
+</menu>
