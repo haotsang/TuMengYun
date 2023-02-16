@@ -38,6 +38,8 @@
         <activity android:name="com.example.myapplication.activity.RegisterActivity" />
         <activity android:name="com.example.myapplication.activity.ManagerActivity" />
         <activity android:name="com.example.myapplication.activity.TuMengLableActivity" />
+        <activity android:name="com.example.myapplication.activity.TuMengGroupActivity" />
+        <activity android:name="com.example.myapplication.activity.IssueActivity" />
 
 
         <provider

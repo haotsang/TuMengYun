@@ -4,14 +4,9 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.ViewUtils
 import androidx.core.view.GravityCompat
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.bumptech.glide.request.RequestOptions
 import com.example.myapplication.R
 import com.example.myapplication.adapter.BannerImageAdapter2
 import com.example.myapplication.bean.BannerItem
@@ -21,8 +16,7 @@ import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
-import com.youth.banner.adapter.BannerImageAdapter
-import com.youth.banner.holder.BannerImageHolder
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.youth.banner.indicator.CircleIndicator
 
 
@@ -86,6 +80,25 @@ class MainActivity : AppCompatActivity() {
 
 
         binding.content.contentMenu.setOnClickListener {
+            try {
+//                LoginUtils.login2("1234","1234")
+
+//                JDBCUtils.test()
+//
+//                Thread{
+//                    val a = HttpUtils.test1()
+//                    runOnUiThread {
+//                        MaterialAlertDialogBuilder(this).setMessage(a).show()
+//                    }
+//                }.start()
+
+
+            } catch (e: Exception) {
+                MaterialAlertDialogBuilder(this).setMessage(e.stackTraceToString()).show()
+            }
+
+
+
             binding.drawerlayout.openDrawer(GravityCompat.END)
         }
         binding.navView.setNavigationItemSelectedListener {
@@ -107,10 +120,10 @@ class MainActivity : AppCompatActivity() {
 
                 }
                 R.id.main_menu_repoter -> {
-
+                    startActivity(Intent(this, IssueActivity::class.java))
                 }
                 R.id.main_menu_group -> {
-
+                    startActivity(Intent(this, TuMengGroupActivity::class.java))
                 }
                 R.id.main_menu_tuisong -> {
 
