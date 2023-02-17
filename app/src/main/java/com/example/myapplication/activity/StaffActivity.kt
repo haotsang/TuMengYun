@@ -18,9 +18,9 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.json.JSONObject
 
-class TuMengGroupActivity : AppCompatActivity() {
+
+class StaffActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityGroupBinding
 
@@ -28,10 +28,11 @@ class TuMengGroupActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         binding = ActivityGroupBinding.inflate(LayoutInflater.from(this))
         setContentView(binding.root)
 
-        binding.toolbar.title = "突梦群（0）"
+        binding.toolbar.title = "工作人员"
         binding.toolbar.setNavigationIcon(R.drawable.baseline_arrow_back_24)
         binding.toolbar.setNavigationOnClickListener {
             finish()
@@ -57,10 +58,39 @@ class TuMengGroupActivity : AppCompatActivity() {
                     2 -> "管理员"
                     else -> null
                 }
-                tv.setText(item.nickname + "-" + role + "-" + item.phone)
+                tv.setText(item.nickname + "-" + role + "-" + (item.belong ?: "未知社区/科技馆"))
 
             }
         }
+        binding.recyclerView.setOnItemClickListener { holder, position ->
+            val item = list[position]
+            val role = if (item.role == 0) {
+                "工作人员"
+            } else {
+                "普通用户"
+            }
+
+            MaterialAlertDialogBuilder(this).setMessage("是否将此用户设置为${role}？")
+                .setPositiveButton(android.R.string.ok) { _, _ ->
+                    lifecycleScope.launch(Dispatchers.IO) {
+
+                        val state = if (item.role == 1) {
+                            LoginUtils.modifyRole(item.account!!, "0")
+                        } else {
+                            LoginUtils.modifyRole(item.account!!, "1")
+                        }
+
+                        withContext(Dispatchers.Main) {
+                            if (state) {
+                                Toast.makeText(this@StaffActivity, "设置成功！", Toast.LENGTH_SHORT).show()
+                            } else {
+                                Toast.makeText(this@StaffActivity, "失败", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+                }.show()
+        }
+
 
         lifecycleScope.launch(Dispatchers.IO) {
             val json = LoginUtils.getAllUsers()
@@ -68,8 +98,6 @@ class TuMengGroupActivity : AppCompatActivity() {
                 list.clear()
                 list.addAll(json)
                 binding.recyclerView.adapter?.notifyDataSetChanged()
-
-                binding.toolbar.title = "突梦群（${list.size}）"
             }
         }
 

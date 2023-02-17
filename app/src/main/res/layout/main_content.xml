@@ -86,31 +86,45 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <TextView
+            android:id="@+id/bottom_scan"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
             android:text="扫一扫"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"
+            android:background="?attr/selectableItemBackground"
             app:drawableTopCompat="@drawable/baseline_menu_24" />
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
+            android:background="?attr/selectableItemBackground"
             android:text="科普空间"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"
             app:drawableTopCompat="@drawable/baseline_menu_24" />
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
+            android:background="?attr/selectableItemBackground"
             android:text="科普商城"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"
             app:drawableTopCompat="@drawable/baseline_menu_24" />
         <TextView
+            android:id="@+id/bottom_mine"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"
             android:gravity="center"
+            android:background="?attr/selectableItemBackground"
             android:text="我的"
             app:drawableTopCompat="@drawable/baseline_menu_24" />
 

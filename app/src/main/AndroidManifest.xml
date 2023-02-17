@@ -5,8 +5,11 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
+<!--    获取imsi用于判断双卡和换卡-->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -40,6 +43,11 @@
         <activity android:name="com.example.myapplication.activity.TuMengLableActivity" />
         <activity android:name="com.example.myapplication.activity.TuMengGroupActivity" />
         <activity android:name="com.example.myapplication.activity.IssueActivity" />
+        <activity android:name="com.example.myapplication.activity.MineActivity" />
+        <activity android:name="com.example.myapplication.activity.RegisterManagerActivity" />
+        <activity android:name="com.example.myapplication.activity.StaffActivity" />
+        <activity android:name="com.example.myapplication.activity.LabelEditActivity" />
+        <activity android:name="com.example.myapplication.activity.QuestionActivity" />
 
 
         <provider

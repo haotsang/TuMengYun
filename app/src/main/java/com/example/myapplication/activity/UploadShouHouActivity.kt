@@ -88,6 +88,9 @@ class UploadShouHouActivity : AppCompatActivity() {
         findViewById<Button>(R.id.main_button_capture).setOnClickListener {
             takePhoto()
         }
+        findViewById<Button>(R.id.main_button_scan).setOnClickListener {
+            startActivity(Intent(this, ScanActivity::class.java))
+        }
         findViewById<Button>(R.id.main_button_del).setOnClickListener {
             if (viewPager != null && list.isNotEmpty()) {
                 list.removeAt(viewPager!!.currentItem)
@@ -136,10 +139,6 @@ class UploadShouHouActivity : AppCompatActivity() {
             }
         }.start()
 
-
-        Thread {
-//            Utils.w()
-        }.start()
 
     }
 
@@ -200,10 +199,15 @@ class UploadShouHouActivity : AppCompatActivity() {
 //            Uri.fromFile(imageFile)
 //        }
 
-        val i = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        i.flags = Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+        try {
+            val i = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            i.flags = Intent.FLAG_GRANT_WRITE_URI_PERMISSION
 //        i.putExtra(MediaStore.EXTRA_OUTPUT, imageUri)
-        startActivityForResult(i, 0)
+            startActivityForResult(i, 0)
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+        }
+
     }
 
 

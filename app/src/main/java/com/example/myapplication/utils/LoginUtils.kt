@@ -1,100 +1,222 @@
 package com.example.myapplication.utils
 
+import com.example.myapplication.bean.UserBean
 import okhttp3.*
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.IOException
 
 object LoginUtils {
 
-    const val BASE_URL = "http://192.168.1.17:8083/"
+    const val BASE_URL = "http://192.168.1.17:8080/"
 
-    fun getAllUsers(): List<String> {
-        val list = mutableListOf<String>()
+
+    @Throws(Exception::class)
+    fun getAllUsers(): List<UserBean> {
+        val list = mutableListOf<UserBean>()
 
         val client = OkHttpClient()
 
         val request: Request = Request.Builder()
-            .url(BASE_URL + "getUsers")
+            .url(BASE_URL + "user_list")
+            .get()
             .build()
         val response: Response = client.newCall(request).execute()
         val responseData = response.body?.string()
 
         responseData ?: return list
 
+//        val users: List<User> = JSONArray.parseArray(responseData, User::class.java)
+
         val jsonArray = JSONArray(responseData)
         for (len in 0 until jsonArray.length()) {
             val obj: JSONObject = jsonArray.getJSONObject(len)
-            list.add(obj.toString())
+
+            val userBean = UserBean().apply {
+                this.nickname = obj.optString("nickname")
+                this.account = obj.optString("account")
+                this.password = obj.optString("password")
+                this.phone = obj.optString("phone")
+                this.role = obj.optInt("role")
+                this.isAdmin = obj.optInt("isAdmin")
+                this.belong = obj.optString("belong")
+            }
+
+            list.add(userBean)
         }
 
         return list
     }
 
+    @Throws(Exception::class)
+    fun register(username: String, password: String, phone: String): JSONObject? {
+        val json = JSONObject()
+        json.put("account", username)
+        json.put("password", password)
+        json.put("phone", phone)
 
-    fun login2(username: String, password: String): Boolean {
-        val url = "${BASE_URL}login/${username}/${password}"
-
+//        val JSON: MediaType = "application/json; charset=utf-8".toMediaTypeOrNull() ?: MultipartBody.FORM
+        val body: RequestBody = MultipartBody.Builder()
+            .setType(MultipartBody.FORM)
+            .addFormDataPart("jsonString", json.toString())
+            .build()
         val client = OkHttpClient()
         val request: Request = Request.Builder()
-            .url(url) //这个是与我合作的后台 具有我注册过的账号密码的信息并且返回一个判断数值
+            .url(BASE_URL + "register")
+            .post(body)
             .build()
         try {
             val response: Response = client.newCall(request).execute()
             val responseData = response.body?.string()
+            responseData ?: return null
 
-            if (responseData == "ok") {
-                return true
-            }
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-        return false
-    }
-
-    fun register(username: String, password: String): String? {
-        val url = "${BASE_URL}addUser/${username}/${password}"
-
-        val client = OkHttpClient()
-        val request: Request = Request.Builder()
-            .url(url) //这个是与我合作的后台 具有我注册过的账号密码的信息并且返回一个判断数值
-            .build()
-        try {
-            val response: Response = client.newCall(request).execute()
-            val responseData = response.body?.string()
-
-            return responseData
+            return JSONObject(responseData)
         } catch (e: IOException) {
             e.printStackTrace()
         }
         return null
     }
 
-
-
-    fun login(username: String, password: String) {
-        val url = "http://192.168.1.17:8083/users/register"
-
+    @Throws(Exception::class)
+    fun login(username: String, password: String): JSONObject? {
         val client = OkHttpClient()
-        val JSON: MediaType = "application/json; charset=utf-8".toMediaTypeOrNull() ?: MultipartBody.FORM
         val requestBody: RequestBody = MultipartBody.Builder()
-            .setType(JSON)
-            .addFormDataPart("username", username)
+            .setType(MultipartBody.FORM)
+            .addFormDataPart("account", username)
             .addFormDataPart("password", password)
             .build()
         val request: Request = Request.Builder()
-            .url("http://yslgdym.cn/tp5/public/index.php/login") //这个是与我合作的后台 具有我注册过的账号密码的信息并且返回一个判断数值
+            .url(BASE_URL + "login")
             .post(requestBody)
             .build()
         try {
             val response: Response = client.newCall(request).execute()
             val responseData = response.body?.string()
+            responseData ?: return null
 
-
-            System.out.println("我是responseData$responseData") //这是我用来查看返回值的代码 进行对比
+            return JSONObject(responseData)
         } catch (e: IOException) {
             e.printStackTrace()
         }
+
+        return null
     }
+
+
+    @Throws(Exception::class)
+    fun getUser(username: String, password: String): UserBean? {
+        val client = OkHttpClient()
+        val requestBody: RequestBody = MultipartBody.Builder()
+            .setType(MultipartBody.FORM)
+            .addFormDataPart("account", username)
+            .addFormDataPart("password", password)
+            .build()
+        val request: Request = Request.Builder()
+            .url(BASE_URL + "getUser")
+            .post(requestBody)
+            .build()
+        try {
+            val response: Response = client.newCall(request).execute()
+            val responseData = response.body?.string()
+            responseData ?: return null
+
+            val json = JSONObject(responseData)
+            val userBean = UserBean().apply {
+                this.nickname = json.optString("nickname")
+                this.account = json.optString("account")
+                this.password = json.optString("password")
+                this.phone = json.optString("phone")
+                this.role = json.optInt("role")
+                this.isAdmin = json.optInt("isAdmin")
+                this.belong = json.optString("belong")
+            }
+            return userBean
+//            val bean = JSON.parse(responseData) as UserBean
+//            return bean
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+
+        return null
+    }
+
+    @Throws(Exception::class)
+    fun logout(username: String, password: String): Boolean {
+        val client = OkHttpClient()
+        val requestBody: RequestBody = MultipartBody.Builder()
+            .setType(MultipartBody.FORM)
+            .addFormDataPart("account", username)
+            .addFormDataPart("password", password)
+            .build()
+        val request: Request = Request.Builder()
+            .url(BASE_URL + "logout")
+            .post(requestBody)
+            .build()
+        try {
+            val response: Response = client.newCall(request).execute()
+            val responseData = response.body?.string()
+            responseData ?: return false
+
+            return responseData.toBoolean()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+
+        return false
+    }
+
+
+
+    @Throws(Exception::class)
+    fun applyManager(username: String, password: String, admin: String): Boolean {
+        val client = OkHttpClient()
+        val requestBody: RequestBody = MultipartBody.Builder()
+            .setType(MultipartBody.FORM)
+            .addFormDataPart("account", username)
+            .addFormDataPart("password", password)
+            .addFormDataPart("admin", admin)
+            .build()
+        val request: Request = Request.Builder()
+            .url(BASE_URL + "admin")
+            .post(requestBody)
+            .build()
+        try {
+            val response: Response = client.newCall(request).execute()
+            val responseData = response.body?.string()
+            responseData ?: return false
+
+            return responseData.toBoolean()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+
+        return false
+    }
+
+    @Throws(Exception::class)
+    fun modifyRole(username: String, role: String): Boolean {
+        val client = OkHttpClient()
+        val requestBody: RequestBody = MultipartBody.Builder()
+            .setType(MultipartBody.FORM)
+            .addFormDataPart("account", username)
+            .addFormDataPart("role", role)
+            .build()
+        val request: Request = Request.Builder()
+            .url(BASE_URL + "modifyRole")
+            .post(requestBody)
+            .build()
+        try {
+            val response: Response = client.newCall(request).execute()
+            val responseData = response.body?.string()
+            responseData ?: return false
+
+            return responseData.toBoolean()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+
+        return false
+    }
+
+
 }

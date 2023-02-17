@@ -19,5 +19,13 @@ class ManagerActivity: AppCompatActivity() {
         binding.settingsTumengLable.setOnClickListener {
             startActivity(Intent(this, TuMengLableActivity::class.java))
         }
+
+        binding.settingsItemStaff.setOnClickListener {
+            startActivity(Intent(this, StaffActivity::class.java))
+        }
+
+        binding.settingsItemAfterService.setOnClickListener {
+            startActivity(Intent(this, UploadShouHouActivity::class.java))
+        }
     }
 }

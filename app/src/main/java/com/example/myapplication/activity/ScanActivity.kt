@@ -18,15 +18,6 @@ class ScanActivity : CaptureActivity() {
         return R.layout.activity_scan
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        findViewById<Button>(R.id.btn).setOnClickListener {
-            val intent = Intent(this, UploadShouHouActivity::class.java)
-            intent.putExtra("result", "无数据")
-            startActivity(intent)
-        }
-
-    }
     override fun initCameraScan() {
         super.initCameraScan()
         //初始化解码配置

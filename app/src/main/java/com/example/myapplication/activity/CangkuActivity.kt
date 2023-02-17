@@ -7,11 +7,16 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.withCreated
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
 import com.example.myapplication.bean.CangKuItem
 import com.example.myapplication.utils.HttpUtils
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class CangkuActivity : AppCompatActivity() {
 
@@ -42,23 +47,19 @@ class CangkuActivity : AppCompatActivity() {
 
 
 
-        Thread{
+        lifecycleScope.launch(Dispatchers.IO) {
             val json = HttpUtils.getLingJianAll()
             if (json != null) {
                 val subList = HttpUtils.jsonToList(json)
 
-                Handler(Looper.getMainLooper()).post {
-
+                withContext(Dispatchers.Main) {
                     list.clear()
                     list.addAll(subList)
                     recyclerView.adapter?.notifyDataSetChanged()
                 }
             }
 
-
-        }.start()
-
-
+        }
 
         setContentView(recyclerView)
     }

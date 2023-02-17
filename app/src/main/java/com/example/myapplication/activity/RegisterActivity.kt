@@ -5,13 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.example.myapplication.R
 import com.example.myapplication.databinding.ActivityRegisterBinding
 import com.example.myapplication.utils.LoginUtils
+import com.example.myapplication.utils.Prefs
 import com.example.myapplication.utils.Utils
-import org.json.JSONException
-import org.json.JSONObject
-
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class RegisterActivity : AppCompatActivity() {
 
@@ -35,8 +37,8 @@ class RegisterActivity : AppCompatActivity() {
         binding.buttonLogin.visibility = if (isRegister) View.GONE else View.VISIBLE
 
         binding.buttonRegister.visibility = if (isRegister) View.VISIBLE else View.GONE
-        binding.button8.visibility = if (isRegister) View.VISIBLE else View.GONE
-        binding.button10.visibility = if (isRegister) View.VISIBLE else View.GONE
+//        binding.button8.visibility = if (isRegister) View.VISIBLE else View.GONE
+//        binding.button10.visibility = if (isRegister) View.VISIBLE else View.GONE
 
 
         binding.buttonRegister.setOnClickListener {
@@ -84,59 +86,72 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun login(username: String, password: String) {
-        val jsonObject = JSONObject()
-        try {
-            jsonObject.put("username", username)
-            jsonObject.put("password", password)
-        } catch (e: JSONException) {
-            e.printStackTrace()
-        }
-
-        Thread {
-            val status = LoginUtils.login2(username, password)
-
-            runOnUiThread {
-                if (status) {
-                    Toast.makeText(this, "登录成功", Toast.LENGTH_SHORT).show()
-                    finish()
-                } else {
-                    Toast.makeText(this, "登录失败，此账户不存在或密码错误", Toast.LENGTH_SHORT).show()
-                }
+        lifecycleScope.launch(Dispatchers.IO) {
+            val json = try {
+                LoginUtils.login(username, password)
+            } catch (e: Exception) {
+                null
             }
-        }.start()
+
+            println("______________________________________________${json.toString()}")
+            withContext(Dispatchers.Main) {
+                if (json != null) {
+                    val msg = json.optString("msg")
+                    if (msg == "登录成功") {
+                        Prefs.isLogin = true
+                        Prefs.isManager = json.optInt("role") == 2
+                        Prefs.userAccount = username
+                        Prefs.userPassword = password
+
+                        Toast.makeText(this@RegisterActivity, "登录成功！", Toast.LENGTH_LONG).show()
+                        finish()
+                    } else {
+                        Prefs.isLogin = false
+                        Prefs.isManager = false
+                        Toast.makeText(this@RegisterActivity, msg, Toast.LENGTH_LONG).show()
+                    }
+                } else {
+                    Toast.makeText(this@RegisterActivity, "login:-1", Toast.LENGTH_LONG).show()
+                }
+
+            }
+        }
 
 
     }
 
     private fun register(username: String, password: String, phone: String) {
-        val jsonObject = JSONObject()
-        try {
-            jsonObject.put("username", username)
-            jsonObject.put("password", password)
-            jsonObject.put("phone", phone)
-        } catch (e: JSONException) {
-            e.printStackTrace()
-        }
+        lifecycleScope.launch(Dispatchers.IO) {
+            val json = try {
+                LoginUtils.register(username, password, phone)
+            } catch (e: Exception) {
+                null
+            }
 
+            withContext(Dispatchers.Main) {
+                if (json != null) {
+                    val msg = json.optString("msg")
 
-        Thread {
-            val status = LoginUtils.register(username, password)
+                    when (msg) {
+                        "注册成功" -> {
+                            Prefs.isLogin = true
+                            Prefs.isManager = json.optInt("role") == 2
+                            Prefs.userAccount = username
+                            Prefs.userPassword = password
 
-            runOnUiThread {
-                when (status) {
-                    "exists" -> {
-                        Toast.makeText(this, "已存在此账户", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@RegisterActivity, "注册成功，已登录！", Toast.LENGTH_LONG).show()
+                            finish()
+                        }
+                        else -> {
+                            Prefs.isLogin = false
+                            Toast.makeText(this@RegisterActivity, msg, Toast.LENGTH_LONG).show()
+                        }
                     }
-                    "failed" -> {
-                        Toast.makeText(this, "注册失败", Toast.LENGTH_SHORT).show()
-                    }
-                    "ok" -> {
-                        Toast.makeText(this, "注册成功，已登录", Toast.LENGTH_SHORT).show()
-                        finish()
-                    }
+                } else {
+                    Toast.makeText(this@RegisterActivity, "register:-1", Toast.LENGTH_LONG).show()
                 }
             }
-        }.start()
+        }
     }
 
 

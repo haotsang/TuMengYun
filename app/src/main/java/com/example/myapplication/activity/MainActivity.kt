@@ -5,18 +5,22 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
+import android.widget.Toast
+import android.window.OnBackInvokedDispatcher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import com.example.myapplication.R
 import com.example.myapplication.adapter.BannerImageAdapter2
 import com.example.myapplication.bean.BannerItem
 import com.example.myapplication.databinding.ActivityMainBinding
+import com.example.myapplication.utils.Prefs
 import com.github.mikephil.charting.components.Description
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.youth.banner.indicator.CircleIndicator
 
 
@@ -80,27 +84,15 @@ class MainActivity : AppCompatActivity() {
 
 
         binding.content.contentMenu.setOnClickListener {
-            try {
-//                LoginUtils.login2("1234","1234")
-
-//                JDBCUtils.test()
-//
-//                Thread{
-//                    val a = HttpUtils.test1()
-//                    runOnUiThread {
-//                        MaterialAlertDialogBuilder(this).setMessage(a).show()
-//                    }
-//                }.start()
-
-
-            } catch (e: Exception) {
-                MaterialAlertDialogBuilder(this).setMessage(e.stackTraceToString()).show()
-            }
-
-
-
             binding.drawerlayout.openDrawer(GravityCompat.END)
         }
+        binding.drawerlayout.addDrawerListener(object : DrawerLayout.SimpleDrawerListener() {
+            override fun onDrawerOpened(drawerView: View) {
+                super.onDrawerOpened(drawerView)
+                binding.navView.menu.findItem(R.id.main_menu_register).isEnabled = !Prefs.isLogin
+                binding.navView.menu.findItem(R.id.main_menu_login).isEnabled = !Prefs.isLogin
+            }
+        })
         binding.navView.setNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.main_menu_register -> {
@@ -114,7 +106,7 @@ class MainActivity : AppCompatActivity() {
                     })
                 }
                 R.id.main_menu_manager -> {
-                    startActivity(Intent(this, ManagerActivity::class.java))
+                    startManagerPage()
                 }
                 R.id.main_menu_clean_cache -> {
 
@@ -148,5 +140,46 @@ class MainActivity : AppCompatActivity() {
             }
 
 
+
+        binding.content.bottomScan.setOnClickListener {
+            startActivity(Intent(this, ScanActivity::class.java))
+        }
+        binding.content.bottomMine.setOnClickListener {
+            startActivity(Intent(this, MineActivity::class.java))
+        }
+
     }
+
+    private fun startManagerPage() {
+        if (!Prefs.isLogin) {
+            Toast.makeText(this, "请先登录", Toast.LENGTH_SHORT).show()
+            return
+        }
+        if (Prefs.isManager) {
+            startActivity(Intent(this, ManagerActivity::class.java))
+        } else {
+            Toast.makeText(this, "请先申请成为管理员", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, RegisterManagerActivity::class.java))
+        }
+
+    }
+
+    override fun onDestroy() {
+        if (!Prefs.isSaveStatus) {
+            Prefs.isLogin = false
+            Prefs.isManager = false
+            Prefs.userAccount = ""
+            Prefs.userPassword = ""
+        }
+        super.onDestroy()
+    }
+
+    override fun onBackPressed() {
+        if (binding.drawerlayout.isDrawerOpen(GravityCompat.END)) {
+            binding.drawerlayout.close()
+        } else {
+            super.onBackPressed()
+        }
+    }
+
 }
