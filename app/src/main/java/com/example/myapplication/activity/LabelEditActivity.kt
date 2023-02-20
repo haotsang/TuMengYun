@@ -16,6 +16,8 @@ class LabelEditActivity: AppCompatActivity() {
         binding = ActivityEditLabelBinding.inflate(LayoutInflater.from(this))
         setContentView(binding.root)
 
+        binding.editTextTextTitle.setText(intent.getStringExtra("title"))
+        binding.editTextTextContent.setText(intent.getStringExtra("content"))
 
         binding.buttonOk.setOnClickListener {
             val i = Intent()

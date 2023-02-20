@@ -1,87 +1,41 @@
 package com.example.myapplication.activity
 
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.Typeface
 import android.os.Bundle
+import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
-import android.window.OnBackInvokedDispatcher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.lifecycleScope
 import com.example.myapplication.R
 import com.example.myapplication.adapter.BannerImageAdapter2
 import com.example.myapplication.bean.BannerItem
 import com.example.myapplication.databinding.ActivityMainBinding
+import com.example.myapplication.utils.LabelImgUtils
+import com.example.myapplication.utils.LabelUtils
 import com.example.myapplication.utils.Prefs
-import com.github.mikephil.charting.components.Description
-import com.github.mikephil.charting.components.Legend
-import com.github.mikephil.charting.data.BarData
-import com.github.mikephil.charting.data.BarDataSet
-import com.github.mikephil.charting.data.BarEntry
+import com.example.myapplication.utils.Utils
+import com.google.gson.JsonObject
 import com.youth.banner.indicator.CircleIndicator
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.json.JSONObject
 
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
+    private val labelImgList = mutableListOf<BannerItem>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(LayoutInflater.from(this))
         setContentView(binding.root)
-
-
-
-//得到Legend对象
-        //得到Legend对象
-        val legend: Legend = binding.content.chart1.getLegend()
-        //设置字体大小
-        legend.setTextSize(18f)
-        //设置排列方式
-        legend.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP)
-        legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT)
-        //设置图例的大小
-        legend.setFormSize(15f)
-
-
-        //得到Description对象
-        val description: Description = binding.content.chart1.getDescription()
-        //设置文字
-        description.setText("这是柱状图的标题")
-        //设置文字大小
-        description.setTextSize(18f)
-        //设置偏移量
-
-        // 获取屏幕中间x 轴的像素坐标
-        //设置偏移量
-
-        // 获取屏幕中间x 轴的像素坐标
-        val x = (com.example.myapplication.utils.ViewUtils.getWindowWidth(this) / 2).toFloat()
-
-        description.setPosition(x, 50f)
-        //设置字体颜色
-        description.setTextColor(Color.BLUE)
-        //设置字体加粗
-        description.setTypeface(Typeface.DEFAULT_BOLD)
-
-
-//        binding.content.chart1.setExtraTopOffset(25f);
-//        binding.content.chart1.setExtraLeftOffset(30f);
-//        binding.content.chart1.setExtraRightOffset(100f);
-//        binding.content.chart1.setExtraBottomOffset(50f);
-
-        val barEntries: MutableList<BarEntry> = ArrayList()
-        barEntries.add(BarEntry(0f, 5f))
-        barEntries.add(BarEntry(1f, 10f))
-        barEntries.add(BarEntry(2f, 13f))
-
-        val barDataSet = BarDataSet(barEntries, "图例标题")
-        val ba = BarData(barDataSet)
-        binding.content.chart1.setData(ba)
-
 
         binding.content.contentMenu.setOnClickListener {
             binding.drawerlayout.openDrawer(GravityCompat.END)
@@ -109,13 +63,27 @@ class MainActivity : AppCompatActivity() {
                     startManagerPage()
                 }
                 R.id.main_menu_clean_cache -> {
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        Utils.deleteDir(getExternalFilesDir(Environment.DIRECTORY_PICTURES))
+//                        Glide.get(this@MainActivity).clearMemory()
+//                        Glide.get(this@MainActivity).clearDiskCache()
+//                        try {
+//                            Thread.sleep(1000)
+//                        } catch (e: InterruptedException) {
+//                            e.printStackTrace()
+//                        }
 
+                        withContext(Dispatchers.Main) {
+//                            binding.drawerlayout.close()
+                            Toast.makeText(this@MainActivity, "清理完成！", Toast.LENGTH_SHORT).show()
+                        }
+                    }
                 }
                 R.id.main_menu_repoter -> {
                     startActivity(Intent(this, IssueActivity::class.java))
                 }
                 R.id.main_menu_group -> {
-                    startActivity(Intent(this, TuMengGroupActivity::class.java))
+                    startActivity(Intent(this, GroupActivity::class.java))
                 }
                 R.id.main_menu_tuisong -> {
 
@@ -125,13 +93,7 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-        val imgList = mutableListOf<BannerItem>()
-
-        imgList.add(BannerItem(imagePath = "https://profile.csdnimg.cn/1/7/8/3_weixin_45882303", title = "11111111111111"))
-        imgList.add(BannerItem(imagePath = "https://gw.alicdn.com/bao/uploaded/i3/2210144838464/O1CN01N6ijB52COZ6y9neU6_!!0-item_pic.jpg_210x210q75.jpg_.webp", title = "2222222222222"))
-        imgList.add(BannerItem(imagePath = "https://gw.alicdn.com/imgextra/i2/O1CN01nlPQ9s1y3aKUb5tDo_!!6000000006523-0-tps-800-450.jpg", title = "3333333333333"))
-
-        binding.content.banner.setAdapter(BannerImageAdapter2(imgList, this))
+        binding.content.banner.setAdapter(BannerImageAdapter2(labelImgList, this))
             .addBannerLifecycleObserver(this)
             .setIndicator(CircleIndicator(this))
             .setLoopTime(1500)
@@ -155,7 +117,7 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "请先登录", Toast.LENGTH_SHORT).show()
             return
         }
-        if (Prefs.isManager) {
+        if (Prefs.isAdmin) {
             startActivity(Intent(this, ManagerActivity::class.java))
         } else {
             Toast.makeText(this, "请先申请成为管理员", Toast.LENGTH_SHORT).show()
@@ -164,10 +126,53 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    override fun onResume() {
+        super.onResume()
+        try {
+            binding.content.contentTitle.text = JSONObject(Prefs.curRegionId).optString("name")
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            val labelBean = try {
+                LabelUtils.getLabel(JSONObject(Prefs.curRegionId).optString("id"))
+            } catch (e: java.lang.Exception) {
+                e.printStackTrace()
+                null
+            }
+
+            val img = if (labelBean != null && labelBean.visible == 1) {
+                LabelImgUtils.getLabelImgList(JSONObject(Prefs.curRegionId).optString("id"))
+            } else null
+
+            withContext(Dispatchers.Main) {
+                if (labelBean != null) {
+                    binding.content.bannerText.text = if (labelBean.visible == 1) {
+                        (labelBean.title ?: "未设置") + "\n" + (labelBean.content ?: "未设置")
+                    } else "未设置1"
+                }
+
+                labelImgList.clear()
+                if (img != null) {
+                    labelImgList.addAll(img.map {
+                        BannerItem().apply {
+                            this.id = it.id.toInt()
+                            this.imagePath = it.uri
+                            this.order = it.tid.toInt()
+                        }
+                    })
+                }
+                binding.content.banner.adapter.notifyDataSetChanged()
+
+            }
+        }
+    }
+
     override fun onDestroy() {
         if (!Prefs.isSaveStatus) {
             Prefs.isLogin = false
-            Prefs.isManager = false
+            Prefs.isAdmin = false
             Prefs.userAccount = ""
             Prefs.userPassword = ""
         }

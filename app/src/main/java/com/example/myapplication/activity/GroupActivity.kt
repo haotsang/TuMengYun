@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,14 +12,11 @@ import com.example.myapplication.R
 import com.example.myapplication.bean.UserBean
 import com.example.myapplication.databinding.ActivityGroupBinding
 import com.example.myapplication.utils.LoginUtils
-import com.example.myapplication.utils.extensions.setOnItemClickListener
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.json.JSONObject
 
-class TuMengGroupActivity : AppCompatActivity() {
+class GroupActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityGroupBinding
 

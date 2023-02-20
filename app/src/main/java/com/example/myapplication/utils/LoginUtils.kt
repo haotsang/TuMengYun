@@ -8,8 +8,7 @@ import java.io.IOException
 
 object LoginUtils {
 
-    const val BASE_URL = "http://192.168.1.17:8080/"
-
+    const val BASE_URL = "http://192.168.1.17:8080/user"
 
     @Throws(Exception::class)
     fun getAllUsers(): List<UserBean> {
@@ -18,7 +17,7 @@ object LoginUtils {
         val client = OkHttpClient()
 
         val request: Request = Request.Builder()
-            .url(BASE_URL + "user_list")
+            .url(BASE_URL + "/list")
             .get()
             .build()
         val response: Response = client.newCall(request).execute()
@@ -62,7 +61,7 @@ object LoginUtils {
             .build()
         val client = OkHttpClient()
         val request: Request = Request.Builder()
-            .url(BASE_URL + "register")
+            .url(BASE_URL + "/register")
             .post(body)
             .build()
         try {
@@ -86,7 +85,7 @@ object LoginUtils {
             .addFormDataPart("password", password)
             .build()
         val request: Request = Request.Builder()
-            .url(BASE_URL + "login")
+            .url(BASE_URL + "/login")
             .post(requestBody)
             .build()
         try {
@@ -112,7 +111,7 @@ object LoginUtils {
             .addFormDataPart("password", password)
             .build()
         val request: Request = Request.Builder()
-            .url(BASE_URL + "getUser")
+            .url(BASE_URL + "/getUser")
             .post(requestBody)
             .build()
         try {
@@ -149,7 +148,7 @@ object LoginUtils {
             .addFormDataPart("password", password)
             .build()
         val request: Request = Request.Builder()
-            .url(BASE_URL + "logout")
+            .url(BASE_URL + "/logout")
             .post(requestBody)
             .build()
         try {
@@ -177,7 +176,7 @@ object LoginUtils {
             .addFormDataPart("admin", admin)
             .build()
         val request: Request = Request.Builder()
-            .url(BASE_URL + "admin")
+            .url(BASE_URL + "/admin")
             .post(requestBody)
             .build()
         try {
@@ -202,7 +201,7 @@ object LoginUtils {
             .addFormDataPart("role", role)
             .build()
         val request: Request = Request.Builder()
-            .url(BASE_URL + "modifyRole")
+            .url(BASE_URL + "/modifyRole")
             .post(requestBody)
             .build()
         try {

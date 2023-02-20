@@ -10,29 +10,29 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
-import com.example.myapplication.bean.UserBean
+import com.example.myapplication.bean.AdminBean
 import com.example.myapplication.databinding.ActivityGroupBinding
-import com.example.myapplication.utils.LoginUtils
+import com.example.myapplication.utils.AdminUtils
+import com.example.myapplication.utils.Prefs
 import com.example.myapplication.utils.extensions.setOnItemClickListener
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.json.JSONObject
 
-
-class StaffActivity : AppCompatActivity() {
+class AdminActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityGroupBinding
 
-    private val list = mutableListOf<UserBean>()
+    private val list = mutableListOf<AdminBean>()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityGroupBinding.inflate(LayoutInflater.from(this))
         setContentView(binding.root)
 
-        binding.toolbar.title = "工作人员"
+        binding.toolbar.title = "主题设置"
         binding.toolbar.setNavigationIcon(R.drawable.baseline_arrow_back_24)
         binding.toolbar.setNavigationOnClickListener {
             finish()
@@ -52,51 +52,25 @@ class StaffActivity : AppCompatActivity() {
             override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
                 val item = list[holder.adapterPosition]
                 val tv = holder.itemView.findViewById<TextView>(R.id.item_name)
-                val role = when (item.role) {
-                    0 -> "普通用户"
-                    1 -> "工作人员"
-                    2 -> "管理员"
-                    else -> null
-                }
-                tv.setText(item.nickname + "-" + role + "-" + (item.belong ?: "未知社区/科技馆"))
-
+                tv.setText(item.name + "@" + item.contactName)
             }
         }
         binding.recyclerView.setOnItemClickListener { holder, position ->
-            val item = list[position]
-            val role = if (item.role == 0) {
-                "工作人员"
-            } else {
-                "普通用户"
-            }
+            val obj = JSONObject()
+            obj.put("id", list[position].id)
+            obj.put("name", list[position].name)
+            Prefs.curRegionId = obj.toString()
 
-            MaterialAlertDialogBuilder(this).setMessage("是否将此用户设置为${role}？")
-                .setPositiveButton(android.R.string.ok) { _, _ ->
-                    lifecycleScope.launch(Dispatchers.IO) {
-
-                        val state = when (item.role) {
-                            1 -> LoginUtils.modifyRole(item.account!!, "0")
-                            0 -> LoginUtils.modifyRole(item.account!!, "1")
-                            else -> false
-                        }
-
-                        withContext(Dispatchers.Main) {
-                            if (state) {
-                                Toast.makeText(this@StaffActivity, "设置成功！", Toast.LENGTH_SHORT).show()
-                            } else {
-                                Toast.makeText(this@StaffActivity, "失败", Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                    }
-                }.show()
+            Toast.makeText(this, "切换成功", Toast.LENGTH_SHORT).show()
+            finish()
         }
 
-
         lifecycleScope.launch(Dispatchers.IO) {
-            val json = LoginUtils.getAllUsers()
+            val subList = AdminUtils.getAll()
+
             withContext(Dispatchers.Main) {
                 list.clear()
-                list.addAll(json)
+                list.addAll(subList)
                 binding.recyclerView.adapter?.notifyDataSetChanged()
             }
         }

@@ -54,6 +54,7 @@ class MineActivity : AppCompatActivity() {
             Prefs.isLogin = false
             Prefs.userAccount = ""
             Prefs.userPassword = ""
+            Prefs.isSaveStatus = false
 
             finish()
         }
@@ -71,6 +72,7 @@ class MineActivity : AppCompatActivity() {
                         Prefs.isLogin = false
                         Prefs.userAccount = ""
                         Prefs.userPassword = ""
+                        Prefs.isSaveStatus = false
 
                         Toast.makeText(this@MineActivity, "注销成功", Toast.LENGTH_SHORT).show()
                         finish()

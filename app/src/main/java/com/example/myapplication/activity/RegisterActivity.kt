@@ -99,15 +99,17 @@ class RegisterActivity : AppCompatActivity() {
                     val msg = json.optString("msg")
                     if (msg == "登录成功") {
                         Prefs.isLogin = true
-                        Prefs.isManager = json.optInt("role") == 2
+                        Prefs.isAdmin = json.optInt("role") == 2
                         Prefs.userAccount = username
                         Prefs.userPassword = password
+                        Prefs.isSaveStatus = binding.saveStatus.isChecked
 
                         Toast.makeText(this@RegisterActivity, "登录成功！", Toast.LENGTH_LONG).show()
                         finish()
                     } else {
                         Prefs.isLogin = false
-                        Prefs.isManager = false
+                        Prefs.isAdmin = false
+                        Prefs.isSaveStatus = false
                         Toast.makeText(this@RegisterActivity, msg, Toast.LENGTH_LONG).show()
                     }
                 } else {
@@ -135,15 +137,18 @@ class RegisterActivity : AppCompatActivity() {
                     when (msg) {
                         "注册成功" -> {
                             Prefs.isLogin = true
-                            Prefs.isManager = json.optInt("role") == 2
+                            Prefs.isAdmin = json.optInt("role") == 2
                             Prefs.userAccount = username
                             Prefs.userPassword = password
+                            Prefs.isSaveStatus = binding.saveStatus.isChecked
 
                             Toast.makeText(this@RegisterActivity, "注册成功，已登录！", Toast.LENGTH_LONG).show()
                             finish()
                         }
                         else -> {
                             Prefs.isLogin = false
+                            Prefs.isAdmin = false
+                            Prefs.isSaveStatus = false
                             Toast.makeText(this@RegisterActivity, msg, Toast.LENGTH_LONG).show()
                         }
                     }

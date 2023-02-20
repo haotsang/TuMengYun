@@ -65,6 +65,7 @@
                     android:text="突梦标签"
                     android:textColor="@android:color/black" />
                 <TextView
+                    android:id="@+id/settings_tumeng_lable_status"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_alignParentEnd="true"
@@ -74,6 +75,7 @@
 
             </RelativeLayout>
             <RelativeLayout
+                android:id="@+id/settings_items_admin"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:paddingHorizontal="16dp"
@@ -87,6 +89,7 @@
                     android:textColor="@android:color/black"
                     android:text="主题设置"/>
                 <TextView
+                    android:id="@+id/settings_item_admin_status"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_alignParentEnd="true"

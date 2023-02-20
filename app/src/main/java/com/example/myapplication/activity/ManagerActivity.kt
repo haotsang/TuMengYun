@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
 import com.example.myapplication.databinding.ActivityManagerBinding
+import com.example.myapplication.utils.Prefs
+import org.json.JSONObject
 
 class ManagerActivity: AppCompatActivity() {
 
@@ -17,7 +19,10 @@ class ManagerActivity: AppCompatActivity() {
         setContentView(binding.root)
 
         binding.settingsTumengLable.setOnClickListener {
-            startActivity(Intent(this, TuMengLableActivity::class.java))
+            startActivity(Intent(this, LableActivity::class.java))
+        }
+        binding.settingsItemsAdmin.setOnClickListener {
+            startActivity(Intent(this, AdminActivity::class.java))
         }
 
         binding.settingsItemStaff.setOnClickListener {
@@ -27,5 +32,11 @@ class ManagerActivity: AppCompatActivity() {
         binding.settingsItemAfterService.setOnClickListener {
             startActivity(Intent(this, UploadShouHouActivity::class.java))
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        binding.settingsTumengLableStatus.text = if (Prefs.labelSettingItemStatus) "已设置" else "未设置"
+        binding.settingsItemAdminStatus.text = JSONObject(Prefs.curRegionId).optString("name")
     }
 }

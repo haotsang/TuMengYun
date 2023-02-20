@@ -40,14 +40,15 @@
         <activity android:name="com.example.myapplication.activity.MainActivity" />
         <activity android:name="com.example.myapplication.activity.RegisterActivity" />
         <activity android:name="com.example.myapplication.activity.ManagerActivity" />
-        <activity android:name="com.example.myapplication.activity.TuMengLableActivity" />
-        <activity android:name="com.example.myapplication.activity.TuMengGroupActivity" />
+        <activity android:name="com.example.myapplication.activity.LableActivity" />
+        <activity android:name="com.example.myapplication.activity.GroupActivity" />
         <activity android:name="com.example.myapplication.activity.IssueActivity" />
         <activity android:name="com.example.myapplication.activity.MineActivity" />
         <activity android:name="com.example.myapplication.activity.RegisterManagerActivity" />
         <activity android:name="com.example.myapplication.activity.StaffActivity" />
         <activity android:name="com.example.myapplication.activity.LabelEditActivity" />
         <activity android:name="com.example.myapplication.activity.QuestionActivity" />
+        <activity android:name="com.example.myapplication.activity.AdminActivity" />
 
 
         <provider
