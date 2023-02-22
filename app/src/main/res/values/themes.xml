@@ -13,4 +13,13 @@
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+
+
+    <style name="Splash" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:statusBarColor">#A7E4EA</item>
+        <item name="android:navigationBarColor">#A7E4EA</item>
+        <item name="windowNoTitle">true</item>
+<!--        <item name="android:windowFullscreen">true</item>-->
+    </style>
+
 </resources>

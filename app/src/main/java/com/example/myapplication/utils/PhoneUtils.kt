@@ -7,7 +7,7 @@ import android.content.pm.PackageManager
 import android.telephony.TelephonyManager
 import androidx.core.app.ActivityCompat
 
-class PhoneUtils {
+object PhoneUtils {
 
     /**
      * 获取手机服务商信息
@@ -37,25 +37,11 @@ class PhoneUtils {
     /**
      * 获取电话号码
      */
+    @SuppressLint("MissingPermission")
     fun getNativePhoneNumber(context: Context): String? {
-        val telephonyManager =
-            context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-        var NativePhoneNumber: String? = null
-        if (ActivityCompat.checkSelfPermission(
-                context,
-                Manifest.permission.READ_SMS
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                context,
-                Manifest.permission.READ_PHONE_NUMBERS
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                context,
-                Manifest.permission.READ_PHONE_STATE
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            NativePhoneNumber = telephonyManager.line1Number
-        }
+        val telephonyManager = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
 
-        return NativePhoneNumber
+        return telephonyManager.line1Number ?: null
     }
 
 }

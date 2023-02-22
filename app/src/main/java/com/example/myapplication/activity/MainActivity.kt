@@ -50,14 +50,10 @@ class MainActivity : AppCompatActivity() {
         binding.navView.setNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.main_menu_register -> {
-                    startActivity(Intent(this, RegisterActivity::class.java).apply {
-                        putExtra("register", true)
-                    })
+                    startActivity(Intent(this, RegisterActivity::class.java))
                 }
                 R.id.main_menu_login -> {
-                    startActivity(Intent(this, RegisterActivity::class.java).apply {
-                        putExtra("register", false)
-                    })
+                    startActivity(Intent(this, LoginActivity::class.java))
                 }
                 R.id.main_menu_manager -> {
                     startManagerPage()
