@@ -22,11 +22,18 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
 
+        <meta-data
+            android:name="android.max_aspect"
+            android:value="2.5" />
+        <!-- 适配刘海屏 -->
+        <meta-data
+            android:name="android.notch_support"
+            android:value="true" />
 
         <activity
             android:name=".activity.Splash"
-            android:exported="true"
-            android:theme="@style/Splash">
+            android:theme="@style/Splash"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -34,7 +41,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.example.myapplication.activity.UploadShouHouActivity" />
+        <activity android:name="com.example.myapplication.activity.AfterServiceActivity" />
         <activity android:name="com.example.myapplication.activity.DetailsActivity" />
         <activity android:name="com.example.myapplication.activity.CangkuActivity" />
         <activity android:name="com.example.myapplication.activity.ErrorActivity" />
@@ -48,10 +55,15 @@
         <activity android:name="com.example.myapplication.activity.MineActivity" />
         <activity android:name="com.example.myapplication.activity.RegisterManagerActivity" />
         <activity android:name="com.example.myapplication.activity.StaffActivity" />
-        <activity android:name="com.example.myapplication.activity.LabelEditActivity" />
+        <activity android:name="com.example.myapplication.activity.LabelTitleEditActivity" />
         <activity android:name="com.example.myapplication.activity.QuestionActivity" />
         <activity android:name="com.example.myapplication.activity.AdminActivity" />
         <activity android:name="com.example.myapplication.activity.LoginActivity" />
+
+        <activity android:name="com.example.myapplication.activity.CrashActivity"
+            android:theme="@style/NoTitle"
+            android:exported="false"
+            android:process=":crash"/>
 
 
         <provider

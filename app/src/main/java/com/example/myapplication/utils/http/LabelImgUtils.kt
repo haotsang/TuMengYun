@@ -1,4 +1,4 @@
-package com.example.myapplication.utils
+package com.example.myapplication.utils.http
 
 import com.example.myapplication.bean.LabelImgBean
 import okhttp3.OkHttpClient
@@ -18,7 +18,7 @@ object LabelImgUtils {
 
         val client = OkHttpClient()
         val request: Request = Request.Builder()
-            .url("${BASE_URL}/list/${labelId}")
+            .url("$BASE_URL/list/${labelId}")
             .get()
             .build()
         val response: Response = client.newCall(request).execute()
@@ -31,9 +31,9 @@ object LabelImgUtils {
             val obj: JSONObject = jsonArray.getJSONObject(len)
 
             val userBean = LabelImgBean().apply {
-                this.id = obj.optLong("id")
+                this.id = obj.optInt("id")
                 this.uri = obj.optString("uri")
-                this.tid = obj.optLong("tid")
+                this.tid = obj.optInt("tid")
             }
 
             list.add(userBean)

@@ -7,9 +7,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.myapplication.bean.UserBean
 import com.example.myapplication.databinding.ActivityMineBinding
-import com.example.myapplication.utils.LoginUtils
+import com.example.myapplication.utils.http.LoginUtils
 import com.example.myapplication.utils.Prefs
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

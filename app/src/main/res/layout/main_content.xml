@@ -1,149 +1,217 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#B3BEFF">
-
-
-    <ImageView
-        android:id="@+id/content_menu"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/baseline_menu_24"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/content_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="梦暴科技馆"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:textColor="@android:color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/content_menu" />
-
-    <View
-        android:id="@+id/view1"
-        android:layout_width="200dp"
-        android:layout_height="6dp"
-        android:background="@color/cardview_dark_background"
-        app:layout_constraintBottom_toTopOf="@+id/banner"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/content_title" />
-
-
-    <com.youth.banner.Banner
-        android:id="@+id/banner"
-        android:layout_width="match_parent"
-        android:layout_height="180dp"
-        android:layout_marginVertical="10dp"
-        android:layout_marginHorizontal="24dp"
-        android:clickable="true"
-        android:focusable="true"
-        app:banner_indicator_normal_width="11dp"
-        app:banner_indicator_selected_width="13dp"
-        app:banner_indicator_selected_color="#95F2EC"
-        app:banner_radius="20dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/content_title" />
-
-    <TextView
-        android:id="@+id/banner_text"
-        android:layout_width="match_parent"
-        android:layout_height="180dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginHorizontal="24dp"
-        android:text="未设置"
-        android:textColor="@android:color/white"
-        android:textSize="16sp"
-        android:gravity="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/content_title" />
+    android:background="@color/bg_dark_color"
+    android:orientation="vertical">
 
     <LinearLayout
-        android:id="@+id/linear1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="255dp"
-        android:layout_marginTop="2dp"
+        android:layout_height="?attr/actionBarSize"
+        android:gravity="center"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/button9"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/banner">
-
-
+        android:paddingHorizontal="16dp"
+        android:background="@color/blue_bright">
         <TextView
-            android:id="@+id/chart1"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="客流量"
-            android:background="@drawable/edittext_shape"/>
+            android:id="@+id/content_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="梦暴科技馆"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:drawableEndCompat="@drawable/baseline_arrow_drop_down_24" />
 
+        <View
+            android:layout_marginHorizontal="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="33dp"
+            android:layout_weight="1"
+            android:background="@color/blue_dark" />
+
+        <ImageView
+            android:id="@+id/content_menu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/baseline_menu_24" />
     </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="16dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:minHeight="180dp"
+                android:orientation="horizontal"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="1dp"
+                app:cardUseCompatPadding="true"
+                app:contentPadding="0dp"
+                app:strokeColor="#37000000"
+                app:strokeWidth="0dp">
+
+                <TextView
+                    android:id="@+id/banner_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="180dp"
+
+                    android:gravity="center"
+                    android:text="未设置"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp" />
+
+                <com.youth.banner.Banner
+                    android:id="@+id/banner"
+                    android:layout_width="match_parent"
+                    android:layout_height="180dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:banner_indicator_normal_width="11dp"
+                    app:banner_indicator_selected_color="#95F2EC"
+                    app:banner_indicator_selected_width="13dp"
+                    app:banner_radius="12dp" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/linear1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="255dp"
+                android:orientation="horizontal"
+                android:layout_marginHorizontal="16dp"
+                app:cardUseCompatPadding="true"
+                app:cardBackgroundColor="@color/white"
+                app:strokeWidth="0dp"
+                app:strokeColor="#37000000"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="1dp"
+                app:contentPadding="2dp"
+                >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingBottom="36dp">
+                    <TextView
+                        android:id="@+id/chart1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="16dp"
+                        android:drawablePadding="6dp"
+                        android:textSize="16sp"
+                        android:textColor="@color/black"
+                        android:textStyle="bold"
+                        android:drawableStart="@drawable/ic_yesterday_data"
+                        android:text="昨日数据" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <include
+                            android:id="@+id/card_item1"
+                            layout="@layout/view_card_item" />
+
+                        <include
+                            android:id="@+id/card_item2"
+                            layout="@layout/view_card_item" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <include
+                            android:id="@+id/card_item3"
+                            layout="@layout/view_card_item" />
+
+                        <include
+                            android:id="@+id/card_item4"
+                            layout="@layout/view_card_item" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+
+    </ScrollView>
 
     <LinearLayout
         android:id="@+id/button9"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        android:background="@color/white"
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/bottom_scan"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:background="?attr/selectableItemBackground"
             android:gravity="center"
+            android:paddingTop="12dp"
             android:text="扫一扫"
-            android:textSize="16sp"
-            android:textColor="@android:color/black"
-            android:background="?attr/selectableItemBackground"
-            app:drawableTopCompat="@drawable/baseline_menu_24" />
+            android:textColor="@color/icon_color"
+            android:textSize="14sp"
+            app:drawableTopCompat="@drawable/ic_bottom_scan" />
+
         <TextView
+            android:id="@+id/bottom_space"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="center"
             android:background="?attr/selectableItemBackground"
+            android:gravity="center"
+            android:paddingTop="12dp"
             android:text="科普空间"
-            android:textSize="16sp"
-            android:textColor="@android:color/black"
-            app:drawableTopCompat="@drawable/baseline_menu_24" />
+            android:textColor="@color/icon_color"
+            android:textSize="14sp"
+            app:drawableTopCompat="@drawable/ic_bottom_space" />
+
         <TextView
+            android:id="@+id/bottom_shop"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="center"
             android:background="?attr/selectableItemBackground"
+            android:gravity="center"
+            android:paddingTop="12dp"
             android:text="科普商城"
-            android:textSize="16sp"
-            android:textColor="@android:color/black"
-            app:drawableTopCompat="@drawable/baseline_menu_24" />
+            android:textColor="@color/icon_color"
+            android:textSize="14sp"
+            app:drawableTopCompat="@drawable/ic_bottom_shop" />
+
         <TextView
             android:id="@+id/bottom_mine"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:textSize="16sp"
-            android:textColor="@android:color/black"
-            android:gravity="center"
             android:background="?attr/selectableItemBackground"
+            android:gravity="center"
+            android:paddingTop="12dp"
             android:text="我的"
-            app:drawableTopCompat="@drawable/baseline_menu_24" />
+            android:textColor="@color/icon_color"
+            android:textSize="14sp"
+            app:drawableTopCompat="@drawable/ic_bottom_mine" />
 
     </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

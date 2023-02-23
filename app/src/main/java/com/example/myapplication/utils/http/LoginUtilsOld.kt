@@ -1,4 +1,4 @@
-package com.example.myapplication.utils
+package com.example.myapplication.utils.http
 
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull

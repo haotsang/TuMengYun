@@ -1,8 +1,6 @@
 package com.example.myapplication.activity
 
 import android.content.Intent
-import android.os.Bundle
-import android.widget.Button
 import com.example.myapplication.R
 import com.google.zxing.Result
 import com.king.zxing.CaptureActivity
@@ -62,7 +60,7 @@ class ScanActivity : CaptureActivity() {
                 intent.putExtra("error", "扫码失败：非展区二维码1")
                 startActivity(intent)
             } else {
-                val intent = Intent(this, UploadShouHouActivity::class.java)
+                val intent = Intent(this, AfterServiceActivity::class.java)
                 intent.putExtra("zhanQu", zhanQuName)
                 intent.putExtra("zhanPin", zhanPinName)
                 startActivity(intent)

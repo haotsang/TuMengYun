@@ -25,8 +25,10 @@ class IssueActivity : AppCompatActivity() {
         }
 
         binding.button11.setOnClickListener {
-            Toast.makeText(this, "已收到反馈！", Toast.LENGTH_LONG).show()
-            finish()
+            if (binding.editText.text.toString().isNotEmpty()) {
+                Toast.makeText(this, "已收到反馈！", Toast.LENGTH_LONG).show()
+                finish()
+            }
         }
     }
 }

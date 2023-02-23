@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.myapplication.R
 import com.example.myapplication.databinding.ActivityRegisterBinding
-import com.example.myapplication.utils.LoginUtils
+import com.example.myapplication.utils.http.LoginUtils
 import com.example.myapplication.utils.Prefs
 import com.example.myapplication.utils.Utils
 import kotlinx.coroutines.Dispatchers

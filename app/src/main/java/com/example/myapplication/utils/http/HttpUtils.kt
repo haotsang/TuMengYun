@@ -1,8 +1,7 @@
-package com.example.myapplication.utils
+package com.example.myapplication.utils.http
 
 import com.example.myapplication.bean.CangKuItem
 import okhttp3.*
-import okhttp3.Headers.Companion.headersOf
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.asRequestBody
 import org.json.JSONObject

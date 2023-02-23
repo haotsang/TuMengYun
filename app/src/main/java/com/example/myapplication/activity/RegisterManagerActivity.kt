@@ -6,7 +6,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.myapplication.databinding.ActivityRegisterManagerBinding
-import com.example.myapplication.utils.LoginUtils
+import com.example.myapplication.utils.http.LoginUtils
 import com.example.myapplication.utils.Prefs
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

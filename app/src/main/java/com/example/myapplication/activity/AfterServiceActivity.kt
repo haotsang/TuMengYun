@@ -15,14 +15,14 @@ import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.Glide
 import com.example.myapplication.BuildConfig
 import com.example.myapplication.R
-import com.example.myapplication.utils.HttpUtils
+import com.example.myapplication.utils.http.HttpUtils
 import com.example.myapplication.utils.Utils
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 
 
-class UploadShouHouActivity : AppCompatActivity() {
+class AfterServiceActivity : AppCompatActivity() {
 
     private val list = mutableListOf<String>()
 
@@ -46,11 +46,11 @@ class UploadShouHouActivity : AppCompatActivity() {
         adapter = object : PagerAdapter() {
             override fun getCount(): Int = list.size
             override fun instantiateItem(container: ViewGroup, position: Int): Any {
-                val v = View.inflate(this@UploadShouHouActivity, R.layout.item_photo, null)
+                val v = View.inflate(this@AfterServiceActivity, R.layout.item_photo, null)
 
                 val photoView = v.findViewById<ImageView>(R.id.photo_thumbnail)
                 photoView.setOnClickListener {
-                    startActivity(Intent(this@UploadShouHouActivity, DetailsActivity::class.java).apply {
+                    startActivity(Intent(this@AfterServiceActivity, DetailsActivity::class.java).apply {
                         putExtra("path", list[position])
                     })
                 }

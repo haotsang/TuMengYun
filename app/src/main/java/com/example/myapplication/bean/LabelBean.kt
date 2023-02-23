@@ -1,7 +1,7 @@
 package com.example.myapplication.bean
 
 data class LabelBean(
-    var id: Long = 0,
+    var id: Int = 0,
     var title: String? = null,
     var content: String? = null,
     var question: Int = 0,

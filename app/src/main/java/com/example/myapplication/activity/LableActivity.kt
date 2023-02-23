@@ -12,9 +12,9 @@ import com.example.myapplication.R
 import com.example.myapplication.adapter.BannerImageAdapter2
 import com.example.myapplication.bean.BannerItem
 import com.example.myapplication.bean.LabelBean
-import com.example.myapplication.databinding.ActivityTumengLabelBinding
-import com.example.myapplication.utils.LabelImgUtils
-import com.example.myapplication.utils.LabelUtils
+import com.example.myapplication.databinding.ActivityLabelBinding
+import com.example.myapplication.utils.http.LabelImgUtils
+import com.example.myapplication.utils.http.LabelUtils
 import com.example.myapplication.utils.Prefs
 import com.youth.banner.indicator.CircleIndicator
 import com.youth.banner.listener.OnPageChangeListener
@@ -25,7 +25,7 @@ import org.json.JSONObject
 
 class LableActivity: AppCompatActivity() {
 
-    private lateinit var binding: ActivityTumengLabelBinding
+    private lateinit var binding: ActivityLabelBinding
 
     private var labelBean: LabelBean? = null
 
@@ -60,7 +60,7 @@ class LableActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityTumengLabelBinding.inflate(LayoutInflater.from(this))
+        binding = ActivityLabelBinding.inflate(LayoutInflater.from(this))
         setContentView(binding.root)
 
 
@@ -100,7 +100,7 @@ class LableActivity: AppCompatActivity() {
 
         binding.buttonAddText.setOnClickListener {
             startActivityForResult(
-                Intent(this, LabelEditActivity::class.java).apply {
+                Intent(this, LabelTitleEditActivity::class.java).apply {
                     putExtra("title", labelBean?.title)
                     putExtra("content", labelBean?.content)
                 }, 0

@@ -1,7 +1,6 @@
-package com.example.myapplication.utils
+package com.example.myapplication.utils.http
 
 import com.example.myapplication.bean.AdminBean
-import com.example.myapplication.bean.UserBean
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
@@ -33,7 +32,7 @@ println("@@@@@"+responseData)
             val obj: JSONObject = jsonArray.getJSONObject(len)
 
             val userBean = AdminBean().apply {
-                this.id = obj.optLong("id")
+                this.id = obj.optInt("id")
                 this.name = obj.optString("name")
                 this.account = obj.optString("account")
                 this.password = obj.optString("password")

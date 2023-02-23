@@ -1,7 +1,7 @@
 package com.example.myapplication.bean
 
 data class UserBean(
-    var id: Long? = null,
+    var id: Int? = null,
     var nickname: String? = null,
     var account: String? = null,
     var password: String? = null,

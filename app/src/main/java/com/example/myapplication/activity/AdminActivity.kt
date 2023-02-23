@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
 import com.example.myapplication.bean.AdminBean
 import com.example.myapplication.databinding.ActivityGroupBinding
-import com.example.myapplication.utils.AdminUtils
+import com.example.myapplication.utils.http.AdminUtils
 import com.example.myapplication.utils.Prefs
 import com.example.myapplication.utils.extensions.setOnItemClickListener
 import kotlinx.coroutines.Dispatchers

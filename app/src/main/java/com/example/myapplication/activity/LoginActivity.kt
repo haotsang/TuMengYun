@@ -3,20 +3,15 @@ package com.example.myapplication.activity
 import android.Manifest
 import android.os.Build
 import android.os.Bundle
-import android.telephony.PhoneNumberUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.lifecycleScope
-import com.example.myapplication.MyPagerAdapter
-import com.example.myapplication.R
-import com.example.myapplication.databinding.ActivityGroupBinding
-import com.example.myapplication.databinding.ActivityLoginBinding
-import com.example.myapplication.databinding.Pager1Binding
-import com.example.myapplication.databinding.Pager2Binding
-import com.example.myapplication.utils.LoginUtils
+import com.example.myapplication.adapter.MyPagerAdapter
+import com.example.myapplication.databinding.*
+import com.example.myapplication.utils.http.LoginUtils
 import com.example.myapplication.utils.PhoneUtils
 import com.example.myapplication.utils.Prefs
 import com.example.myapplication.utils.Utils
@@ -48,14 +43,17 @@ class LoginActivity : AppCompatActivity() {
         val list = mutableListOf<View>()
 
 
-        val v1 = Pager1Binding.inflate(LayoutInflater.from(this))
-        v1.tvPhoneNumber.text = PhoneUtils.getNativePhoneNumber(this) ?: "186****8877"
+        val v1 = ViewLoginPager1Binding.inflate(LayoutInflater.from(this))
+        v1.tvPhoneNumber.text = PhoneUtils.trimTelNum(PhoneUtils.getNativePhoneNumber(this)) ?: "未知号码"
         v1.btnAutoLogin.setOnClickListener {
-            if (Utils.isMobileNO(v1.tvPhoneNumber.text.toString())) {
-
+            val phone = v1.tvPhoneNumber.text.toString()
+            if (Utils.isMobileNO(phone)) {
+                loginWithPhone(phone, saveState = true)
+            } else {
+                Toast.makeText(this, "未知号码，自动登录失败", Toast.LENGTH_SHORT).show()
             }
         }
-        val v2 = Pager2Binding.inflate(LayoutInflater.from(this))
+        val v2 = ViewLoginPager2Binding.inflate(LayoutInflater.from(this))
         v2.buttonLogin.setOnClickListener {
             val username = v2.editTextTextPersonName.text.toString()
             val password = v2.editTextTextPassword.text.toString()
@@ -113,6 +111,25 @@ class LoginActivity : AppCompatActivity() {
                     Toast.makeText(this@LoginActivity, "login:-1", Toast.LENGTH_LONG).show()
                 }
 
+            }
+        }
+
+
+    }
+    private fun loginWithPhone(phone: String, saveState: Boolean) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            val flag = try {
+                LoginUtils.loginWithPhone(phone)
+            } catch (e: Exception) {
+                false
+            }
+            withContext(Dispatchers.Main) {
+                if (flag) {
+                    Toast.makeText(this@LoginActivity, "登录成功！", Toast.LENGTH_LONG).show()
+                    finish()
+                } else {
+                    Toast.makeText(this@LoginActivity, "自动登录失败", Toast.LENGTH_LONG).show()
+                }
             }
         }
 

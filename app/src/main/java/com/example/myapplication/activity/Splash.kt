@@ -6,14 +6,17 @@ import android.os.Handler
 import android.os.Looper
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowCompat
 import com.example.myapplication.R
+import com.example.myapplication.utils.ViewUtils
 
 
 class Splash : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.splash)
+//        setContentView(R.layout.splash)
+        ViewUtils.setFullscreenCompat(this, true)
 
         Handler(Looper.getMainLooper()).postDelayed({
             val mainIntent = Intent(

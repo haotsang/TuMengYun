@@ -1,19 +1,18 @@
 package com.example.myapplication.activity
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
-import com.example.myapplication.databinding.ActivityEditLabelBinding
+import com.example.myapplication.databinding.ActivityLabelTitleEditBinding
 
-class LabelEditActivity: AppCompatActivity() {
+class LabelTitleEditActivity: AppCompatActivity() {
 
-    private lateinit var binding: ActivityEditLabelBinding
+    private lateinit var binding: ActivityLabelTitleEditBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityEditLabelBinding.inflate(LayoutInflater.from(this))
+        binding = ActivityLabelTitleEditBinding.inflate(LayoutInflater.from(this))
         setContentView(binding.root)
 
         binding.editTextTextTitle.setText(intent.getStringExtra("title"))

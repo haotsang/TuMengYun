@@ -50,6 +50,11 @@ object Prefs {
         set(value) = put("sp_labelSettingItemStatus", value)
 
 
+    var tuiSong: Boolean
+        get() = manager.getBoolean("sp_tuisong", false)
+        set(value) = put("sp_tuisong", value)
+
+
     /**
      * 保存单个数据
      *

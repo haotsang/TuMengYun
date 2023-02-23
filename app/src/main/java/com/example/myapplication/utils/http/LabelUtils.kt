@@ -1,9 +1,8 @@
-package com.example.myapplication.utils
+package com.example.myapplication.utils.http
 
 import com.example.myapplication.bean.LabelBean
 import okhttp3.*
 import org.json.JSONObject
-import java.io.IOException
 
 object LabelUtils {
 
@@ -26,7 +25,7 @@ object LabelUtils {
 
         val obj = JSONObject(responseData)
         val bean = LabelBean().apply {
-            this.id = obj.optLong("id")
+            this.id = obj.optInt("id")
             this.title = obj.optString("title")
             this.content = obj.optString("content")
             this.question = obj.optInt("question")

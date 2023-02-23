@@ -1,16 +1,29 @@
 package com.example.myapplication
 
+import android.app.Activity
 import android.app.Application
+import android.os.Bundle
+import androidx.core.view.WindowCompat
+import com.example.myapplication.activity.CrashActivity
+import com.example.myapplication.activity.Splash
+import com.example.myapplication.utils.NeverCrash
 import com.example.myapplication.utils.Prefs
+import com.example.myapplication.utils.ViewUtils
 import kotlin.properties.Delegates
 
-class MyApplication : Application() {
+class MyApplication : Application(), Application.ActivityLifecycleCallbacks {
 
     override fun onCreate() {
         super.onCreate()
         instance = this
+        registerActivityLifecycleCallbacks(this)
 
         Prefs.curRegionId = "{id: 1, name: '梦暴科技馆'}"
+
+        NeverCrash.init { t, e ->
+            CrashActivity.start(this, e)
+            System.exit(1)
+        }
     }
 
     companion object {
@@ -24,6 +37,33 @@ class MyApplication : Application() {
 
         fun instance() = instance
 
+
+    }
+
+
+
+    override fun onActivityCreated(activity: Activity, bundle: Bundle?) {
+        WindowCompat.setDecorFitsSystemWindows(activity.window, false)
+        ViewUtils.setFullScreenWindowLayoutInDisplayCutout(activity, true)
+        ViewUtils.setSystemBarTransparent(activity)
+        ViewUtils.initSystemBarColor(activity)
+    }
+    override fun onActivityStarted(activity: Activity) {
+
+    }
+    override fun onActivityResumed(activity: Activity) {
+
+    }
+    override fun onActivityPaused(activity: Activity) {
+
+    }
+    override fun onActivityStopped(activity: Activity) {
+
+    }
+    override fun onActivitySaveInstanceState(activity: Activity, bundle: Bundle) {
+
+    }
+    override fun onActivityDestroyed(activity: Activity) {
 
     }
 

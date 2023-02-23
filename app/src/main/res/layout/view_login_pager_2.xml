@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:layout_marginVertical="6dp"
-        android:background="@drawable/edittext_shape"
+        android:background="@drawable/shape_edittext"
         android:hint="用户名"
         android:inputType="textPersonName"
         android:paddingHorizontal="12dp" />
@@ -22,7 +22,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:layout_marginVertical="6dp"
-        android:background="@drawable/edittext_shape"
+        android:background="@drawable/shape_edittext"
         android:hint="设置密码"
         android:inputType="textPassword"
         android:paddingHorizontal="12dp" />
@@ -33,6 +33,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:checked="true"
+        android:textColor="@color/white"
         android:text="记住账号密码" />
 
     <Button
@@ -52,14 +53,16 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:text="注册账号"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:textColor="@color/hint"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:text="忘记密码"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:textColor="@color/hint"/>
     </RelativeLayout>
 
 </LinearLayout>

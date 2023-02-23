@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <group android:id="@+id/ground1">
+    <group android:id="@+id/ground1"
+        android:checkableBehavior="none">
         <item
             android:id="@+id/main_menu_register"
             android:icon="@android:drawable/ic_delete"
@@ -28,7 +29,8 @@
             android:title="意见反馈"
             app:showAsAction="ifRoom" />
     </group>
-    <group android:id="@+id/ground2">
+    <group android:id="@+id/ground2"
+        android:checkableBehavior="none">
         <item
             android:id="@+id/main_menu_group"
             android:icon="@android:drawable/ic_delete"

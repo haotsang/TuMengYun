@@ -1,4 +1,4 @@
-package com.example.myapplication.utils
+package com.example.myapplication.utils.http
 
 import com.example.myapplication.bean.UserBean
 import okhttp3.*
@@ -99,6 +99,30 @@ object LoginUtils {
         }
 
         return null
+    }
+
+    @Throws(Exception::class)
+    fun loginWithPhone(phone: String): Boolean {
+        val client = OkHttpClient()
+        val requestBody: RequestBody = MultipartBody.Builder()
+            .setType(MultipartBody.FORM)
+            .addFormDataPart("phone", phone)
+            .build()
+        val request: Request = Request.Builder()
+            .url(BASE_URL + "/auto_login")
+            .post(requestBody)
+            .build()
+        try {
+            val response: Response = client.newCall(request).execute()
+            val responseData = response.body?.string()
+            responseData ?: return false
+
+            return responseData.toBoolean()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+
+        return false
     }
 
 

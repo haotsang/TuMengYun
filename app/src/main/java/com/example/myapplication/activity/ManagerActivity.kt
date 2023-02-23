@@ -30,7 +30,7 @@ class ManagerActivity: AppCompatActivity() {
         }
 
         binding.settingsItemAfterService.setOnClickListener {
-            startActivity(Intent(this, UploadShouHouActivity::class.java))
+            startActivity(Intent(this, AfterServiceActivity::class.java))
         }
     }
 

@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
 import com.example.myapplication.bean.UserBean
 import com.example.myapplication.databinding.ActivityGroupBinding
-import com.example.myapplication.utils.LoginUtils
+import com.example.myapplication.utils.http.LoginUtils
 import com.example.myapplication.utils.extensions.setOnItemClickListener
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
