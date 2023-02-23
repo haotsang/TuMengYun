@@ -23,12 +23,6 @@ class RegisterActivity : AppCompatActivity() {
         binding = ActivityRegisterBinding.inflate(LayoutInflater.from(this))
         setContentView(binding.root)
 
-        binding.toolbar.title = "注册"
-        binding.toolbar.setNavigationIcon(R.drawable.baseline_arrow_back_24)
-        binding.toolbar.setNavigationOnClickListener {
-            finish()
-        }
-
         binding.buttonRegister.setOnClickListener {
             val username = binding.editTextTextPersonName.text.toString()
             val password = binding.editTextTextPassword.text.toString()

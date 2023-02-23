@@ -1,8 +1,12 @@
 package com.example.myapplication.activity
 
 import android.Manifest
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.text.Editable
+import android.text.InputFilter
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
@@ -43,32 +47,63 @@ class LoginActivity : AppCompatActivity() {
         val list = mutableListOf<View>()
 
 
+        val phoneNumber = PhoneUtils.trimTelNum(PhoneUtils.getNativePhoneNumber(this))
         val v1 = ViewLoginPager1Binding.inflate(LayoutInflater.from(this))
-        v1.tvPhoneNumber.text = PhoneUtils.trimTelNum(PhoneUtils.getNativePhoneNumber(this)) ?: "未知号码"
+        val listener1 = object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                val str = v1.tvPhoneNumber.text.trim().toString()
+                v1.btnAutoLogin.isEnabled = Utils.isMobileNO(str)
+            }
+        }
+        v1.tvPhoneNumber.addTextChangedListener(listener1)
+        v1.tvPhoneNumber.hint = phoneNumber
+        v1.tvPhoneNumber.text = phoneNumber?.replace("(\\d{3})\\d{4}(\\d{4})".toRegex(),"$1****$2") ?: "未知号码"
+
         v1.btnAutoLogin.setOnClickListener {
-            val phone = v1.tvPhoneNumber.text.toString()
-            if (Utils.isMobileNO(phone)) {
-                loginWithPhone(phone, saveState = true)
+            if (Utils.isMobileNO(phoneNumber)) {
+                loginWithPhone(phoneNumber!!, saveState = true)
             } else {
                 Toast.makeText(this, "未知号码，自动登录失败", Toast.LENGTH_SHORT).show()
             }
         }
         val v2 = ViewLoginPager2Binding.inflate(LayoutInflater.from(this))
+
+        val listener = object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                val len1 = v2.editTextTextPersonName.text.trim().toString().length
+                val len2 = v2.editTextTextPassword.text.trim().toString().length
+                v2.buttonLogin.isEnabled = len1 in 6..18 && len2 in 6..18
+            }
+        }
+        v2.editTextTextPersonName.addTextChangedListener(listener)
+        v2.editTextTextPassword.addTextChangedListener(listener)
+        v2.editTextTextPersonName.setText("")
+        v2.editTextTextPassword.setText("")
         v2.buttonLogin.setOnClickListener {
             val username = v2.editTextTextPersonName.text.toString()
             val password = v2.editTextTextPassword.text.toString()
 
-            if (username.length !in 6..18) {
-                Toast.makeText(this, "用户名应大于6位且小于18位", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-            if (password.length !in 6..18) {
-                Toast.makeText(this, "密码应大于6位且小于18位", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
+//            if (username.length !in 6..18) {
+//                Toast.makeText(this, "用户名应大于6位且小于18位", Toast.LENGTH_SHORT).show()
+//                return@setOnClickListener
+//            }
+//            if (password.length !in 6..18) {
+//                Toast.makeText(this, "密码应大于6位且小于18位", Toast.LENGTH_SHORT).show()
+//                return@setOnClickListener
+//            }
 
             login(username, password, v2.saveStatus.isChecked)
         }
+        v2.loginRegister.setOnClickListener {
+            startActivity(Intent(this, RegisterActivity::class.java))
+            finish()
+        }
+        v2.loginForgetable.setOnClickListener {  }
+
 
         list.add(v1.root)
         list.add(v2.root)

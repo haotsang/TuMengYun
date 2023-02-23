@@ -19,7 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
 import com.example.myapplication.adapter.BannerImageAdapter2
 import com.example.myapplication.bean.BannerItem
-import com.example.myapplication.bean.SettingsItem
+import com.example.myapplication.bean.NavItem
 import com.example.myapplication.databinding.ActivityMainBinding
 import com.example.myapplication.utils.http.LabelImgUtils
 import com.example.myapplication.utils.http.LabelUtils
@@ -41,13 +41,13 @@ class MainActivity : AppCompatActivity() {
 
 
     private val navList = mutableListOf(
-        SettingsItem(true, "main_menu_register", "注册账号", R.drawable.ic_nav_register, top = false, bottom = true),
-        SettingsItem(true, "main_menu_login", "登录", R.drawable.ic_nav_login, top = false, bottom = true),
-        SettingsItem(true, "main_menu_admin", "智慧管理", R.drawable.ic_nav_admin, top = false, bottom = true),
-        SettingsItem(true, "main_menu_clean_cache", "清理缓存", R.drawable.ic_nav_clear, top = false, bottom = true),
-        SettingsItem(true, "main_menu_issue", "意见反馈", R.drawable.ic_nav_issue, top = false, bottom = true),
-        SettingsItem(true, "main_menu_group", "突梦群", R.drawable.ic_nav_group, top = false, bottom = true),
-        SettingsItem(true, "main_menu_tuisong", "接受推送", R.drawable.ic_nav_tuisong, top = false, bottom = false),
+        NavItem(true, "main_menu_register", "注册账号", R.drawable.ic_nav_register, top = false, bottom = true),
+        NavItem(true, "main_menu_login", "登录", R.drawable.ic_nav_login, top = false, bottom = true),
+        NavItem(true, "main_menu_admin", "智慧管理", R.drawable.ic_nav_admin, top = false, bottom = true),
+        NavItem(true, "main_menu_clean_cache", "清理缓存", R.drawable.ic_nav_clear, top = false, bottom = true),
+        NavItem(true, "main_menu_issue", "意见反馈", R.drawable.ic_nav_issue, top = false, bottom = true),
+        NavItem(true, "main_menu_group", "突梦群", R.drawable.ic_nav_group, top = false, bottom = true),
+        NavItem(true, "main_menu_tuisong", "接受推送", R.drawable.ic_nav_tuisong, top = false, bottom = false),
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {

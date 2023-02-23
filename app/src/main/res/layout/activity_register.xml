@@ -1,70 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/bg"
+    android:fitsSystemWindows="true"
+    android:gravity="center|top"
+    android:orientation="vertical">
 
-    <Button
-        android:id="@+id/button_register"
-        android:layout_width="match_parent"
+    <ImageView
+        android:id="@+id/imageView5"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="24dp"
-        android:text="确认注册"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPhone" />
-
-    <EditText
-        android:id="@+id/editTextTextPassword"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:layout_marginHorizontal="24dp"
-        android:layout_marginVertical="12dp"
-        android:background="@drawable/shape_edittext"
-        android:hint="设置密码"
-        android:inputType="textPassword"
-        android:paddingHorizontal="12dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName" />
-
-    <EditText
-        android:id="@+id/editTextTextPhone"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:layout_marginHorizontal="24dp"
-        android:layout_marginVertical="12dp"
-        android:background="@drawable/shape_edittext"
-        android:hint="手机号"
-        android:inputType="number"
-        android:paddingHorizontal="12dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPassword" />
+        android:layout_marginTop="68dp"
+        android:layout_marginBottom="16dp"
+        android:src="@drawable/logo" />
 
     <EditText
         android:id="@+id/editTextTextPersonName"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:layout_marginHorizontal="24dp"
-        android:layout_marginTop="86dp"
+        android:layout_marginVertical="6dp"
         android:background="@drawable/shape_edittext"
-        android:hint="用户名"
+        android:drawablePadding="4dp"
+        android:hint="请输入用户名"
         android:inputType="textPersonName"
-        android:paddingHorizontal="12dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+        android:paddingHorizontal="16dp"
+        android:textColor="@color/white"
+        android:textColorHint="@color/ripper"
+        app:drawableStartCompat="@drawable/ic_edit_account" />
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+    <EditText
+        android:id="@+id/editTextTextPassword"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:title="注册" />
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginVertical="6dp"
+        android:background="@drawable/shape_edittext"
+        android:drawablePadding="4dp"
+        android:hint="请输入密码"
+        android:inputType="textPassword"
+        android:paddingHorizontal="16dp"
+        android:textColor="@color/white"
+        android:textColorHint="@color/ripper"
+        app:drawableStartCompat="@drawable/ic_edit_password" />
+
+    <EditText
+        android:id="@+id/editTextTextPhone"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginVertical="6dp"
+        android:background="@drawable/shape_edittext"
+        android:drawablePadding="4dp"
+        android:hint="请输入手机号"
+        android:inputType="number"
+        android:paddingHorizontal="16dp"
+        android:textColor="@color/white"
+        android:textColorHint="@color/ripper"
+        app:drawableStartCompat="@drawable/ic_edit_phone" />
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/button_register"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginVertical="6dp"
+        android:background="@drawable/selector_login_btn"
+        android:text="注册"
+        android:textColor="@color/white" />
+
+
+</LinearLayout>

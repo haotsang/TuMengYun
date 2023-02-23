@@ -22,7 +22,7 @@
     </style>
 
     <style name="Splash" parent="NoTitle">
-        <item name="android:windowBackground">@drawable/splash</item>
+        <item name="android:windowBackground">@drawable/bg</item>
     </style>
 
 </resources>

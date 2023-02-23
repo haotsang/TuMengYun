@@ -4,7 +4,8 @@
     android:layout_height="match_parent"
     android:gravity="center|top"
     android:orientation="vertical"
-    android:paddingTop="24dp">
+    android:paddingTop="24dp"
+    android:paddingHorizontal="24dp">
 
     <TextView
         android:id="@+id/tv_phone_number"
@@ -12,14 +13,16 @@
         android:layout_height="wrap_content"
         android:layout_marginVertical="16dp"
         android:text="未知号码"
-        android:textColor="@android:color/black"
-        android:textSize="16sp" />
+        android:textColor="@android:color/white"
+        android:textSize="18sp" />
 
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_auto_login"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="本机号码一键登录" />
+        android:text="本机号码一键登录"
+        android:textColor="@color/white"
+        android:background="@drawable/selector_login_btn"/>
 
 </LinearLayout>
