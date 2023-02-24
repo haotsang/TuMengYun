@@ -6,10 +6,13 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.myapplication.R
+import com.example.myapplication.bean.ResponseBase
+import com.example.myapplication.bean.UserBean
 import com.example.myapplication.databinding.ActivityRegisterBinding
 import com.example.myapplication.utils.http.LoginUtils
 import com.example.myapplication.utils.Prefs
 import com.example.myapplication.utils.Utils
+import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -51,36 +54,31 @@ class RegisterActivity : AppCompatActivity() {
 
     private fun register(username: String, password: String, phone: String) {
         lifecycleScope.launch(Dispatchers.IO) {
-            val json = try {
+            val responseBase: ResponseBase? = try {
                 LoginUtils.register(username, password, phone)
             } catch (e: Exception) {
                 null
             }
 
             withContext(Dispatchers.Main) {
-                if (json != null) {
-                    val msg = json.optString("msg")
-
-                    when (msg) {
-                        "注册成功" -> {
-                            Prefs.isLogin = true
-                            Prefs.isAdmin = json.optInt("role") == 2
-                            Prefs.userAccount = username
-                            Prefs.userPassword = password
-//                            Prefs.isSaveStatus = binding.saveStatus.isChecked
+                if (responseBase != null) {
+                    when (responseBase.code) {
+                        200 -> {
+                            Prefs.isSaveStatus = true
+                            Prefs.userInfo = responseBase.data!!.toString()
+                            Prefs.isLoginFromPhone = false
 
                             Toast.makeText(this@RegisterActivity, "注册成功，已登录！", Toast.LENGTH_LONG).show()
                             finish()
                         }
                         else -> {
-                            Prefs.isLogin = false
-                            Prefs.isAdmin = false
                             Prefs.isSaveStatus = false
-                            Toast.makeText(this@RegisterActivity, msg, Toast.LENGTH_LONG).show()
+                            Prefs.userInfo = ""
+                            Toast.makeText(this@RegisterActivity, responseBase.message, Toast.LENGTH_LONG).show()
                         }
                     }
                 } else {
-                    Toast.makeText(this@RegisterActivity, "register:-1", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@RegisterActivity, "register responseBase is null", Toast.LENGTH_LONG).show()
                 }
             }
         }

@@ -1,263 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFF0F0">
+    android:background="#eee"
+    android:orientation="vertical"
+    android:fitsSystemWindows="true">
 
-
-    <LinearLayout
-        android:id="@+id/button12"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:orientation="horizontal"
-        android:gravity="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:orientation="horizontal">
 
-        <View
-            android:layout_width="56dp"
-            android:layout_height="3dp"
-            android:background="@android:color/holo_blue_bright"/>
+        <ImageView
+            android:id="@+id/settings_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            style="@style/Widget.AppCompat.Toolbar.Button.Navigation"
+            android:src="@drawable/baseline_arrow_back_24" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:text="智慧管理"
-            android:layout_marginHorizontal="4dp"
-            style="@style/TextAppearance.AppCompat.Title"/>
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
-        <View
-            android:layout_width="56dp"
-            android:layout_height="3dp"
-            android:background="@android:color/holo_blue_bright"/>
-    </LinearLayout>
+    </FrameLayout>
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/button13"
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button12">
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:minHeight="180dp"
+        android:orientation="horizontal"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="1dp"
+        app:cardUseCompatPadding="true"
+        app:contentPadding="0dp"
+        app:strokeColor="#37000000"
+        app:strokeWidth="0dp">
 
-        <LinearLayout
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/settings_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <RelativeLayout
-                android:id="@+id/settings_tumeng_lable"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:paddingHorizontal="16dp"
-                android:background="?selectableItemBackground">
-
-                <TextView
-                    style="@style/TextAppearance.AppCompat.Medium"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentStart="true"
-                    android:gravity="center_vertical"
-                    android:text="突梦标签"
-                    android:textColor="@android:color/black" />
-                <TextView
-                    android:id="@+id/settings_tumeng_lable_status"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentEnd="true"
-                    android:gravity="center_vertical"
-                    style="@style/TextAppearance.AppCompat.Medium"
-                    android:text="未设置"/>
-
-            </RelativeLayout>
-            <RelativeLayout
-                android:id="@+id/settings_items_admin"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:paddingHorizontal="16dp"
-                android:background="?selectableItemBackground">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentStart="true"
-                    android:gravity="center_vertical"
-                    style="@style/TextAppearance.AppCompat.Medium"
-                    android:textColor="@android:color/black"
-                    android:text="主题设置"/>
-                <TextView
-                    android:id="@+id/settings_item_admin_status"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentEnd="true"
-                    android:gravity="center_vertical"
-                    style="@style/TextAppearance.AppCompat.Medium"
-                    android:text="梦暴科技馆"/>
-
-            </RelativeLayout>
-            <RelativeLayout
-                android:id="@+id/settings_item_after_service"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:paddingHorizontal="16dp"
-                android:background="?selectableItemBackground">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:layout_alignParentStart="true"
-                    style="@style/TextAppearance.AppCompat.Medium"
-                    android:textColor="@android:color/black"
-                    android:text="售后服务"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentEnd="true"
-                    android:gravity="center_vertical"
-                    style="@style/TextAppearance.AppCompat.Medium"
-                    android:text="无数据设置"/>
-
-            </RelativeLayout>
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:paddingHorizontal="16dp"
-                android:background="?selectableItemBackground">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:layout_alignParentStart="true"
-                    style="@style/TextAppearance.AppCompat.Medium"
-                    android:textColor="@android:color/black"
-                    android:text="场馆监控"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentEnd="true"
-                    android:gravity="center_vertical"
-                    style="@style/TextAppearance.AppCompat.Medium"
-                    android:text="无设备添加"/>
-
-            </RelativeLayout>
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:paddingHorizontal="16dp"
-                android:background="?selectableItemBackground">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:layout_alignParentStart="true"
-                    style="@style/TextAppearance.AppCompat.Medium"
-                    android:textColor="@android:color/black"
-                    android:text="数据检测"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentEnd="true"
-                    android:gravity="center_vertical"
-                    style="@style/TextAppearance.AppCompat.Medium"
-                    android:text="有数据"/>
-
-            </RelativeLayout>
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:paddingHorizontal="16dp"
-                android:background="?selectableItemBackground">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:gravity="center_vertical"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentStart="true"
-                    style="@style/TextAppearance.AppCompat.Medium"
-                    android:textColor="@android:color/black"
-                    android:text="报损"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentEnd="true"
-                    android:gravity="center_vertical"
-                    style="@style/TextAppearance.AppCompat.Medium"
-                    android:text="无数据"/>
-
-            </RelativeLayout>
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:paddingHorizontal="16dp"
-                android:background="?selectableItemBackground">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:gravity="center_vertical"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentStart="true"
-                    style="@style/TextAppearance.AppCompat.Medium"
-                    android:textColor="@android:color/black"
-                    android:text="场馆设置"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentEnd="true"
-                    android:gravity="center_vertical"
-                    style="@style/TextAppearance.AppCompat.Medium"
-                    android:text="已设置"/>
-
-            </RelativeLayout>
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:paddingHorizontal="16dp"
-                android:background="?selectableItemBackground">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:gravity="center_vertical"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentStart="true"
-                    style="@style/TextAppearance.AppCompat.Medium"
-                    android:textColor="@android:color/black"
-                    android:text="供应商信息"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentEnd="true"
-                    android:gravity="center_vertical"
-                    style="@style/TextAppearance.AppCompat.Medium"
-                    android:text="已设置"/>
-
-            </RelativeLayout>
-            <RelativeLayout
-                android:id="@+id/settings_item_staff"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:paddingHorizontal="16dp"
-                android:background="?selectableItemBackground">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:gravity="center_vertical"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentStart="true"
-                    style="@style/TextAppearance.AppCompat.Medium"
-                    android:textColor="@android:color/black"
-                    android:text="工作人员"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentEnd="true"
-                    android:gravity="center_vertical"
-                    style="@style/TextAppearance.AppCompat.Medium"
-                    android:text="已设置"/>
-
-            </RelativeLayout>
-
-        </LinearLayout>
-
-    </androidx.core.widget.NestedScrollView>
+            android:overScrollMode="never" />
+    </com.google.android.material.card.MaterialCardView>
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

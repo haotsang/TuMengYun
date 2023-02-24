@@ -93,6 +93,12 @@ object ViewUtils {
         window.navigationBarColor = navigationBarColor
     }
 
+    fun setBarsFontLightColor(activity: Activity, flag: Boolean) {
+        val decorView = activity.window.decorView
+        WindowInsetsControllerCompat(activity.window, decorView).isAppearanceLightStatusBars = flag
+        WindowInsetsControllerCompat(activity.window, decorView).isAppearanceLightNavigationBars = flag
+    }
+
     fun dp2px(dp: Float): Int {
         val metrics = Resources.getSystem().displayMetrics
         return (dp * metrics.density + 0.5f).toInt()

@@ -6,7 +6,7 @@ import org.json.JSONObject
 
 object LabelUtils {
 
-    const val BASE_URL = "http://192.168.1.17:8080/label"
+    const val BASE_URL = "http://192.168.3.4:8080/label"
 
    /*
         @params visible 0 全部显示  1 只显示提交的

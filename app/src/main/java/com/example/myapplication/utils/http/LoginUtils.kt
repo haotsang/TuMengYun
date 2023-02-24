@@ -1,245 +1,135 @@
 package com.example.myapplication.utils.http
 
+import com.example.myapplication.bean.ResponseBase
 import com.example.myapplication.bean.UserBean
+import com.example.myapplication.utils.RetrofitUtils
+import com.example.myapplication.utils.http.api.LoginApi
 import okhttp3.*
-import org.json.JSONArray
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
-import java.io.IOException
 
 object LoginUtils {
-
-    const val BASE_URL = "http://192.168.1.17:8080/user"
 
     @Throws(Exception::class)
     fun getAllUsers(): List<UserBean> {
         val list = mutableListOf<UserBean>()
 
-        val client = OkHttpClient()
-
-        val request: Request = Request.Builder()
-            .url(BASE_URL + "/list")
-            .get()
-            .build()
-        val response: Response = client.newCall(request).execute()
-        val responseData = response.body?.string()
-
-        responseData ?: return list
-
-//        val users: List<User> = JSONArray.parseArray(responseData, User::class.java)
-
-        val jsonArray = JSONArray(responseData)
-        for (len in 0 until jsonArray.length()) {
-            val obj: JSONObject = jsonArray.getJSONObject(len)
-
-            val userBean = UserBean().apply {
-                this.nickname = obj.optString("nickname")
-                this.account = obj.optString("account")
-                this.password = obj.optString("password")
-                this.phone = obj.optString("phone")
-                this.role = obj.optInt("role")
-                this.isAdmin = obj.optInt("isAdmin")
-                this.belong = obj.optString("belong")
-            }
-
-            list.add(userBean)
+        val retrofit = RetrofitUtils.getInstance().retrofit
+        val call = retrofit.create(LoginApi::class.java).list()
+        val response = call.execute()
+        val result = response.body()
+        if (result != null) {
+            return result
         }
 
         return list
     }
 
     @Throws(Exception::class)
-    fun register(username: String, password: String, phone: String): JSONObject? {
-        val json = JSONObject()
-        json.put("account", username)
-        json.put("password", password)
-        json.put("phone", phone)
+    fun register(account: String, password: String, phone: String): ResponseBase? {
+        val json = JSONObject().apply {
+            put("account", account)
+            put("password", password)
+            put("phone", phone)
+        }.toString()
 
-//        val JSON: MediaType = "application/json; charset=utf-8".toMediaTypeOrNull() ?: MultipartBody.FORM
-        val body: RequestBody = MultipartBody.Builder()
-            .setType(MultipartBody.FORM)
-            .addFormDataPart("jsonString", json.toString())
-            .build()
-        val client = OkHttpClient()
-        val request: Request = Request.Builder()
-            .url(BASE_URL + "/register")
-            .post(body)
-            .build()
-        try {
-            val response: Response = client.newCall(request).execute()
-            val responseData = response.body?.string()
-            responseData ?: return null
-
-            return JSONObject(responseData)
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-        return null
-    }
-
-    @Throws(Exception::class)
-    fun login(username: String, password: String): JSONObject? {
-        val client = OkHttpClient()
-        val requestBody: RequestBody = MultipartBody.Builder()
-            .setType(MultipartBody.FORM)
-            .addFormDataPart("account", username)
-            .addFormDataPart("password", password)
-            .build()
-        val request: Request = Request.Builder()
-            .url(BASE_URL + "/login")
-            .post(requestBody)
-            .build()
-        try {
-            val response: Response = client.newCall(request).execute()
-            val responseData = response.body?.string()
-            responseData ?: return null
-
-            return JSONObject(responseData)
-        } catch (e: IOException) {
-            e.printStackTrace()
+        val retrofit = RetrofitUtils.getInstance().retrofit
+        val call = retrofit.create(LoginApi::class.java).register(
+            json.toRequestBody(),
+        )
+        val response = call.execute()
+        val result = response.body()
+        if (result != null) {
+            return result
         }
 
         return null
     }
 
     @Throws(Exception::class)
-    fun loginWithPhone(phone: String): Boolean {
-        val client = OkHttpClient()
-        val requestBody: RequestBody = MultipartBody.Builder()
-            .setType(MultipartBody.FORM)
-            .addFormDataPart("phone", phone)
-            .build()
-        val request: Request = Request.Builder()
-            .url(BASE_URL + "/auto_login")
-            .post(requestBody)
-            .build()
-        try {
-            val response: Response = client.newCall(request).execute()
-            val responseData = response.body?.string()
-            responseData ?: return false
-
-            return responseData.toBoolean()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-
-        return false
-    }
-
-
-    @Throws(Exception::class)
-    fun getUser(username: String, password: String): UserBean? {
-        val client = OkHttpClient()
-        val requestBody: RequestBody = MultipartBody.Builder()
-            .setType(MultipartBody.FORM)
-            .addFormDataPart("account", username)
-            .addFormDataPart("password", password)
-            .build()
-        val request: Request = Request.Builder()
-            .url(BASE_URL + "/getUser")
-            .post(requestBody)
-            .build()
-        try {
-            val response: Response = client.newCall(request).execute()
-            val responseData = response.body?.string()
-            responseData ?: return null
-
-            val json = JSONObject(responseData)
-            val userBean = UserBean().apply {
-                this.nickname = json.optString("nickname")
-                this.account = json.optString("account")
-                this.password = json.optString("password")
-                this.phone = json.optString("phone")
-                this.role = json.optInt("role")
-                this.isAdmin = json.optInt("isAdmin")
-                this.belong = json.optString("belong")
-            }
-            return userBean
-//            val bean = JSON.parse(responseData) as UserBean
-//            return bean
-        } catch (e: IOException) {
-            e.printStackTrace()
+    fun login(account: String, password: String): ResponseBase? {
+        val retrofit = RetrofitUtils.getInstance().retrofit
+        val call = retrofit.create(LoginApi::class.java)
+            .login(account.toRequestBody(), password.toRequestBody())
+        val response = call.execute()
+        val result = response.body()
+        if (result != null) {
+            return result
         }
 
         return null
     }
 
     @Throws(Exception::class)
-    fun logout(username: String, password: String): Boolean {
-        val client = OkHttpClient()
-        val requestBody: RequestBody = MultipartBody.Builder()
-            .setType(MultipartBody.FORM)
-            .addFormDataPart("account", username)
-            .addFormDataPart("password", password)
-            .build()
-        val request: Request = Request.Builder()
-            .url(BASE_URL + "/logout")
-            .post(requestBody)
-            .build()
-        try {
-            val response: Response = client.newCall(request).execute()
-            val responseData = response.body?.string()
-            responseData ?: return false
-
-            return responseData.toBoolean()
-        } catch (e: IOException) {
-            e.printStackTrace()
+    fun loginWithPhone(phone: String): ResponseBase? {
+        val retrofit = RetrofitUtils.getInstance().retrofit
+        val call = retrofit.create(LoginApi::class.java)
+            .loginWithPhone(phone.toRequestBody())
+        val response = call.execute()
+        val result = response.body()
+        if (result != null) {
+            return result
         }
 
-        return false
+        return null
     }
 
 
+    @Throws(Exception::class)
+    fun getUser(account: String, password: String): UserBean? {
+        val retrofit = RetrofitUtils.getInstance().retrofit
+        val call = retrofit.create(LoginApi::class.java)
+            .getUser(account.toRequestBody(), password.toRequestBody())
+        val response = call.execute()
+        val result = response.body()
+        if (result != null) {
+            return result
+        }
+
+        return null
+    }
+
 
     @Throws(Exception::class)
-    fun applyManager(username: String, password: String, admin: String): Boolean {
-        val client = OkHttpClient()
-        val requestBody: RequestBody = MultipartBody.Builder()
-            .setType(MultipartBody.FORM)
-            .addFormDataPart("account", username)
-            .addFormDataPart("password", password)
-            .addFormDataPart("admin", admin)
-            .build()
-        val request: Request = Request.Builder()
-            .url(BASE_URL + "/admin")
-            .post(requestBody)
-            .build()
-        try {
-            val response: Response = client.newCall(request).execute()
-            val responseData = response.body?.string()
-            responseData ?: return false
-
-            return responseData.toBoolean()
-        } catch (e: IOException) {
-            e.printStackTrace()
+    fun logout(account: String, password: String): Boolean {
+        val retrofit = RetrofitUtils.getInstance().retrofit
+        val call = retrofit.create(LoginApi::class.java)
+            .logout(account.toRequestBody(), password.toRequestBody())
+        val response = call.execute()
+        val result = response.body()
+        if (result != null) {
+            return result
         }
 
         return false
     }
 
     @Throws(Exception::class)
-    fun modifyRole(username: String, role: String): Boolean {
-        val client = OkHttpClient()
-        val requestBody: RequestBody = MultipartBody.Builder()
-            .setType(MultipartBody.FORM)
-            .addFormDataPart("account", username)
-            .addFormDataPart("role", role)
-            .build()
-        val request: Request = Request.Builder()
-            .url(BASE_URL + "/modifyRole")
-            .post(requestBody)
-            .build()
-        try {
-            val response: Response = client.newCall(request).execute()
-            val responseData = response.body?.string()
-            responseData ?: return false
-
-            return responseData.toBoolean()
-        } catch (e: IOException) {
-            e.printStackTrace()
+    fun applyAdmin(account: String, password: String, admin: String): Boolean {
+        val retrofit = RetrofitUtils.getInstance().retrofit
+        val call = retrofit.create(LoginApi::class.java)
+            .applyAdmin(account.toRequestBody(), password.toRequestBody(), admin.toRequestBody())
+        val response = call.execute()
+        val result = response.body()
+        if (result != null) {
+            return result
         }
 
         return false
     }
 
+    @Throws(Exception::class)
+    fun modifyRole(account: String, role: String): Boolean {
+        val retrofit = RetrofitUtils.getInstance().retrofit
+        val call = retrofit.create(LoginApi::class.java)
+            .modifyRole(account.toRequestBody(), role.toRequestBody())
+        val response = call.execute()
+        val result = response.body()
+        if (result != null) {
+            return result
+        }
+
+        return false
+    }
 
 }

@@ -20,12 +20,14 @@ import com.example.myapplication.R
 import com.example.myapplication.adapter.BannerImageAdapter2
 import com.example.myapplication.bean.BannerItem
 import com.example.myapplication.bean.NavItem
+import com.example.myapplication.bean.UserBean
 import com.example.myapplication.databinding.ActivityMainBinding
 import com.example.myapplication.utils.http.LabelImgUtils
 import com.example.myapplication.utils.http.LabelUtils
 import com.example.myapplication.utils.Prefs
 import com.example.myapplication.utils.Utils
 import com.example.myapplication.utils.extensions.toColor
+import com.google.gson.Gson
 import com.youth.banner.indicator.CircleIndicator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -55,6 +57,9 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(LayoutInflater.from(this))
         setContentView(binding.root)
 
+        binding.content.contentTitle.setOnClickListener {
+            startActivity(Intent(this, AdminActivity::class.java))
+        }
         binding.content.contentMenu.setOnClickListener {
             binding.drawerlayout.openDrawer(GravityCompat.END)
         }
@@ -191,11 +196,18 @@ class MainActivity : AppCompatActivity() {
 
     }
     private fun startManagerPage() {
-        if (!Prefs.isLogin) {
+        val user: UserBean? = try {
+            Gson().fromJson(Prefs.userInfo, UserBean::class.java)
+        } catch (e: Exception) {
+            null
+        }
+
+        if (user == null) {
             Toast.makeText(this, "请先登录", Toast.LENGTH_SHORT).show()
             return
         }
-        if (Prefs.isAdmin) {
+
+        if (user.role == 2) {
             startActivity(Intent(this, ManagerActivity::class.java))
         } else {
             Toast.makeText(this, "请先申请成为管理员", Toast.LENGTH_SHORT).show()
@@ -249,10 +261,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         if (!Prefs.isSaveStatus) {
-            Prefs.isLogin = false
-            Prefs.isAdmin = false
-            Prefs.userAccount = ""
-            Prefs.userPassword = ""
+            Prefs.userInfo = ""
         }
         super.onDestroy()
     }

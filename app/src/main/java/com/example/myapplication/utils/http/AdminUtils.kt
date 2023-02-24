@@ -1,50 +1,23 @@
 package com.example.myapplication.utils.http
 
 import com.example.myapplication.bean.AdminBean
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.Response
-import org.json.JSONArray
-import org.json.JSONObject
+import com.example.myapplication.utils.RetrofitUtils
+import com.example.myapplication.utils.http.api.AdminApi
 
 object AdminUtils {
-
-    const val BASE_URL = "http://192.168.1.17:8080/admin"
 
     @Throws(Exception::class)
     fun getAll(): List<AdminBean> {
         val list = mutableListOf<AdminBean>()
 
-        val client = OkHttpClient()
+        val retrofit = RetrofitUtils.getInstance().retrofit
+        val call = retrofit.create(AdminApi::class.java).getAll()
+        val response = call.execute()
+        val result = response.body()
 
-        val request: Request = Request.Builder()
-            .url(BASE_URL + "/list")
-            .get()
-            .build()
-        val response: Response = client.newCall(request).execute()
-        val responseData = response.body?.string()
-
-        responseData ?: return list
-println("@@@@@"+responseData)
-
-        val jsonArray = JSONArray(responseData)
-        for (len in 0 until jsonArray.length()) {
-            val obj: JSONObject = jsonArray.getJSONObject(len)
-
-            val userBean = AdminBean().apply {
-                this.id = obj.optInt("id")
-                this.name = obj.optString("name")
-                this.account = obj.optString("account")
-                this.password = obj.optString("password")
-                this.contactName = obj.optString("contactName")
-                this.contractPhone = obj.optString("contractPhone")
-                this.address = obj.optString("address")
-                this.enable = obj.optInt("enable")
-            }
-
-            list.add(userBean)
+        if (result != null) {
+            return result
         }
-
         return list
     }
 

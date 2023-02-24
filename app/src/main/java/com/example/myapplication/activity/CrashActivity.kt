@@ -5,6 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.example.myapplication.R
+import com.example.myapplication.utils.ViewUtils
 
 class CrashActivity : AppCompatActivity() {
 
@@ -31,11 +33,11 @@ class CrashActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        ViewUtils.setFullscreenCompat(this, true)
+        setContentView(R.layout.activity_crash)
+        val tv = findViewById<TextView>(R.id.message)
 
         val throwable: Throwable = (intent.getSerializableExtra(INTENT_KEY_IN_THROWABLE) as? Throwable) ?: return
-
-        setContentView(TextView(this).apply {
-            text = throwable.stackTraceToString()
-        })
+        tv.text = throwable.stackTraceToString()
     }
 }

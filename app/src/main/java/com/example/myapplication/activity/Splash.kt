@@ -15,8 +15,8 @@ class Splash : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.splash)
         ViewUtils.setFullscreenCompat(this, true)
+        setContentView(R.layout.splash)
 
         Handler(Looper.getMainLooper()).postDelayed({
             val mainIntent = Intent(

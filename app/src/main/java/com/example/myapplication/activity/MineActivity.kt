@@ -9,6 +9,7 @@ import com.example.myapplication.bean.UserBean
 import com.example.myapplication.databinding.ActivityMineBinding
 import com.example.myapplication.utils.http.LoginUtils
 import com.example.myapplication.utils.Prefs
+import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -22,37 +23,31 @@ class MineActivity : AppCompatActivity() {
         binding = ActivityMineBinding.inflate(LayoutInflater.from(this))
         setContentView(binding.root)
 
-        if (Prefs.isLogin && Prefs.userAccount.isNotEmpty() && Prefs.userPassword.isNotEmpty()) {
-            lifecycleScope.launch(Dispatchers.IO) {
-                val status: UserBean? = try {
-                    LoginUtils.getUser(Prefs.userAccount, Prefs.userPassword)
-                } catch (e: Exception) {
-                    e.stackTraceToString()
-                    null
-                }
-                withContext(Dispatchers.Main) {
-                    if (status != null) {
-                        val role = when (status.role) {
-                            0 -> "普通用户"
-                            1 -> "工作人员"
-                            2 -> "管理员"
-                            else -> null
-                        }
-                        binding.textView7.text = "已登录：" + "\n" +
-                                "名称：" + status.nickname + "\n" +
-                                "账号：" + status.account + "\n" +
-                                "角色：" + role +"\n" +
-                                "是否在申请管理员：" + if (status.isAdmin==0)"否" else "是"
-                    }
-                }
-            }
+        val user: UserBean? = try {
+            Gson().fromJson(Prefs.userInfo, UserBean::class.java)
+        } catch (e: Exception) {
+            null
+        }
 
+        if (user == null) {
+            binding.textView7.text = "请先登录"
+            return
+        } else {
+            val role = when (user.role) {
+                0 -> "普通用户"
+                1 -> "工作人员"
+                2 -> "管理员"
+                else -> null
+            }
+            binding.textView7.text = "已登录：" + "\n" +
+                    "名称：" + user.nickname + "\n" +
+                    "账号：" + user.account + "\n" +
+                    "角色：" + role + "\n" +
+                    "是否在申请管理员：" + if (user.isAdmin == 0) "否" else "是"
         }
 
         binding.logout.setOnClickListener {
-            Prefs.isLogin = false
-            Prefs.userAccount = ""
-            Prefs.userPassword = ""
+            Prefs.userInfo = ""
             Prefs.isSaveStatus = false
 
             finish()
@@ -61,16 +56,14 @@ class MineActivity : AppCompatActivity() {
         binding.button14.setOnClickListener {
             lifecycleScope.launch(Dispatchers.IO) {
                 val b: Boolean = try {
-                    LoginUtils.logout(Prefs.userAccount, Prefs.userPassword)
+                    LoginUtils.logout(user.account!!, user.password!!)
                 } catch (e: Exception) {
                     e.stackTraceToString()
                     false
                 }
                 withContext(Dispatchers.Main) {
                     if (b) {
-                        Prefs.isLogin = false
-                        Prefs.userAccount = ""
-                        Prefs.userPassword = ""
+                        Prefs.userInfo = ""
                         Prefs.isSaveStatus = false
 
                         Toast.makeText(this@MineActivity, "注销成功", Toast.LENGTH_SHORT).show()

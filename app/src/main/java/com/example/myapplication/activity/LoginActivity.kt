@@ -14,11 +14,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.myapplication.adapter.MyPagerAdapter
+import com.example.myapplication.bean.ResponseBase
+import com.example.myapplication.bean.UserBean
 import com.example.myapplication.databinding.*
 import com.example.myapplication.utils.http.LoginUtils
 import com.example.myapplication.utils.PhoneUtils
 import com.example.myapplication.utils.Prefs
 import com.example.myapplication.utils.Utils
+import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -117,33 +120,28 @@ class LoginActivity : AppCompatActivity() {
 
     private fun login(username: String, password: String, saveState: Boolean) {
         lifecycleScope.launch(Dispatchers.IO) {
-            val json = try {
+            val responseBase: ResponseBase? = try {
                 LoginUtils.login(username, password)
             } catch (e: Exception) {
                 null
             }
 
-            println("______________________________________________${json.toString()}")
             withContext(Dispatchers.Main) {
-                if (json != null) {
-                    val msg = json.optString("msg")
-                    if (msg == "登录成功") {
-                        Prefs.isLogin = true
-                        Prefs.isAdmin = json.optInt("role") == 2
-                        Prefs.userAccount = username
-                        Prefs.userPassword = password
+                if (responseBase != null) {
+                    if (responseBase.code == 200) {
                         Prefs.isSaveStatus = saveState
+                        Prefs.userInfo = responseBase.data!!.toString()
+                        Prefs.isLoginFromPhone = false
 
                         Toast.makeText(this@LoginActivity, "登录成功！", Toast.LENGTH_LONG).show()
                         finish()
                     } else {
-                        Prefs.isLogin = false
-                        Prefs.isAdmin = false
                         Prefs.isSaveStatus = false
-                        Toast.makeText(this@LoginActivity, msg, Toast.LENGTH_LONG).show()
+                        Prefs.userInfo = ""
+                        Toast.makeText(this@LoginActivity, responseBase.message, Toast.LENGTH_LONG).show()
                     }
                 } else {
-                    Toast.makeText(this@LoginActivity, "login:-1", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@LoginActivity, "login responseBase is null", Toast.LENGTH_LONG).show()
                 }
 
             }
@@ -153,17 +151,23 @@ class LoginActivity : AppCompatActivity() {
     }
     private fun loginWithPhone(phone: String, saveState: Boolean) {
         lifecycleScope.launch(Dispatchers.IO) {
-            val flag = try {
+            val responseBase: ResponseBase? = try {
                 LoginUtils.loginWithPhone(phone)
             } catch (e: Exception) {
-                false
+                null
             }
             withContext(Dispatchers.Main) {
-                if (flag) {
+                if (responseBase != null && responseBase.code == 200) {
+                    Prefs.isSaveStatus = saveState
+                    Prefs.userInfo = responseBase.data!!.toString()
+                    Prefs.isLoginFromPhone = true
+
                     Toast.makeText(this@LoginActivity, "登录成功！", Toast.LENGTH_LONG).show()
                     finish()
                 } else {
-                    Toast.makeText(this@LoginActivity, "自动登录失败", Toast.LENGTH_LONG).show()
+                    Prefs.isSaveStatus = false
+                    Prefs.userInfo = ""
+                    Toast.makeText(this@LoginActivity, "自动登录失败，${responseBase?.message}", Toast.LENGTH_LONG).show()
                 }
             }
         }

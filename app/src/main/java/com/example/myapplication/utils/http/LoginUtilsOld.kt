@@ -8,7 +8,7 @@ import java.io.IOException
 
 object LoginUtilsOld {
 
-    const val BASE_URL = "http://192.168.1.17:8083/"
+    const val BASE_URL = "http://192.168.3.4:8080/"
 
     fun getAllUsers(): List<String> {
         val list = mutableListOf<String>()

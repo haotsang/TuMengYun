@@ -9,7 +9,7 @@ import org.json.JSONObject
 
 object LabelImgUtils {
 
-    const val BASE_URL = "http://192.168.1.17:8080/label_img"
+    const val BASE_URL = "http://192.168.3.4:8080/label_img"
 
 
     @Throws(Exception::class)

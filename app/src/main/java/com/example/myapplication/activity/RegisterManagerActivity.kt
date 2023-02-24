@@ -5,9 +5,11 @@ import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.example.myapplication.bean.UserBean
 import com.example.myapplication.databinding.ActivityRegisterManagerBinding
 import com.example.myapplication.utils.http.LoginUtils
 import com.example.myapplication.utils.Prefs
+import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -23,19 +25,26 @@ class RegisterManagerActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.button10.setOnClickListener {
+            val user: UserBean? = try {
+                Gson().fromJson(Prefs.userInfo, UserBean::class.java)
+            } catch (e: Exception) {
+                null
+            }
+            if (user != null) {
+                lifecycleScope.launch(Dispatchers.IO) {
+                    val flag = LoginUtils.applyAdmin(user.account!!, user.password!!, "1")
 
-            lifecycleScope.launch(Dispatchers.IO) {
-                val flag = LoginUtils.applyManager(Prefs.userAccount, Prefs.userPassword, "1")
-
-                withContext(Dispatchers.Main) {
-                    if (flag) {
-                        Toast.makeText(this@RegisterManagerActivity, "已提交申请，请等待后台确认...",Toast.LENGTH_LONG).show()
-                        finish()
-                    } else {
-                        Toast.makeText(this@RegisterManagerActivity, "失败",Toast.LENGTH_LONG).show()
+                    withContext(Dispatchers.Main) {
+                        if (flag) {
+                            Toast.makeText(this@RegisterManagerActivity, "已提交申请，请等待后台确认...",Toast.LENGTH_LONG).show()
+                            finish()
+                        } else {
+                            Toast.makeText(this@RegisterManagerActivity, "失败",Toast.LENGTH_LONG).show()
+                        }
                     }
                 }
             }
+
         }
 
     }

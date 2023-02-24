@@ -30,19 +30,13 @@ object Prefs {
     var isSaveStatus: Boolean
         get() = manager.getBoolean("sp_isSaveStatus", false)
         set(value) = put("sp_isSaveStatus", value)
-    var isLogin: Boolean
-        get() = manager.getBoolean("sp_isLogin", false)
-        set(value) = put("sp_isLogin", value)
-    var isAdmin: Boolean
-        get() = manager.getBoolean("sp_isAdmin", false)
-        set(value) = put("sp_isAdmin", value)
+    var isLoginFromPhone: Boolean
+        get() = manager.getBoolean("sp_isLoginFromPhone", false)
+        set(value) = put("sp_isLoginFromPhone", value)
 
-    var userAccount: String
-        get() = manager.getString("sp_user_account", "")!!
-        set(value) = put("sp_user_account", value)
-    var userPassword: String
-        get() = manager.getString("sp_user_password", "")!!
-        set(value) = put("sp_user_password", value)
+    var userInfo: String
+        get() = manager.getString("sp_user_info", "")!!
+        set(value) = put("sp_user_info", value)
 
 
     var labelSettingItemStatus: Boolean
