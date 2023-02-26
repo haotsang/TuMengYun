@@ -5,9 +5,7 @@ import android.app.Application
 import android.os.Bundle
 import androidx.core.view.WindowCompat
 import com.example.myapplication.activity.CrashActivity
-import com.example.myapplication.activity.Splash
 import com.example.myapplication.utils.NeverCrash
-import com.example.myapplication.utils.Prefs
 import com.example.myapplication.utils.ViewUtils
 import kotlin.properties.Delegates
 
@@ -17,8 +15,6 @@ class MyApplication : Application(), Application.ActivityLifecycleCallbacks {
         super.onCreate()
         instance = this
         registerActivityLifecycleCallbacks(this)
-
-        Prefs.curRegionId = "{id: 1, name: '梦暴科技馆'}"
 
         NeverCrash.init { t, e ->
             CrashActivity.start(this, e)

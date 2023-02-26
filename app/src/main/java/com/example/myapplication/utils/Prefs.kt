@@ -23,9 +23,6 @@ object Prefs {
     }
 
 
-    var curRegionId: String
-        get() = manager.getString("sp_curRegionId", "{}")!!
-        set(value) = put("sp_curRegionId", value)
 
     var isSaveStatus: Boolean
         get() = manager.getBoolean("sp_isSaveStatus", false)
@@ -34,16 +31,19 @@ object Prefs {
         get() = manager.getBoolean("sp_isLoginFromPhone", false)
         set(value) = put("sp_isLoginFromPhone", value)
 
+    var adminInfo: String
+        get() = manager.getString("sp_admin_info", "")!!
+        set(value) = put("sp_admin_info", value)
+
     var userInfo: String
         get() = manager.getString("sp_user_info", "")!!
         set(value) = put("sp_user_info", value)
 
 
+
     var labelSettingItemStatus: Boolean
         get() = manager.getBoolean("sp_labelSettingItemStatus", false)
         set(value) = put("sp_labelSettingItemStatus", value)
-
-
     var tuiSong: Boolean
         get() = manager.getBoolean("sp_tuisong", false)
         set(value) = put("sp_tuisong", value)

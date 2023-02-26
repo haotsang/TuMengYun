@@ -28,7 +28,7 @@
         android:inputType="textPersonName"
         android:paddingHorizontal="16dp"
         android:textColor="@color/white"
-        android:textColorHint="@color/ripper"
+        android:textColorHint="@color/bg_color"
         app:drawableStartCompat="@drawable/ic_edit_account" />
 
     <EditText
@@ -43,7 +43,7 @@
         android:inputType="textPassword"
         android:paddingHorizontal="16dp"
         android:textColor="@color/white"
-        android:textColorHint="@color/ripper"
+        android:textColorHint="@color/bg_color"
         app:drawableStartCompat="@drawable/ic_edit_password" />
 
     <EditText
@@ -58,19 +58,17 @@
         android:inputType="number"
         android:paddingHorizontal="16dp"
         android:textColor="@color/white"
-        android:textColorHint="@color/ripper"
+        android:textColorHint="@color/bg_color"
         app:drawableStartCompat="@drawable/ic_edit_phone" />
 
 
-    <androidx.appcompat.widget.AppCompatButton
+    <com.example.myapplication.view.MultiStatusButton
         android:id="@+id/button_register"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="24dp"
         android:layout_marginVertical="6dp"
-        android:background="@drawable/selector_login_btn"
-        android:text="注册"
-        android:textColor="@color/white" />
+        android:text="注册" />
 
 
 </LinearLayout>

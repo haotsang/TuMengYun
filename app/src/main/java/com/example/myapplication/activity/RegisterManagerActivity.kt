@@ -5,9 +5,9 @@ import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.example.myapplication.bean.UserBean
+import com.example.myapplication.entity.UserBean
 import com.example.myapplication.databinding.ActivityRegisterManagerBinding
-import com.example.myapplication.utils.http.LoginUtils
+import com.example.myapplication.http.UserUtils
 import com.example.myapplication.utils.Prefs
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
@@ -24,7 +24,7 @@ class RegisterManagerActivity : AppCompatActivity() {
         binding = ActivityRegisterManagerBinding.inflate(LayoutInflater.from(this))
         setContentView(binding.root)
 
-        binding.button10.setOnClickListener {
+        binding.buttonApply.setOnClickListener {
             val user: UserBean? = try {
                 Gson().fromJson(Prefs.userInfo, UserBean::class.java)
             } catch (e: Exception) {
@@ -32,7 +32,12 @@ class RegisterManagerActivity : AppCompatActivity() {
             }
             if (user != null) {
                 lifecycleScope.launch(Dispatchers.IO) {
-                    val flag = LoginUtils.applyAdmin(user.account!!, user.password!!, "1")
+                    val flag = try {
+                        UserUtils.applyAdmin(user.account!!, user.password!!, "1")
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        false
+                    }
 
                     withContext(Dispatchers.Main) {
                         if (flag) {

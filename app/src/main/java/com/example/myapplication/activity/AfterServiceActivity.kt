@@ -15,7 +15,7 @@ import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.Glide
 import com.example.myapplication.BuildConfig
 import com.example.myapplication.R
-import com.example.myapplication.utils.http.HttpUtils
+import com.example.myapplication.http.HttpUtils
 import com.example.myapplication.utils.Utils
 import java.io.File
 import java.io.FileNotFoundException

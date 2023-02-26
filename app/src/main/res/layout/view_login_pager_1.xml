@@ -17,12 +17,17 @@
         android:textSize="18sp" />
 
 
-    <androidx.appcompat.widget.AppCompatButton
+    <com.example.myapplication.view.MultiStatusButton
         android:id="@+id/btn_auto_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="本机号码一键登录"
-        android:textColor="@color/white"
-        android:background="@drawable/selector_login_btn"/>
+        android:text="本机号码一键登录" />
 
+    <TextView
+        android:id="@+id/tv_tip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="16dp"
+        android:textColor="@android:color/white"
+        android:textSize="12sp" />
 </LinearLayout>

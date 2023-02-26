@@ -9,8 +9,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
-import com.example.myapplication.bean.CangKuItem
-import com.example.myapplication.utils.http.HttpUtils
+import com.example.myapplication.entity.CangKuItem
+import com.example.myapplication.http.HttpUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

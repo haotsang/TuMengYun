@@ -1,18 +1,17 @@
 package com.example.myapplication.activity
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.example.myapplication.R
-import com.example.myapplication.bean.ResponseBase
-import com.example.myapplication.bean.UserBean
+import com.example.myapplication.entity.ResponseBase
 import com.example.myapplication.databinding.ActivityRegisterBinding
-import com.example.myapplication.utils.http.LoginUtils
+import com.example.myapplication.http.UserUtils
 import com.example.myapplication.utils.Prefs
 import com.example.myapplication.utils.Utils
-import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -26,10 +25,30 @@ class RegisterActivity : AppCompatActivity() {
         binding = ActivityRegisterBinding.inflate(LayoutInflater.from(this))
         setContentView(binding.root)
 
+        val listener = object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                val username = binding.editTextTextPersonName.text.trim().toString()
+                val password = binding.editTextTextPassword.text.trim().toString()
+                val phone = binding.editTextTextPhone.text.trim().toString()
+
+                val flag = username.length in 6..18 && password.length in 6..18 && Utils.isMobileNO(phone)
+                binding.buttonRegister.setStatus(flag)
+            }
+        }
+        binding.editTextTextPersonName.addTextChangedListener(listener)
+        binding.editTextTextPassword.addTextChangedListener(listener)
+        binding.editTextTextPhone.addTextChangedListener(listener)
+
+        binding.editTextTextPersonName.setText("")
+        binding.editTextTextPassword.setText("")
+        binding.editTextTextPhone.setText("")
+
         binding.buttonRegister.setOnClickListener {
-            val username = binding.editTextTextPersonName.text.toString()
-            val password = binding.editTextTextPassword.text.toString()
-            val phone = binding.editTextTextPhone.text.toString()
+            val username = binding.editTextTextPersonName.text.trim().toString()
+            val password = binding.editTextTextPassword.text.trim().toString()
+            val phone = binding.editTextTextPhone.text.trim().toString()
 
 
             if (username.length !in 6..18) {
@@ -55,7 +74,7 @@ class RegisterActivity : AppCompatActivity() {
     private fun register(username: String, password: String, phone: String) {
         lifecycleScope.launch(Dispatchers.IO) {
             val responseBase: ResponseBase? = try {
-                LoginUtils.register(username, password, phone)
+                UserUtils.register(username, password, phone)
             } catch (e: Exception) {
                 null
             }

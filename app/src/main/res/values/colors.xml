@@ -9,7 +9,7 @@
     <color name="white">#FFFFFFFF</color>
 
     <color name="icon_color">#707996</color>
-    <color name="bg_dark_color">#eeeeee</color>
+    <color name="bg_color">#eeeeee</color>
     <color name="blue_dark">#2875e5</color>
     <color name="blue_bright">#2a7aff</color>
     <color name="ripper">#37555555</color>

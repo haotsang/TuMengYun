@@ -5,9 +5,9 @@ import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.example.myapplication.bean.UserBean
+import com.example.myapplication.entity.UserBean
 import com.example.myapplication.databinding.ActivityMineBinding
-import com.example.myapplication.utils.http.LoginUtils
+import com.example.myapplication.http.UserUtils
 import com.example.myapplication.utils.Prefs
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
@@ -56,7 +56,7 @@ class MineActivity : AppCompatActivity() {
         binding.button14.setOnClickListener {
             lifecycleScope.launch(Dispatchers.IO) {
                 val b: Boolean = try {
-                    LoginUtils.logout(user.account!!, user.password!!)
+                    UserUtils.logout(user.account!!, user.password!!)
                 } catch (e: Exception) {
                     e.stackTraceToString()
                     false

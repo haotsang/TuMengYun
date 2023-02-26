@@ -40,22 +40,4 @@
         android:text="Title"
         android:textColor="@color/black"
         android:textSize="16sp" />
-
-
-    <View
-        android:id="@+id/top_line"
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:layout_alignParentTop="true"
-        android:background="@color/ripper"
-        android:visibility="gone" />
-
-    <View
-        android:id="@+id/bottom_line"
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:layout_alignParentBottom="true"
-        android:background="@color/ripper"
-        android:visibility="gone" />
-
 </RelativeLayout>

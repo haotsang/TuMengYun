@@ -3,16 +3,38 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="@color/bg_color">
 
-    <androidx.appcompat.widget.Toolbar
+    <FrameLayout
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:title="注册"/>
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/toolbar_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            style="@style/Widget.AppCompat.Toolbar.Button.Navigation"
+            android:src="@drawable/baseline_arrow_back_24" />
+
+        <TextView
+            android:id="@+id/toolbar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+    </FrameLayout>
+
 
     <EditText
         android:id="@+id/editText"
@@ -21,21 +43,24 @@
         android:layout_marginTop="56dp"
         android:paddingHorizontal="12dp"
         android:layout_marginHorizontal="34dp"
-        android:background="@drawable/shape_edittext"
+        android:background="@drawable/shape_issue_edittext"
         android:hint="请输入反馈建议"
-        android:inputType="textPersonName"
+        android:textColorHint="@color/bg_color"
+        android:inputType="text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
-    <Button
+    <com.example.myapplication.view.MultiStatusButton
         android:id="@+id/button11"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="确认提交"
         android:layout_marginHorizontal="24dp"
-        android:layout_marginTop="34dp"
+        android:layout_marginVertical="34dp"
+        android:text="确认提交"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText" />
+        app:layout_constraintTop_toBottomOf="@+id/editText"/>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

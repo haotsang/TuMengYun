@@ -11,6 +11,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.lifecycleScope
@@ -18,15 +19,18 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
 import com.example.myapplication.adapter.BannerImageAdapter2
-import com.example.myapplication.bean.BannerItem
-import com.example.myapplication.bean.NavItem
-import com.example.myapplication.bean.UserBean
+import com.example.myapplication.entity.BannerItem
+import com.example.myapplication.entity.NavItem
+import com.example.myapplication.entity.UserBean
 import com.example.myapplication.databinding.ActivityMainBinding
-import com.example.myapplication.utils.http.LabelImgUtils
-import com.example.myapplication.utils.http.LabelUtils
+import com.example.myapplication.entity.AdminBean
+import com.example.myapplication.http.AdminUtils
+import com.example.myapplication.http.LabelImgUtils
+import com.example.myapplication.http.LabelUtils
 import com.example.myapplication.utils.Prefs
 import com.example.myapplication.utils.Utils
 import com.example.myapplication.utils.extensions.toColor
+import com.example.myapplication.view.CustomDecoration
 import com.google.gson.Gson
 import com.youth.banner.indicator.CircleIndicator
 import kotlinx.coroutines.Dispatchers
@@ -43,13 +47,13 @@ class MainActivity : AppCompatActivity() {
 
 
     private val navList = mutableListOf(
-        NavItem(true, "main_menu_register", "注册账号", R.drawable.ic_nav_register, top = false, bottom = true),
-        NavItem(true, "main_menu_login", "登录", R.drawable.ic_nav_login, top = false, bottom = true),
-        NavItem(true, "main_menu_admin", "智慧管理", R.drawable.ic_nav_admin, top = false, bottom = true),
-        NavItem(true, "main_menu_clean_cache", "清理缓存", R.drawable.ic_nav_clear, top = false, bottom = true),
-        NavItem(true, "main_menu_issue", "意见反馈", R.drawable.ic_nav_issue, top = false, bottom = true),
-        NavItem(true, "main_menu_group", "突梦群", R.drawable.ic_nav_group, top = false, bottom = true),
-        NavItem(true, "main_menu_tuisong", "接受推送", R.drawable.ic_nav_tuisong, top = false, bottom = false),
+        NavItem(true, "main_menu_register", "注册账号", R.drawable.ic_nav_register),
+        NavItem(true, "main_menu_login", "登录", R.drawable.ic_nav_login),
+        NavItem(true, "main_menu_admin", "智慧管理", R.drawable.ic_nav_admin),
+        NavItem(true, "main_menu_clean_cache", "清理缓存", R.drawable.ic_nav_clear),
+        NavItem(true, "main_menu_issue", "意见反馈", R.drawable.ic_nav_issue),
+        NavItem(true, "main_menu_group", "突梦群", R.drawable.ic_nav_group),
+        NavItem(true, "main_menu_tuisong", "接受推送", R.drawable.ic_nav_tuisong),
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -126,29 +130,30 @@ class MainActivity : AppCompatActivity() {
         binding.navRecyclerView.adapter = object : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             override fun onCreateViewHolder(
                 parent: ViewGroup,
-                viewType: Int
+                viewType: Int,
             ): RecyclerView.ViewHolder {
                 val view = LayoutInflater.from(parent.context)
                     .inflate(R.layout.item_nav, parent, false)
                 return object : RecyclerView.ViewHolder(view) {}
             }
+
             override fun getItemCount(): Int = navList.size
             override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
                 val item = navList[holder.adapterPosition]
 
-                val icon = holder.itemView.findViewById<ImageView>(R.id.item_nav_icon)
-                val title = holder.itemView.findViewById<TextView>(R.id.item_nav_title)
-                val arrow = holder.itemView.findViewById<ImageView>(R.id.item_nav_arrow)
+                val icon =
+                    holder.itemView.findViewById<ImageView>(R.id.item_nav_icon)
+                val title =
+                    holder.itemView.findViewById<TextView>(R.id.item_nav_title)
+                val arrow =
+                    holder.itemView.findViewById<ImageView>(R.id.item_nav_arrow)
                 icon.setImageResource(item.icon)
                 title.text = item.title
-                arrow.setImageResource(if (item.id == "main_menu_tuisong")
-                    if (Prefs.tuiSong) R.drawable.ic_switch_on else R.drawable.ic_switch_off
-                else R.drawable.ic_nav_right)
-
-                val topLine = holder.itemView.findViewById<View>(R.id.top_line)
-                val bottomLine = holder.itemView.findViewById<View>(R.id.bottom_line)
-                topLine.visibility = if (item.top) View.VISIBLE else View.GONE
-                bottomLine.visibility = if (item.bottom) View.VISIBLE else View.GONE
+                arrow.setImageResource(
+                    if (item.id == "main_menu_tuisong")
+                        if (Prefs.tuiSong) R.drawable.ic_switch_on else R.drawable.ic_switch_off
+                    else R.drawable.ic_nav_right
+                )
 
                 title.setTextColor(if (item.enable) this@MainActivity.toColor(R.color.black) else Color.GRAY)
                 holder.itemView.isEnabled = item.enable
@@ -174,7 +179,8 @@ class MainActivity : AppCompatActivity() {
 //                        cache.delete
 
                                 withContext(Dispatchers.Main) {
-                                    Toast.makeText(this@MainActivity, "清理完成！", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(this@MainActivity, "清理完成！", Toast.LENGTH_SHORT)
+                                        .show()
                                 }
                             }
                         }
@@ -193,7 +199,12 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-
+        val itemDecoration = CustomDecoration(
+            this, (binding.navRecyclerView.layoutManager as LinearLayoutManager)
+                .orientation, false
+        )
+        itemDecoration.setDrawable(ContextCompat.getDrawable(this, R.color.ripper)!!)
+        binding.navRecyclerView.addItemDecoration(itemDecoration)
     }
     private fun startManagerPage() {
         val user: UserBean? = try {
@@ -202,38 +213,65 @@ class MainActivity : AppCompatActivity() {
             null
         }
 
-        if (user == null) {
-            Toast.makeText(this, "请先登录", Toast.LENGTH_SHORT).show()
-            return
-        }
+//        if (user == null) {
+//            Toast.makeText(this, "请先登录", Toast.LENGTH_SHORT).show()
+//            return
+//        }
 
-        if (user.role == 2) {
+//        if (user.role == 2) {
             startActivity(Intent(this, ManagerActivity::class.java))
-        } else {
-            Toast.makeText(this, "请先申请成为管理员", Toast.LENGTH_SHORT).show()
+//        } else {
+//            Toast.makeText(this, "请先申请成为管理员", Toast.LENGTH_SHORT).show()
             startActivity(Intent(this, RegisterManagerActivity::class.java))
-        }
+//        }
 
     }
 
     override fun onResume() {
         super.onResume()
-        try {
-            binding.content.contentTitle.text = JSONObject(Prefs.curRegionId).optString("name")
+        val user: UserBean? = try {
+            Gson().fromJson(Prefs.userInfo, UserBean::class.java)
         } catch (e: Exception) {
-            e.printStackTrace()
+            null
+        }
+        val curRegionId = if (user?.belong == null) {
+            "-1"  //全系统
+        } else {
+            user.belong.toString()
+        }
+
+        binding.content.contentTitle.text = "<全系统>"
+        lifecycleScope.launch(Dispatchers.IO) {
+            val admin = try {
+                AdminUtils.getAdminById(curRegionId)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                null
+            }
+            withContext(Dispatchers.Main) {
+                if (admin != null) {
+                    binding.content.contentTitle.text = admin.name
+
+                    Prefs.adminInfo = admin.toString()
+                }
+            }
         }
 
         lifecycleScope.launch(Dispatchers.IO) {
             val labelBean = try {
-                LabelUtils.getLabel(JSONObject(Prefs.curRegionId).optString("id"))
+                LabelUtils.getLabel(curRegionId)
             } catch (e: java.lang.Exception) {
                 e.printStackTrace()
                 null
             }
 
             val img = if (labelBean != null && labelBean.visible == 1) {
-                LabelImgUtils.getLabelImgList(JSONObject(Prefs.curRegionId).optString("id"))
+                try {
+                    LabelImgUtils.getLabelImgList(curRegionId)
+                } catch (e: java.lang.Exception) {
+                    e.printStackTrace()
+                    null
+                }
             } else null
 
             withContext(Dispatchers.Main) {
@@ -258,6 +296,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
 
     override fun onDestroy() {
         if (!Prefs.isSaveStatus) {

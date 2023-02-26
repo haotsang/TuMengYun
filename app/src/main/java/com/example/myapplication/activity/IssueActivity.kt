@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.myapplication.R
 import com.example.myapplication.databinding.ActivityIssueBinding
+import com.example.myapplication.utils.ViewUtils
 
 class IssueActivity : AppCompatActivity() {
 
@@ -14,15 +15,13 @@ class IssueActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        ViewUtils.setBarsFontLightColor(this, true)
         binding = ActivityIssueBinding.inflate(LayoutInflater.from(this))
 
         setContentView(binding.root)
 
-        binding.toolbar.title = "意见反馈"
-        binding.toolbar.setNavigationIcon(R.drawable.baseline_arrow_back_24)
-        binding.toolbar.setNavigationOnClickListener {
-            finish()
-        }
+        binding.toolbarTitle.text = "意见反馈"
+        binding.toolbarBack.setOnClickListener { finish() }
 
         binding.button11.setOnClickListener {
             if (binding.editText.text.toString().isNotEmpty()) {

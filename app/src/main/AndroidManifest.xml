@@ -46,10 +46,9 @@
         <activity android:name="com.example.myapplication.activity.CangkuActivity" />
         <activity android:name="com.example.myapplication.activity.ErrorActivity" />
         <activity android:name="com.example.myapplication.activity.ScanActivity" />
-        <activity android:name="com.example.myapplication.activity.MainActivity" />
         <activity android:name="com.example.myapplication.activity.RegisterActivity" />
         <activity android:name="com.example.myapplication.activity.ManagerActivity" />
-        <activity android:name="com.example.myapplication.activity.LableActivity" />
+        <activity android:name="com.example.myapplication.activity.LabelActivity" />
         <activity android:name="com.example.myapplication.activity.GroupActivity" />
         <activity android:name="com.example.myapplication.activity.IssueActivity" />
         <activity android:name="com.example.myapplication.activity.MineActivity" />
@@ -64,6 +63,7 @@
             android:theme="@style/NoTitle"
             android:exported="false"
             android:process=":crash"/>
+        <activity android:name="com.example.myapplication.activity.MainActivity" />
 
 
         <provider

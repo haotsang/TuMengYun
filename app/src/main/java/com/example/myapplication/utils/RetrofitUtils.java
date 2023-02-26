@@ -43,6 +43,9 @@ public class RetrofitUtils {
 //                .sslSocketFactory(TrustAllCerts.createSSLSocketFactory(), new TrustAllCerts()) // 信任所有证书
 //                .hostnameVerifier(new TrustAllHostnameVerifier())
                 .connectTimeout(10, TimeUnit.SECONDS)  // 超时时间
+                .readTimeout(20, TimeUnit.SECONDS)
+                .writeTimeout(20, TimeUnit.SECONDS)
+                .retryOnConnectionFailure(true)
                 .build();
 
 //        OkHttpClient okHttpClient = new OkHttpClient.Builder()

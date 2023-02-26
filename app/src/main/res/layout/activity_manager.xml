@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#eee"
+    android:background="@color/bg_color"
     android:orientation="vertical"
     android:fitsSystemWindows="true">
 
@@ -36,8 +36,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:minHeight="180dp"
-        android:orientation="horizontal"
+        android:minHeight="280dp"
         app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="12dp"
         app:cardElevation="1dp"
