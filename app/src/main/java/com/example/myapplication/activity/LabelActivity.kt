@@ -63,9 +63,10 @@ class LabelActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        ViewUtils.setBarsFontLightColor(this, true)
         binding = ActivityLabelBinding.inflate(LayoutInflater.from(this))
         setContentView(binding.root)
+
+        binding.labelToolbarBack.setOnClickListener { finish() }
 
         val user: UserBean? = try {
             Gson().fromJson(Prefs.userInfo, UserBean::class.java)
@@ -77,11 +78,7 @@ class LabelActivity: AppCompatActivity() {
             Toast.makeText(this, "未登录，请先登录", Toast.LENGTH_SHORT).show()
             return
         }
-        val curRegionId = if (user.belong == null) {
-            "-1"  //全系统
-        } else {
-            user.belong.toString()
-        }
+        val curRegionId = user.belong.toString()
 
         adapter = BannerImageAdapter2(labelImgList, this)
         binding.banner2.setAdapter(adapter)
@@ -188,6 +185,7 @@ class LabelActivity: AppCompatActivity() {
                 e.printStackTrace()
                 null
             }
+
             withContext(Dispatchers.Main) {
                 labelImgList.clear()
                 if (img != null) {
@@ -210,6 +208,12 @@ class LabelActivity: AppCompatActivity() {
                     binding.radioGroup.check(if (labelBean?.type == 1) R.id.radio_button1 else R.id.radio_button2)
 
                     Prefs.labelSettingItemStatus = labelBean?.visible == 1
+                } else {
+                    labelBean = LabelBean().apply {
+                        this.region = curRegionId.toInt()
+                        this.type = 0
+                        this.visible = 0
+                    }
                 }
             }
         }
@@ -219,7 +223,7 @@ class LabelActivity: AppCompatActivity() {
 
     private fun updateToCloud() {
         lifecycleScope.launch(Dispatchers.IO) {
-            val b = if (labelBean != null) {
+            val state = if (labelBean != null) {
                 try {
                     LabelUtils.modify(labelBean!!)
                 } catch (e: java.lang.Exception) {
@@ -228,13 +232,13 @@ class LabelActivity: AppCompatActivity() {
             } else false
 
             withContext(Dispatchers.Main) {
-                if (b) {  //提交成功
+                if (state) {  //提交成功
                     Prefs.labelSettingItemStatus = labelBean?.visible == 1
                     binding.labelStatus.text = if (labelBean?.visible == 1) "标签状态：已上传" else "标签状态：已撤销"
                     binding.labelStatus.setTextColor(if (labelBean?.visible == 1) ContextCompat.getColor(this@LabelActivity, android.R.color.holo_green_dark) else ContextCompat.getColor(this@LabelActivity, android.R.color.holo_red_dark))
                 }
 
-                Toast.makeText(this@LabelActivity, if (b) "修改成功" else "修改失败", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@LabelActivity, if (state) "修改成功" else "修改失败", Toast.LENGTH_SHORT).show()
             }
         }
     }

@@ -31,11 +31,10 @@
             android:textStyle="bold"
             android:textSize="20sp"/>
 
-        <androidx.recyclerview.widget.RecyclerView
+        <com.example.myapplication.view.BaseRecyclerView
             android:id="@+id/nav_recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:overScrollMode="never"/>
+            android:layout_height="match_parent" />
 
     </LinearLayout>
 

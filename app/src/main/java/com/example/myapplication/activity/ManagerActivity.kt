@@ -7,34 +7,29 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
-import com.example.myapplication.entity.SettingsItem
 import com.example.myapplication.databinding.ActivityManagerBinding
 import com.example.myapplication.entity.AdminBean
-import com.example.myapplication.entity.UserBean
+import com.example.myapplication.entity.SettingsItem
 import com.example.myapplication.utils.Prefs
 import com.example.myapplication.utils.ViewUtils
-import com.example.myapplication.view.CustomDecoration
 import com.google.gson.Gson
-import org.json.JSONObject
 
 class ManagerActivity: AppCompatActivity() {
 
     private lateinit var binding: ActivityManagerBinding
 
     private val settingsList = mutableListOf(
-        SettingsItem("settings_label", "突梦标签", "未设置", R.drawable.ic_nav_register),
-        SettingsItem("settings_zhuti", "主题设置", "梦暴科技馆", R.drawable.ic_nav_login),
-        SettingsItem("settings_after_service", "售后服务", "", R.drawable.ic_nav_admin),
-        SettingsItem("settings_1", "场馆监控", "未添加", R.drawable.ic_nav_clear),
-        SettingsItem("settings_2", "数据检测", "", R.drawable.ic_nav_issue),
-        SettingsItem("settings_3", "报损", "", R.drawable.ic_nav_group),
-        SettingsItem("settings_4", "场馆设置", "", R.drawable.ic_nav_tuisong),
-        SettingsItem("settings_5", "供应商信息", "", R.drawable.ic_nav_tuisong),
-        SettingsItem("settings_staff", "工作人员", "", R.drawable.ic_nav_tuisong),
+        SettingsItem("settings_label", "突梦标签", "未设置", R.drawable.ic_admin_label),
+        SettingsItem("settings_zhuti", "主题设置", "梦暴科技馆", R.drawable.ic_admin_style),
+        SettingsItem("settings_after_service", "售后服务", "", R.drawable.ic_admin_service),
+        SettingsItem("settings_1", "场馆监控", "未添加", R.drawable.ic_admin_jiankong),
+        SettingsItem("settings_2", "数据检测", "", R.drawable.ic_admin_monitor),
+        SettingsItem("settings_3", "报损", "", R.drawable.ic_admin_baosun),
+        SettingsItem("settings_4", "场馆设置", "", R.drawable.ic_admin_pos_setting),
+        SettingsItem("settings_5", "供应商信息", "", R.drawable.ic_admin_supply),
+        SettingsItem("settings_staff", "工作人员", "", R.drawable.ic_admin_staff),
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,7 +41,6 @@ class ManagerActivity: AppCompatActivity() {
 
         binding.settingsBack.setOnClickListener { finish() }
 
-        binding.settingsRecyclerView.layoutManager = LinearLayoutManager(this)
         binding.settingsRecyclerView.adapter = object : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             override fun onCreateViewHolder(
                 parent: ViewGroup,
@@ -89,12 +83,6 @@ class ManagerActivity: AppCompatActivity() {
                 }
             }
         }
-        val itemDecoration = CustomDecoration(
-            this, (binding.settingsRecyclerView.layoutManager as LinearLayoutManager)
-                .orientation, false
-        )
-        itemDecoration.setDrawable(ContextCompat.getDrawable(this, R.color.ripper)!!)
-        binding.settingsRecyclerView.addItemDecoration(itemDecoration)
     }
 
     override fun onResume() {

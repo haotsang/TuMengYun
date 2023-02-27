@@ -1,7 +1,7 @@
 package com.example.myapplication.entity
 
 data class AdminBean(
-    var id: Int = 0,
+    var id: Int? = null,
     var name: String? = null,
     var account: String? = null,
     var password: String? = null,

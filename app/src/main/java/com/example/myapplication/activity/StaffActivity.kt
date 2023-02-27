@@ -8,11 +8,10 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
-import com.example.myapplication.entity.UserBean
 import com.example.myapplication.databinding.ActivityBaseListBinding
+import com.example.myapplication.entity.UserBean
 import com.example.myapplication.http.UserUtils
 import com.example.myapplication.utils.ViewUtils
 import com.example.myapplication.utils.extensions.setOnItemClickListener
@@ -37,7 +36,6 @@ class StaffActivity : AppCompatActivity() {
         binding.baseTitle.text = "工作人员"
         binding.baseBack.setOnClickListener { finish() }
 
-        binding.baseRecyclerView.layoutManager = LinearLayoutManager(this)
         binding.baseRecyclerView.adapter = object : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             override fun onCreateViewHolder(
                 parent: ViewGroup,
@@ -60,7 +58,7 @@ class StaffActivity : AppCompatActivity() {
                     2 -> "管理员"
                     else -> null
                 }
-                icon.setImageResource(R.drawable.ic_nav_group)
+                icon.setImageResource(R.drawable.ic_admin_staff)
                 title.text = "${item.nickname}@${role}@${(item.belong ?: "未知社区/科技馆")}"
 
             }

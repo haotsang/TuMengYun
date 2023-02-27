@@ -7,11 +7,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
-import com.example.myapplication.entity.UserBean
 import com.example.myapplication.databinding.ActivityBaseListBinding
+import com.example.myapplication.entity.UserBean
 import com.example.myapplication.http.UserUtils
 import com.example.myapplication.utils.ViewUtils
 import kotlinx.coroutines.Dispatchers
@@ -33,7 +32,6 @@ class GroupActivity : AppCompatActivity() {
         binding.baseTitle.text = "突梦群（0）"
         binding.baseBack.setOnClickListener { finish() }
 
-        binding.baseRecyclerView.layoutManager = LinearLayoutManager(this)
         binding.baseRecyclerView.adapter = object : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             override fun onCreateViewHolder(
                 parent: ViewGroup,

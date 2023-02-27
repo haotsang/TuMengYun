@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             style="@style/Widget.AppCompat.Toolbar.Button.Navigation"
-            android:src="@drawable/baseline_arrow_back_24" />
+            android:src="@drawable/ic_arrow_back" />
 
         <TextView
             android:id="@+id/base_title"
@@ -46,11 +46,10 @@
         app:strokeColor="#37000000"
         app:strokeWidth="0dp">
 
-        <androidx.recyclerview.widget.RecyclerView
+        <com.example.myapplication.view.BaseRecyclerView
             android:id="@+id/base_recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:overScrollMode="never" />
+            android:layout_height="match_parent" />
     </com.google.android.material.card.MaterialCardView>
 
 

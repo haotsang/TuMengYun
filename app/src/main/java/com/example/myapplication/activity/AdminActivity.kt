@@ -8,7 +8,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
 import com.example.myapplication.entity.AdminBean
@@ -51,7 +50,6 @@ class AdminActivity : AppCompatActivity() {
             return
         }
 
-        binding.baseRecyclerView.layoutManager = LinearLayoutManager(this)
         binding.baseRecyclerView.adapter = object : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             override fun onCreateViewHolder(
                 parent: ViewGroup,
@@ -68,13 +66,12 @@ class AdminActivity : AppCompatActivity() {
                 val title = holder.itemView.findViewById<TextView>(R.id.item_nav_title)
                 val arrow = holder.itemView.findViewById<ImageView>(R.id.item_nav_arrow)
 
-                icon.setImageResource(R.drawable.ic_nav_group)
+                icon.setImageResource(R.drawable.ic_admin_style)
                 title.text = item.name + "@" + item.contactName
             }
         }
         binding.baseRecyclerView.setOnItemClickListener { holder, position ->
             val adminBean = list[position]
-            Prefs.adminInfo = adminBean.toString()
 
             lifecycleScope.launch(Dispatchers.IO) {
                 val flag = try {
@@ -86,6 +83,7 @@ class AdminActivity : AppCompatActivity() {
 
                 withContext(Dispatchers.Main) {
                     if (flag) {
+                        Prefs.adminInfo = Gson().toJson(adminBean)
                         Toast.makeText(this@AdminActivity, "切换成功", Toast.LENGTH_SHORT).show()
                         finish()
                     } else {

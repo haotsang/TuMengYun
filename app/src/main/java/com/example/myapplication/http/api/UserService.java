@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.http.api;
 
 import com.example.myapplication.entity.CangKuItem;
 

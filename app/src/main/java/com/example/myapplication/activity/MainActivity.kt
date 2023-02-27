@@ -11,32 +11,29 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
 import com.example.myapplication.adapter.BannerImageAdapter2
+import com.example.myapplication.databinding.ActivityMainBinding
+import com.example.myapplication.entity.AdminBean
 import com.example.myapplication.entity.BannerItem
 import com.example.myapplication.entity.NavItem
 import com.example.myapplication.entity.UserBean
-import com.example.myapplication.databinding.ActivityMainBinding
-import com.example.myapplication.entity.AdminBean
 import com.example.myapplication.http.AdminUtils
 import com.example.myapplication.http.LabelImgUtils
 import com.example.myapplication.http.LabelUtils
 import com.example.myapplication.utils.Prefs
 import com.example.myapplication.utils.Utils
 import com.example.myapplication.utils.extensions.toColor
-import com.example.myapplication.view.CustomDecoration
+import com.example.myapplication.view.CustomDialog
 import com.google.gson.Gson
 import com.youth.banner.indicator.CircleIndicator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.json.JSONObject
 
 
 class MainActivity : AppCompatActivity() {
@@ -60,6 +57,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(LayoutInflater.from(this))
         setContentView(binding.root)
+
+        val dialog = CustomDialog(this)
+        dialog.show()
 
         binding.content.contentTitle.setOnClickListener {
             startActivity(Intent(this, AdminActivity::class.java))
@@ -126,7 +126,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initNavRecyclerView() {
-        binding.navRecyclerView.layoutManager = LinearLayoutManager(this)
         binding.navRecyclerView.adapter = object : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             override fun onCreateViewHolder(
                 parent: ViewGroup,
@@ -199,12 +198,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-        val itemDecoration = CustomDecoration(
-            this, (binding.navRecyclerView.layoutManager as LinearLayoutManager)
-                .orientation, false
-        )
-        itemDecoration.setDrawable(ContextCompat.getDrawable(this, R.color.ripper)!!)
-        binding.navRecyclerView.addItemDecoration(itemDecoration)
     }
     private fun startManagerPage() {
         val user: UserBean? = try {
@@ -213,17 +206,17 @@ class MainActivity : AppCompatActivity() {
             null
         }
 
-//        if (user == null) {
-//            Toast.makeText(this, "请先登录", Toast.LENGTH_SHORT).show()
-//            return
-//        }
+        if (user == null) {
+            Toast.makeText(this, "请先登录", Toast.LENGTH_SHORT).show()
+            return
+        }
 
-//        if (user.role == 2) {
+        if (user.role == 2) {
             startActivity(Intent(this, ManagerActivity::class.java))
-//        } else {
-//            Toast.makeText(this, "请先申请成为管理员", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(this, "请先申请成为管理员", Toast.LENGTH_SHORT).show()
             startActivity(Intent(this, RegisterManagerActivity::class.java))
-//        }
+        }
 
     }
 
@@ -234,25 +227,33 @@ class MainActivity : AppCompatActivity() {
         } catch (e: Exception) {
             null
         }
+        val admin: AdminBean? = try {
+            Gson().fromJson(Prefs.adminInfo, AdminBean::class.java)
+        } catch (e: Exception) {
+            null
+        }
+
         val curRegionId = if (user?.belong == null) {
             "-1"  //全系统
         } else {
             user.belong.toString()
         }
 
-        binding.content.contentTitle.text = "<全系统>"
+        binding.content.contentTitle.text = if (curRegionId == "-1") "<全系统>" else admin?.name
+
         lifecycleScope.launch(Dispatchers.IO) {
             val admin = try {
-                AdminUtils.getAdminById(curRegionId)
+                null
+//                AdminUtils.getAdminById(curRegionId)
             } catch (e: Exception) {
                 e.printStackTrace()
                 null
             }
             withContext(Dispatchers.Main) {
                 if (admin != null) {
-                    binding.content.contentTitle.text = admin.name
+//                    binding.content.contentTitle.text = admin.name
 
-                    Prefs.adminInfo = admin.toString()
+//                    Prefs.adminInfo = Gson().toJson(admin)
                 }
             }
         }

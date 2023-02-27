@@ -9,7 +9,7 @@ import com.example.myapplication.utils.RetrofitUtils
 object QuestionUtils {
 
     @Throws(Exception::class)
-    fun getQuestionsById(id: String): List<QuestionBean> {
+    fun getQuestionsById(id: String): List<QuestionBean>? {
         val retrofit = RetrofitUtils.getInstance().retrofit
         val call = retrofit.create(QuestionApi::class.java).getQuestionsById(id)
         val response = call.execute()
@@ -18,6 +18,6 @@ object QuestionUtils {
         if (result != null) {
             return result
         }
-        return emptyList()
+        return null
     }
 }

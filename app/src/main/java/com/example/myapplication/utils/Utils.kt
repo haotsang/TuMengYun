@@ -1,13 +1,21 @@
 package com.example.myapplication.utils
 
-import android.text.TextUtils
-import com.example.myapplication.UserService
+import com.example.myapplication.http.api.UserService
 import okhttp3.FormBody
 import org.json.JSONObject
 import java.io.File
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 object Utils {
+
+    fun formatTime(date: Date?): String? {
+        if (date == null) return null
+        val format = SimpleDateFormat("yyyy年MM月dd日 HH时mm分", Locale.getDefault())
+        return format.format(date)
+    }
+
 
     fun isPhone(str: String): Boolean {
         val regex = "^(1)\\d{10}$" //正则表达式
