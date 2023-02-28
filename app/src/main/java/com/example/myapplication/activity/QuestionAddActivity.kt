@@ -11,6 +11,7 @@ import com.example.myapplication.R
 import com.example.myapplication.databinding.ActivityQuestionAddBinding
 import com.example.myapplication.entity.QuestionBean
 import com.example.myapplication.http.QuestionUtils
+import com.example.myapplication.utils.Utils
 import com.google.gson.Gson
 import com.loper7.date_time_picker.dialog.CardDatePickerDialog
 import kotlinx.coroutines.Dispatchers
@@ -31,14 +32,19 @@ class QuestionAddActivity : AppCompatActivity() {
 
         val id = intent.getStringExtra("region") ?: return
 
+        var startTime: Date? = null
+        var endTime: Date? = null
+
         binding.buttonStartTime.setOnClickListener {
             CardDatePickerDialog.Builder(this).setTitle("选择开始时间").setOnChoose {
-
+                startTime = Date(it)
+                binding.timeStatus.text = "开始时间：${Utils.formatTime(startTime) ?: ""}\n结束时间：${Utils.formatTime(endTime) ?: ""}"
             }.build().show()
         }
         binding.buttonEndTime.setOnClickListener {
             CardDatePickerDialog.Builder(this).setTitle("选择结束时间").setOnChoose {
-
+                endTime = Date(it)
+                binding.timeStatus.text = "开始时间：${Utils.formatTime(startTime) ?: ""}\n结束时间：${Utils.formatTime(endTime) ?: ""}"
             }.build().show()
         }
 
@@ -75,8 +81,6 @@ class QuestionAddActivity : AppCompatActivity() {
 
             val rightAnswer = binding.rightEdit.text.trim().toString()
             val reward = binding.rewardEdit.text.trim().toString()
-            val startTime = null
-            val endTime = null
 
 
             if (question.isEmpty() ||

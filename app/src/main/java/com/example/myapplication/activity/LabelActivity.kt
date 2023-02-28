@@ -3,7 +3,6 @@ package com.example.myapplication.activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -11,23 +10,29 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.myapplication.R
 import com.example.myapplication.adapter.BannerImageAdapter2
-import com.example.myapplication.entity.BannerItem
-import com.example.myapplication.entity.LabelBean
 import com.example.myapplication.databinding.ActivityLabelBinding
 import com.example.myapplication.databinding.ViewDialogSinglechoiceBinding
+import com.example.myapplication.entity.BannerItem
+import com.example.myapplication.entity.LabelBean
 import com.example.myapplication.entity.UserBean
 import com.example.myapplication.http.LabelImgUtils
 import com.example.myapplication.http.LabelUtils
+import com.example.myapplication.utils.GlideEngine
 import com.example.myapplication.utils.Prefs
 import com.example.myapplication.utils.ViewUtils
 import com.example.myapplication.view.CustomDialog
 import com.google.gson.Gson
+import com.luck.picture.lib.basic.PictureSelector
+import com.luck.picture.lib.config.SelectMimeType
+import com.luck.picture.lib.entity.LocalMedia
+import com.luck.picture.lib.interfaces.OnResultCallbackListener
+import com.luck.picture.lib.style.PictureSelectorStyle
 import com.youth.banner.indicator.CircleIndicator
 import com.youth.banner.listener.OnPageChangeListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.json.JSONObject
+
 
 class LabelActivity: AppCompatActivity() {
 
@@ -37,17 +42,6 @@ class LabelActivity: AppCompatActivity() {
 
     private lateinit var adapter: BannerImageAdapter2
     private val labelImgList = mutableListOf<BannerItem>()
-    private var curIndex = -1
-
-    private val selectPictureLauncher = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
-        if (uri != null) {
-            val url = uri.toString()
-            labelImgList.add(BannerItem().apply {
-                imagePath = url
-            })
-            adapter.notifyDataSetChanged()
-        }
-    }
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -77,11 +71,11 @@ class LabelActivity: AppCompatActivity() {
             null
         }
 
-        if (user == null) {
-            Toast.makeText(this, "未登录，请先登录", Toast.LENGTH_SHORT).show()
-            return
-        }
-        val curRegionId = user.belong.toString()
+//        if (user == null) {
+//            Toast.makeText(this, "未登录，请先登录", Toast.LENGTH_SHORT).show()
+//            return
+//        }
+        val curRegionId = user?.belong.toString()
 
         adapter = BannerImageAdapter2(labelImgList, this)
         binding.banner2.setAdapter(adapter)
@@ -92,12 +86,9 @@ class LabelActivity: AppCompatActivity() {
                 override fun onPageScrolled(
                     position: Int,
                     positionOffset: Float,
-                    positionOffsetPixels: Int
+                    positionOffsetPixels: Int,
                 ) {}
-                override fun onPageSelected(position: Int) {
-                    curIndex = position
-                    println("++++++++++++++++++++++++++++++++++${curIndex}")
-                }
+                override fun onPageSelected(position: Int) {}
                 override fun onPageScrollStateChanged(state: Int) {}
             })
             .setOnBannerListener { data, position ->
@@ -149,29 +140,36 @@ class LabelActivity: AppCompatActivity() {
         }
 
         binding.buttonAddImg.setOnClickListener {
-            try {
-                selectPictureLauncher.launch(arrayOf("image/*"))
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+            PictureSelector.create(this)
+                .openGallery(SelectMimeType.ofImage())
+                .setMaxSelectNum(3)
+                .setImageEngine(GlideEngine.createGlideEngine())
+                .forResult(object : OnResultCallbackListener<LocalMedia?> {
+                    override fun onResult(result: ArrayList<LocalMedia?>?) {
+                        if (result != null) {
+                            if (labelImgList.size < 3) {
+                                for (i in 0 until result.size) {
+                                    val item = BannerItem().apply {
+                                        imagePath = result.getOrNull(i)?.path
+                                    }
+                                    labelImgList.add(item)
+                                }
+                                adapter.notifyDataSetChanged()
+                            } else {
+                                Toast.makeText(this@LabelActivity, "你已选择3张图片，请移除后重新选择", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+                    override fun onCancel() {}
+                })
         }
 
         binding.buttonRemoveImg.setOnClickListener {
-//            val curIndex = (binding.banner2.currentItem) ?: -1
-
-//            if (curIndex > 0) {
-//                labelImgList.removeAt(curIndex)
-//                adapter.notifyDataSetChanged()
-//            } else {
-//                labelImgList.clear()
-//                adapter.notifyDataSetChanged()
-//            }
-//
-//            println("@@@@@@@@@@@@@@@@@@@@@@@@@@   ${curIndex}")
-
-            startActivity(Intent(this, QuestionActivity::class.java).apply {
-                putExtra("region", curRegionId)
-            })
+            val i = if (binding.banner2.currentItem == 0) 0 else binding.banner2.currentItem - 1
+            if (labelImgList.size > 0) {
+                labelImgList.removeAt(i)
+                adapter.notifyDataSetChanged()
+            }
         }
 
 
@@ -188,7 +186,7 @@ class LabelActivity: AppCompatActivity() {
 //            }
         }
 
-
+/*
         lifecycleScope.launch(Dispatchers.IO) {
             val img = try {
                 LabelImgUtils.getLabelImgList(curRegionId)
@@ -234,7 +232,7 @@ class LabelActivity: AppCompatActivity() {
             }
         }
 
-
+*/
     }
 
     private fun updateToCloud() {

@@ -203,17 +203,17 @@ class MainActivity : AppCompatActivity() {
             null
         }
 
-        if (user == null) {
-            Toast.makeText(this, "请先登录", Toast.LENGTH_SHORT).show()
-            return
-        }
+//        if (user == null) {
+//            Toast.makeText(this, "请先登录", Toast.LENGTH_SHORT).show()
+//            return
+//        }
 
-        if (user.role == 2) {
+//        if (user.role == 2) {
             startActivity(Intent(this, ManagerActivity::class.java))
-        } else {
-            Toast.makeText(this, "请先申请成为管理员", Toast.LENGTH_SHORT).show()
-            startActivity(Intent(this, RegisterManagerActivity::class.java))
-        }
+//        } else {
+//            Toast.makeText(this, "请先申请成为管理员", Toast.LENGTH_SHORT).show()
+//            startActivity(Intent(this, RegisterManagerActivity::class.java))
+//        }
 
     }
 

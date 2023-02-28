@@ -16,7 +16,12 @@ import com.bumptech.glide.Glide
 import com.example.myapplication.BuildConfig
 import com.example.myapplication.R
 import com.example.myapplication.http.HttpUtils
+import com.example.myapplication.utils.GlideEngine
 import com.example.myapplication.utils.Utils
+import com.luck.picture.lib.basic.PictureSelector
+import com.luck.picture.lib.config.SelectMimeType
+import com.luck.picture.lib.entity.LocalMedia
+import com.luck.picture.lib.interfaces.OnResultCallbackListener
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
@@ -199,15 +204,29 @@ class AfterServiceActivity : AppCompatActivity() {
 //            Uri.fromFile(imageFile)
 //        }
 
-        try {
-            val i = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            i.flags = Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-//        i.putExtra(MediaStore.EXTRA_OUTPUT, imageUri)
-            startActivityForResult(i, 0)
-        } catch (e: java.lang.Exception) {
-            e.printStackTrace()
-        }
+//        try {
+//            val i = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+//            i.flags = Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+////        i.putExtra(MediaStore.EXTRA_OUTPUT, imageUri)
+//            startActivityForResult(i, 0)
+//        } catch (e: java.lang.Exception) {
+//            e.printStackTrace()
+//        }
 
+        PictureSelector.create(this)
+            .openGallery(SelectMimeType.ofImage())
+            .setMaxSelectNum(10)
+            .setImageEngine(GlideEngine.createGlideEngine())
+            .forResult(object : OnResultCallbackListener<LocalMedia?> {
+                override fun onResult(result: ArrayList<LocalMedia?>?) {
+                    result?.forEach {
+                        it?.path?.let { it1 -> list.add(it1) }
+                    }
+
+                    adapter?.notifyDataSetChanged()
+                }
+                override fun onCancel() {}
+            })
     }
 
 

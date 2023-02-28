@@ -15,6 +15,7 @@ class LabelTitleEditActivity: AppCompatActivity() {
         binding = ActivityLabelTitleEditBinding.inflate(LayoutInflater.from(this))
         setContentView(binding.root)
 
+        binding.toolbarBack.setOnClickListener { finish() }
         binding.editTextTextTitle.setText(intent.getStringExtra("title"))
         binding.editTextTextContent.setText(intent.getStringExtra("content"))
 

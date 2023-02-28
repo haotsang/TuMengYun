@@ -79,6 +79,15 @@
                 app:banner_indicator_selected_color="#95F2EC"
                 app:banner_indicator_selected_width="13dp"
                 app:banner_radius="12dp" />
+
+            <ImageView
+                android:id="@+id/button_remove_img"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_margin="12dp"
+                android:layout_gravity="top|end"
+                android:src="@drawable/ps_ic_delete"
+                android:background="@drawable/selector_login_btn_enabled"/>
         </com.google.android.material.card.MaterialCardView>
 
         <TextView
@@ -104,7 +113,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="12dp"
                 android:layout_weight="1"
-                android:text="编辑文字" />
+                android:text="编辑文案" />
             <com.example.myapplication.view.MultiStatusButton
                 android:id="@+id/button_add_question"
                 android:layout_width="match_parent"
@@ -121,14 +130,6 @@
                 android:layout_weight="1"
                 android:text="添加图片" />
 
-            <com.example.myapplication.view.MultiStatusButton
-                android:id="@+id/button_remove_img"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="12dp"
-                android:layout_weight="1"
-                android:text="移除图片" />
-
         </LinearLayout>
 
         <com.example.myapplication.view.MultiStatusButton
@@ -141,7 +142,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginTop="56dp">
 
             <com.example.myapplication.view.MultiStatusButton
                 android:id="@+id/button_label_visible"
