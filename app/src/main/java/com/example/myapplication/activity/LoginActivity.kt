@@ -18,6 +18,7 @@ import com.example.myapplication.utils.PhoneUtils
 import com.example.myapplication.utils.Prefs
 import com.example.myapplication.utils.Utils
 import com.example.myapplication.http.UserUtils
+import com.google.gson.Gson
 import com.hjq.permissions.OnPermissionCallback
 import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
@@ -67,6 +68,7 @@ class LoginActivity : AppCompatActivity() {
         val list = mutableListOf<View>()
 
         val phoneNumber = PhoneUtils.trimTelNum(PhoneUtils.getNativePhoneNumber(this))
+            ?.replace("+", "")
         val v1 = ViewLoginPager1Binding.inflate(LayoutInflater.from(this))
         val listener1 = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -167,7 +169,7 @@ class LoginActivity : AppCompatActivity() {
                 if (responseBase != null) {
                     if (responseBase.code == 200) {
                         Prefs.isSaveStatus = saveState
-                        Prefs.userInfo = responseBase.data!!.toString()
+                        Prefs.userInfo = Gson().toJson(responseBase.data)
                         Prefs.isLoginFromPhone = false
 
                         Toast.makeText(this@LoginActivity, "登录成功！", Toast.LENGTH_LONG).show()
@@ -178,7 +180,7 @@ class LoginActivity : AppCompatActivity() {
                         Toast.makeText(this@LoginActivity, responseBase.message, Toast.LENGTH_LONG).show()
                     }
                 } else {
-                    Toast.makeText(this@LoginActivity, "login responseBase is null", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@LoginActivity, "login failed: response body is null", Toast.LENGTH_LONG).show()
                 }
 
             }
@@ -196,7 +198,7 @@ class LoginActivity : AppCompatActivity() {
             withContext(Dispatchers.Main) {
                 if (responseBase != null && responseBase.code == 200) {
                     Prefs.isSaveStatus = saveState
-                    Prefs.userInfo = responseBase.data!!.toString()
+                    Prefs.userInfo = Gson().toJson(responseBase.data)
                     Prefs.isLoginFromPhone = true
 
                     Toast.makeText(this@LoginActivity, "登录成功！", Toast.LENGTH_LONG).show()

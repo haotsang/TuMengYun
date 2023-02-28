@@ -81,35 +81,11 @@
                 app:banner_radius="12dp" />
         </com.google.android.material.card.MaterialCardView>
 
-        <RadioGroup
-            android:id="@+id/radio_group"
-            android:layout_width="wrap_content"
-            android:layout_height="16dp"
-            android:layout_marginTop="24dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/banner_card"
-            android:orientation="horizontal"
-            android:checkedButton="@id/radio_button1">
-
-            <RadioButton
-                android:id="@+id/radio_button1"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:textSize="16sp"
-                android:text="允许全系统浏览"/>
-            <RadioButton
-                android:id="@+id/radio_button2"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:textSize="16sp"
-                android:text="允许管内浏览"/>
-        </RadioGroup>
-
         <TextView
             android:id="@+id/label_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
             android:text="标签状态：已撤销"
             android:textSize="16sp"
             android:textColor="@android:color/holo_red_dark"

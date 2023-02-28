@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:fitsSystemWindows="true"
+    android:background="@color/blue_bright">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/toolbar_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            style="@style/Widget.AppCompat.Toolbar.Button.Navigation"
+            android:src="@drawable/ic_arrow_back"
+            app:tint="@color/white" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="添加答题"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:background="@color/bg_color">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/banner_card"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginVertical="16dp"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="1dp"
+            app:cardUseCompatPadding="true"
+            app:contentPadding="0dp"
+            app:strokeColor="#37000000"
+            app:strokeWidth="0dp">
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center">
+                    <EditText
+                        android:id="@+id/question_edit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="12dp"
+                        android:layout_marginTop="24dp"
+                        android:layout_marginBottom="6dp"
+                        android:maxLines="10"
+                        android:inputType="text"
+                        android:textSize="16sp"
+                        android:singleLine="true"
+                        android:textColor="@color/black"
+                        android:hint="输入问题" />
+
+                    <LinearLayout
+                        android:id="@+id/check_group"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <EditText
+                            android:id="@+id/answer_edit_1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="12dp"
+                            android:layout_marginVertical="6dp"
+                            android:textColor="@color/black"
+                            android:padding="14dp"
+                            android:inputType="text"
+                            android:singleLine="true"
+                            android:textSize="16sp"
+                            android:hint="输入答案A"
+                            android:background="@drawable/shape_answer_normal"/>
+
+                        <EditText
+                            android:id="@+id/answer_edit_2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="12dp"
+                            android:layout_marginVertical="6dp"
+                            android:textColor="@color/black"
+                            android:singleLine="true"
+                            android:padding="14dp"
+                            android:inputType="text"
+                            android:textSize="16sp"
+                            android:hint="输入答案B"
+                            android:background="@drawable/shape_answer_normal"/>
+
+                        <EditText
+                            android:id="@+id/answer_edit_3"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="12dp"
+                            android:layout_marginVertical="6dp"
+                            android:textColor="@color/black"
+                            android:padding="14dp"
+                            android:inputType="text"
+                            android:singleLine="true"
+                            android:textSize="16sp"
+                            android:hint="输入答案C"
+                            android:background="@drawable/shape_answer_normal"/>
+
+                        <EditText
+                            android:id="@+id/answer_edit_4"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="12dp"
+                            android:layout_marginVertical="6dp"
+                            android:textColor="@color/black"
+                            android:padding="14dp"
+                            android:inputType="text"
+                            android:singleLine="true"
+                            android:textSize="16sp"
+                            android:hint="输入答案D"
+                            android:background="@drawable/shape_answer_normal"/>
+
+
+                    </LinearLayout>
+
+                    <EditText
+                        android:id="@+id/right_edit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="12dp"
+                        android:hint="输入正确答案：A.B.C.D"
+                        android:singleLine="true"
+                        android:inputType="text"
+                        android:digits="AaBbCcDd"
+                        android:layout_marginVertical="6dp"
+                        android:textSize="16sp" />
+
+
+                    <EditText
+                        android:id="@+id/reward_edit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="12dp"
+                        android:hint="输入本题积分数量"
+                        android:singleLine="true"
+                        android:inputType="number"
+                        android:layout_marginVertical="6dp"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/time_status"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="12dp"
+                        android:hint="开始时间：\n结束时间："
+                        android:layout_marginVertical="6dp"
+                        android:textSize="16sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="12dp">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/button_start_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="4dp"
+                            android:layout_weight="1"
+                            android:text="选择开始时间"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/button_end_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"
+                            android:layout_weight="1"
+                            android:text="选择结束时间"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+            </ScrollView>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.example.myapplication.view.MultiStatusButton
+            android:id="@+id/button_add_question"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginBottom="12dp"
+            android:text="确认添加" />
+
+    </LinearLayout>
+
+
+
+</LinearLayout>

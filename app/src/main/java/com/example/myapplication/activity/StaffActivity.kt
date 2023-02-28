@@ -15,6 +15,7 @@ import com.example.myapplication.entity.UserBean
 import com.example.myapplication.http.UserUtils
 import com.example.myapplication.utils.ViewUtils
 import com.example.myapplication.utils.extensions.setOnItemClickListener
+import com.example.myapplication.view.CustomDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -65,16 +66,30 @@ class StaffActivity : AppCompatActivity() {
         }
         binding.baseRecyclerView.setOnItemClickListener { holder, position ->
             val item = list[position]
+            if (item.role == 2) {
+                CustomDialog.Builder2(this)
+                    .setIcon(R.drawable.ic_alert_error)
+                    .setTitle("不可对管理员进行操作")
+                    .setConfirmText(android.R.string.ok)
+                    .setConfirmListener { }
+                    .show()
+                return@setOnItemClickListener
+            }
+
             val role = if (item.role == 0) {
                 "工作人员"
             } else {
                 "普通用户"
             }
 
-            MaterialAlertDialogBuilder(this).setMessage("是否将此用户设置为${role}？")
-                .setPositiveButton(android.R.string.ok) { _, _ ->
+            CustomDialog.Builder2(this)
+                .setIcon(R.drawable.ic_alert_ask)
+                .setTitle("是否将此用户设置为${role}？")
+                .setCancelText(android.R.string.cancel)
+                .setConfirmText(android.R.string.ok)
+                .setCancelListener { }
+                .setConfirmListener {
                     lifecycleScope.launch(Dispatchers.IO) {
-
                         val state = when (item.role) {
                             1 -> UserUtils.modifyRole(item.account!!, "0")
                             0 -> UserUtils.modifyRole(item.account!!, "1")

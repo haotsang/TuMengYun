@@ -3,6 +3,7 @@ package com.example.myapplication.activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -13,11 +14,13 @@ import com.example.myapplication.adapter.BannerImageAdapter2
 import com.example.myapplication.entity.BannerItem
 import com.example.myapplication.entity.LabelBean
 import com.example.myapplication.databinding.ActivityLabelBinding
+import com.example.myapplication.databinding.ViewDialogSinglechoiceBinding
 import com.example.myapplication.entity.UserBean
 import com.example.myapplication.http.LabelImgUtils
 import com.example.myapplication.http.LabelUtils
 import com.example.myapplication.utils.Prefs
 import com.example.myapplication.utils.ViewUtils
+import com.example.myapplication.view.CustomDialog
 import com.google.gson.Gson
 import com.youth.banner.indicator.CircleIndicator
 import com.youth.banner.listener.OnPageChangeListener
@@ -98,20 +101,40 @@ class LabelActivity: AppCompatActivity() {
                 override fun onPageScrollStateChanged(state: Int) {}
             })
             .setOnBannerListener { data, position ->
+                startActivity(Intent(this, QuestionActivity::class.java).apply {
+                    putExtra("region", curRegionId)
+                })
             }
 
-        binding.radioGroup.setOnCheckedChangeListener { radioGroup, i ->
-            if (i == R.id.radio_button1) {
-                labelBean?.type = 1  //全部系统
+        var typeState = labelBean?.type
+        binding.buttonViewMothed.setOnClickListener {
+            val v = ViewDialogSinglechoiceBinding.inflate(LayoutInflater.from(this))
+            v.radioGroup.setOnCheckedChangeListener { radioGroup, i ->
+                typeState = if (i == R.id.radio_button1) {
+                    1 //全部系统
+                } else {
+                    0
+                }
+            }
+            if (typeState == 1) {
+                v.radioGroup.check(R.id.radio_button1)
             } else {
-                labelBean?.type = 0
+                v.radioGroup.check(R.id.radio_button2)
             }
-
-//            updateToCloud()
+            CustomDialog.Builder2(this@LabelActivity)
+                .setCustomView(v.root)
+                .setCancelText(android.R.string.cancel)
+                .setConfirmText(android.R.string.ok)
+                .setCancelListener {  }
+                .setConfirmListener {
+                    if (typeState != null) {
+                        labelBean?.type = typeState!!
+                    }
+                }.show()
         }
 
         binding.buttonAddQuestion.setOnClickListener {
-            startActivity(Intent(this, QuestionActivity::class.java).apply {
+            startActivity(Intent(this, QuestionAddActivity::class.java).apply {
                 putExtra("region", curRegionId)
             })
         }
@@ -136,15 +159,19 @@ class LabelActivity: AppCompatActivity() {
         binding.buttonRemoveImg.setOnClickListener {
 //            val curIndex = (binding.banner2.currentItem) ?: -1
 
-            if (curIndex > 0) {
-                labelImgList.removeAt(curIndex)
-                adapter.notifyDataSetChanged()
-            } else {
-                labelImgList.clear()
-                adapter.notifyDataSetChanged()
-            }
+//            if (curIndex > 0) {
+//                labelImgList.removeAt(curIndex)
+//                adapter.notifyDataSetChanged()
+//            } else {
+//                labelImgList.clear()
+//                adapter.notifyDataSetChanged()
+//            }
+//
+//            println("@@@@@@@@@@@@@@@@@@@@@@@@@@   ${curIndex}")
 
-            println("@@@@@@@@@@@@@@@@@@@@@@@@@@   ${curIndex}")
+            startActivity(Intent(this, QuestionActivity::class.java).apply {
+                putExtra("region", curRegionId)
+            })
         }
 
 
@@ -160,15 +187,6 @@ class LabelActivity: AppCompatActivity() {
                 updateToCloud()
 //            }
         }
-
-
-//        binding.buttonUpload.setOnClickListener {
-//            val content = binding.banner2Text.text.toString()
-//            val selectId = binding.radioGroup.checkedRadioButtonId == R.id.radio_button1
-//            val kid = -1
-//            val question = -1
-//
-//        }
 
 
         lifecycleScope.launch(Dispatchers.IO) {
@@ -204,8 +222,6 @@ class LabelActivity: AppCompatActivity() {
                     binding.banner2Text.text = (labelBean?.title ?: "未设置") + "\n" + (labelBean?.content ?: "未设置")
                     binding.labelStatus.text = if (labelBean?.visible == 1) "标签状态：已上传" else "标签状态：已撤销"
                     binding.labelStatus.setTextColor(if (labelBean?.visible == 1) ContextCompat.getColor(this@LabelActivity, android.R.color.holo_green_dark) else ContextCompat.getColor(this@LabelActivity, android.R.color.holo_red_dark))
-
-                    binding.radioGroup.check(if (labelBean?.type == 1) R.id.radio_button1 else R.id.radio_button2)
 
                     Prefs.labelSettingItemStatus = labelBean?.visible == 1
                 } else {

@@ -12,6 +12,7 @@ import com.example.myapplication.databinding.ActivityRegisterBinding
 import com.example.myapplication.http.UserUtils
 import com.example.myapplication.utils.Prefs
 import com.example.myapplication.utils.Utils
+import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -84,7 +85,7 @@ class RegisterActivity : AppCompatActivity() {
                     when (responseBase.code) {
                         200 -> {
                             Prefs.isSaveStatus = true
-                            Prefs.userInfo = responseBase.data!!.toString()
+                            Prefs.userInfo = Gson().toJson(responseBase.data)
                             Prefs.isLoginFromPhone = false
 
                             Toast.makeText(this@RegisterActivity, "注册成功，已登录！", Toast.LENGTH_LONG).show()
@@ -97,7 +98,7 @@ class RegisterActivity : AppCompatActivity() {
                         }
                     }
                 } else {
-                    Toast.makeText(this@RegisterActivity, "register responseBase is null", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@RegisterActivity, "register failed: response body is null", Toast.LENGTH_LONG).show()
                 }
             }
         }

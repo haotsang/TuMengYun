@@ -64,6 +64,7 @@
             android:exported="false"
             android:process=":crash"/>
         <activity android:name="com.example.myapplication.activity.MainActivity" />
+        <activity android:name="com.example.myapplication.activity.QuestionAddActivity" />
 
 
         <provider

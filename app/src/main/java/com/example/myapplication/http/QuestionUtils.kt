@@ -5,6 +5,7 @@ import com.example.myapplication.entity.QuestionBean
 import com.example.myapplication.http.api.AdminApi
 import com.example.myapplication.http.api.QuestionApi
 import com.example.myapplication.utils.RetrofitUtils
+import okhttp3.RequestBody.Companion.toRequestBody
 
 object QuestionUtils {
 
@@ -20,4 +21,19 @@ object QuestionUtils {
         }
         return null
     }
+
+    @Throws(Exception::class)
+    fun insertQuestion(jsonString: String): Boolean {
+        val retrofit = RetrofitUtils.getInstance().retrofit
+        val call = retrofit.create(QuestionApi::class.java).insert(jsonString.toRequestBody())
+        val response = call.execute()
+        val result = response.body()
+
+        if (result != null) {
+            return result
+        }
+        return false
+    }
+
+
 }

@@ -58,9 +58,6 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(LayoutInflater.from(this))
         setContentView(binding.root)
 
-        val dialog = CustomDialog(this)
-        dialog.show()
-
         binding.content.contentTitle.setOnClickListener {
             startActivity(Intent(this, AdminActivity::class.java))
         }
@@ -206,17 +203,17 @@ class MainActivity : AppCompatActivity() {
             null
         }
 
-//        if (user == null) {
-//            Toast.makeText(this, "请先登录", Toast.LENGTH_SHORT).show()
-//            return
-//        }
+        if (user == null) {
+            Toast.makeText(this, "请先登录", Toast.LENGTH_SHORT).show()
+            return
+        }
 
-//        if (user.role == 2) {
+        if (user.role == 2) {
             startActivity(Intent(this, ManagerActivity::class.java))
-//        } else {
+        } else {
             Toast.makeText(this, "请先申请成为管理员", Toast.LENGTH_SHORT).show()
             startActivity(Intent(this, RegisterManagerActivity::class.java))
-//        }
+        }
 
     }
 
@@ -233,7 +230,7 @@ class MainActivity : AppCompatActivity() {
             null
         }
 
-        val curRegionId = if (user?.belong == null) {
+        val curRegionId = if (user == null) {
             "-1"  //全系统
         } else {
             user.belong.toString()
@@ -243,17 +240,16 @@ class MainActivity : AppCompatActivity() {
 
         lifecycleScope.launch(Dispatchers.IO) {
             val admin = try {
-                null
-//                AdminUtils.getAdminById(curRegionId)
+                AdminUtils.getAdminById(curRegionId)
             } catch (e: Exception) {
                 e.printStackTrace()
                 null
             }
             withContext(Dispatchers.Main) {
                 if (admin != null) {
-//                    binding.content.contentTitle.text = admin.name
+                    binding.content.contentTitle.text = admin.name
 
-//                    Prefs.adminInfo = Gson().toJson(admin)
+                    Prefs.adminInfo = Gson().toJson(admin)
                 }
             }
         }

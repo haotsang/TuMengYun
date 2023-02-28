@@ -2,17 +2,20 @@ package com.example.myapplication.activity
 
 import android.graphics.Color
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.children
 import androidx.lifecycle.lifecycleScope
 import com.example.myapplication.R
-import com.example.myapplication.databinding.ActivityLabelTitleEditBinding
 import com.example.myapplication.databinding.ActivityQuestionBinding
 import com.example.myapplication.entity.QuestionBean
 import com.example.myapplication.http.QuestionUtils
 import com.example.myapplication.utils.Utils
+import com.example.myapplication.utils.extensions.toColor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -28,6 +31,8 @@ class QuestionActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityQuestionBinding.inflate(LayoutInflater.from(this))
         setContentView(binding.root)
+
+        binding.toolbarBack.setOnClickListener { finish() }
 
         val id = intent.getStringExtra("region") ?: return
 
@@ -64,24 +69,29 @@ class QuestionActivity : AppCompatActivity() {
             }
         }
 
-        binding.singleSelect1.setOnClickListener { checkItem(it.id, true) }
-        binding.singleSelect2.setOnClickListener { checkItem(it.id, true) }
-        binding.singleSelect3.setOnClickListener { checkItem(it.id, true) }
-        binding.singleSelect4.setOnClickListener { checkItem(it.id, true) }
-        binding.singleSelect1.setOnClickListener { checkItem(it.id, true) }
+        binding.checkGroup.children.forEach {
+            it.setOnClickListener { child ->
+                checkItem(child.id, true)
+                refreshData(index)
+            }
+        }
     }
 
     private fun refreshData(index: Int) {
+        if (index < 0 || index > list.size) {
+            return
+        }
+
         binding.tvIndex.text = "${index + 1} / ${list.size}"
 
         val item = list[index]
 
         binding.questionContent.text = item.question
 
-        binding.singleSelect1.text = item.answerA
-        binding.singleSelect2.text = item.answerB
-        binding.singleSelect3.text = item.answerC
-        binding.singleSelect4.text = item.answerD
+        binding.singleSelect1.text = "A." + item.answerA
+        binding.singleSelect2.text = "B." + item.answerB
+        binding.singleSelect3.text = "C." + item.answerC
+        binding.singleSelect4.text = "D." + item.answerD
 
         val checkId = when (item.selectedAnswer) {
             "A" -> binding.singleSelect1.id
@@ -91,23 +101,43 @@ class QuestionActivity : AppCompatActivity() {
             else -> -1
         }
 
+        binding.tvRightStatus.text = "正确答案：${item.rightAnswer}"
+
         if (item.selectedAnswer.isNullOrEmpty()) {
-            binding.tvStatus.text ="暂未作答"
+            binding.tvSelectStatus.text = "已选答案："
             checkItem(-1, false)
         } else {
             //right answer
-            binding.tvStatus.text = if (item.rightAnswer == item.selectedAnswer) "回答正确" else "回答错误"
+            binding.tvSelectStatus.text = "已选答案：${item.selectedAnswer}"
+            val s = if (item.rightAnswer == item.selectedAnswer) "回答正确" else "回答错误"
             checkItem(checkId, false)
         }
 
-        binding.tvTime.text = "开始时间：${Utils.formatTime(item.startTime)}" + "\n" +
-                "结束时间：${Utils.formatTime(item.endTime)}"
+        val timeBuilder = StringBuilder()
+        if (item.reward != null) {
+            timeBuilder.append("积分：" + item.reward + "\n")
+        }
 
+        var isEnd = false
         if (item.startTime != null && item.endTime != null) {
-            if (System.currentTimeMillis() > (item.endTime?.time ?: 0L)) {
-                //已结束
-                binding.tvStatus.text = "已结束"
+            //已结束
+            isEnd = System.currentTimeMillis() < ((item.endTime?.time) ?: 0L)
+
+            timeBuilder.append("时间：${Utils.formatTime(item.startTime)}" + "————" +
+                    "${Utils.formatTime(item.endTime)}" + "\n")
+
+            if (isEnd) {
+                val s = "已结束"
+                val span = SpannableString(s)
+                span.setSpan(ForegroundColorSpan(Color.RED), 0, s.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                binding.tvSelectStatus.text = span
             }
+        }
+
+        binding.tvTime.text =  timeBuilder.toString()
+
+        binding.checkGroup.children.forEach {
+            it.isEnabled = !isEnd
         }
 
     }
@@ -116,11 +146,15 @@ class QuestionActivity : AppCompatActivity() {
     private fun checkItem(id: Int, fromUser: Boolean = false) {
         binding.checkGroup.children.forEach {
             val tv = it as TextView
-            tv.setTextColor(Color.BLACK)
+            tv.setTextColor(toColor(R.color.black))
+            tv.setBackgroundResource(R.drawable.shape_answer_normal)
         }
 
         if (id != -1) {
-            findViewById<TextView>(id)?.setTextColor(Color.BLUE)
+            findViewById<TextView>(id)?.apply {
+                setTextColor(toColor(R.color.white))
+                setBackgroundResource(R.drawable.shape_answer_selected)
+            }
         }
 
         val checkId = when (id) {
@@ -131,7 +165,7 @@ class QuestionActivity : AppCompatActivity() {
             else -> null
         }
         if (fromUser) {
-            list[index].selectedAnswer = checkId
+            list.getOrNull(index)?.selectedAnswer = checkId
         }
 
     }
