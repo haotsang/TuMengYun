@@ -27,11 +27,25 @@ object LabelUtils {
         return null
     }
 
+    @Throws(Exception::class)
+    fun getOrInsert(labelId: String): LabelBean? {
+       val retrofit = RetrofitUtils.getInstance().retrofit
+       val call = retrofit.create(LabelApi::class.java).getOrInsert(labelId.toRequestBody())
+       val response = call.execute()
+       val result = response.body()
+
+       if (result != null) {
+           return result
+       }
+
+        return null
+    }
+
 
     @Throws(Exception::class)
-    fun modify(labelBean: LabelBean): Boolean {
+    fun modifyOrInsert(labelBean: LabelBean): Boolean {
         val retrofit = RetrofitUtils.getInstance().retrofit
-        val call = retrofit.create(LabelApi::class.java).modify(Gson().toJson(labelBean).toRequestBody())
+        val call = retrofit.create(LabelApi::class.java).modifyOrInsert(Gson().toJson(labelBean).toRequestBody())
         val response = call.execute()
         val result = response.body()
 

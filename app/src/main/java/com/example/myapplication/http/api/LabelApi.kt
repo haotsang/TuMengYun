@@ -15,10 +15,15 @@ interface LabelApi {
     @GET("label/get/{region}")
     fun getLabel(@Path("region") id: String): Call<LabelBean>
 
+    @Multipart
+    @POST("label/get_or_insert")
+    fun getOrInsert(
+        @Part("region") region: RequestBody,
+    ): Call<LabelBean>
 
     @Multipart
-    @POST("label/modify")
-    fun modify(
+    @POST("label/modify_or_insert")
+    fun modifyOrInsert(
         @Part("jsonString") jsonString: RequestBody,
     ): Call<Int>
 

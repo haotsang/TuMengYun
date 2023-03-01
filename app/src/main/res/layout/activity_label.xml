@@ -42,6 +42,15 @@
         android:gravity="center|top"
         android:orientation="vertical"
         android:background="@color/bg_color">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="26dp"
+            android:text="预览："
+            android:textSize="16sp"
+            android:textColor="@color/black" />
+
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/banner_card"
             android:layout_width="match_parent"
@@ -55,19 +64,6 @@
             app:strokeColor="#37000000"
             app:strokeWidth="0dp">
 
-            <TextView
-                android:id="@+id/banner2_text"
-                android:layout_width="match_parent"
-                android:layout_height="180dp"
-                android:gravity="center"
-                android:text="未设置"
-                android:shadowColor="@color/black"
-                android:shadowDx="0.5"
-                android:shadowDy="0.5"
-                android:shadowRadius="1"
-                android:textColor="@android:color/white"
-                android:textSize="16sp" />
-
             <com.youth.banner.Banner
                 android:id="@+id/banner2"
                 android:layout_width="match_parent"
@@ -79,7 +75,18 @@
                 app:banner_indicator_selected_color="#95F2EC"
                 app:banner_indicator_selected_width="13dp"
                 app:banner_radius="12dp" />
-
+            <TextView
+                android:id="@+id/banner2_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="未设置"
+                android:shadowColor="@color/black"
+                android:shadowDx="0.5"
+                android:shadowDy="0.5"
+                android:shadowRadius="1"
+                android:textColor="@android:color/white"
+                android:textSize="16sp" />
             <ImageView
                 android:id="@+id/button_remove_img"
                 android:layout_width="56dp"
@@ -97,10 +104,7 @@
             android:layout_marginTop="24dp"
             android:text="标签状态：已撤销"
             android:textSize="16sp"
-            android:textColor="@android:color/holo_red_dark"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/radio_group" />
+            android:textColor="@android:color/holo_red_dark" />
 
         <LinearLayout
             android:layout_width="match_parent"

@@ -131,7 +131,7 @@ object UserUtils {
     }
 
     @Throws(Exception::class)
-    fun modifyBelong(account: String, id: String): Boolean {
+    fun modifyBelong(account: String, id: String): ResponseBase? {
         val retrofit = RetrofitUtils.getInstance().retrofit
         val call = retrofit.create(UserApi::class.java)
             .modifyBelong(account.toRequestBody(), id.toRequestBody())
@@ -141,7 +141,7 @@ object UserUtils {
             return result
         }
 
-        return false
+        return null
     }
 
 }

@@ -26,36 +26,45 @@ class RegisterManagerActivity : AppCompatActivity() {
         binding = ActivityRegisterManagerBinding.inflate(LayoutInflater.from(this))
         setContentView(binding.root)
 
-        binding.buttonApply.setOnClickListener {
-            val user: UserBean? = try {
-                Gson().fromJson(Prefs.userInfo, UserBean::class.java)
-            } catch (e: Exception) {
-                null
-            }
-            if (user != null) {
-                lifecycleScope.launch(Dispatchers.IO) {
-                    val flag = try {
-                        UserUtils.applyAdmin(user.account!!, user.password!!, "1")
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                        false
-                    }
+        val user: UserBean? = try {
+            Gson().fromJson(Prefs.userInfo, UserBean::class.java)
+        } catch (e: Exception) {
+            null
+        }
+        if (user == null) {
+            Toast.makeText(this, "未登录，请先登录", Toast.LENGTH_SHORT).show()
+            return
+        }
 
-                    withContext(Dispatchers.Main) {
-                        if (flag) {
-                            CustomDialog.Builder2(this@RegisterManagerActivity)
-                                .setIcon(R.drawable.ic_alert_wait)
-                                .setTitle("已提交申请，请等待后台确认...")
-                                .setConfirmText(android.R.string.ok)
-                                .setConfirmListener {  }
-                                .show()
-                        } else {
-                            Toast.makeText(this@RegisterManagerActivity, "失败",Toast.LENGTH_LONG).show()
-                        }
+        binding.editTextTextPersonName.setText(user.phone)
+        binding.editTextTextPhone.setText(user.phone)
+
+        binding.buttonLogin.setOnClickListener {
+            Toast.makeText(this, "wait...", Toast.LENGTH_SHORT).show()
+        }
+
+        binding.buttonApply.setOnClickListener {
+            lifecycleScope.launch(Dispatchers.IO) {
+                val flag = try {
+                    UserUtils.applyAdmin(user.account!!, user.password!!, "1")
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    false
+                }
+
+                withContext(Dispatchers.Main) {
+                    if (flag) {
+                        CustomDialog.Builder2(this@RegisterManagerActivity)
+                            .setIcon(R.drawable.ic_alert_wait)
+                            .setTitle("已提交申请，请等待后台确认...")
+                            .setConfirmText(android.R.string.ok)
+                            .setConfirmListener {  }
+                            .show()
+                    } else {
+                        Toast.makeText(this@RegisterManagerActivity, "失败",Toast.LENGTH_LONG).show()
                     }
                 }
             }
-
         }
 
     }

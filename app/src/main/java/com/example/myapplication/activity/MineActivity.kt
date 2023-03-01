@@ -43,7 +43,8 @@ class MineActivity : AppCompatActivity() {
                     "名称：" + user.nickname + "\n" +
                     "账号：" + user.account + "\n" +
                     "角色：" + role + "\n" +
-                    "是否在申请管理员：" + if (user.isAdmin == 0) "否" else "是"
+                    "是否在申请管理员：" + if (user.isAdmin == 0) "否" else "是" +
+                    "\n\n" + user.toString()
         }
 
         binding.logout.setOnClickListener {

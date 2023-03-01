@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -16,15 +17,14 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
+import com.example.myapplication.activity.label.QuestionActivity
 import com.example.myapplication.adapter.BannerImageAdapter2
 import com.example.myapplication.databinding.ActivityMainBinding
-import com.example.myapplication.entity.AdminBean
-import com.example.myapplication.entity.BannerItem
-import com.example.myapplication.entity.NavItem
-import com.example.myapplication.entity.UserBean
+import com.example.myapplication.entity.*
 import com.example.myapplication.http.AdminUtils
 import com.example.myapplication.http.LabelImgUtils
 import com.example.myapplication.http.LabelUtils
+import com.example.myapplication.http.UserUtils
 import com.example.myapplication.utils.Prefs
 import com.example.myapplication.utils.Utils
 import com.example.myapplication.utils.extensions.toColor
@@ -80,12 +80,20 @@ class MainActivity : AppCompatActivity() {
             .addBannerLifecycleObserver(this)
             .setIndicator(CircleIndicator(this))
             .setLoopTime(1500)
-            .setOnBannerListener { data, position ->
+            .setOnBannerListener { data, position -> }
 
+        binding.content.bannerText.setOnClickListener {
+            val user: UserBean? = try {
+                Gson().fromJson(Prefs.userInfo, UserBean::class.java)
+            } catch (e: Exception) {
+                null
             }
-
-
-
+            if (user != null) {
+                startActivity(Intent(this, QuestionActivity::class.java).apply {
+                    putExtra("label_id", labelImgList.getOrNull(0)?.lid)
+                })
+            }
+        }
         binding.content.bottomScan.setOnClickListener {
             startActivity(Intent(this, ScanActivity::class.java))
         }
@@ -102,6 +110,50 @@ class MainActivity : AppCompatActivity() {
 
         initMainCard()
         initNavRecyclerView()
+
+        initNewInfo()
+    }
+
+    private fun initNewInfo() {
+        val user: UserBean = try {
+            Gson().fromJson(Prefs.userInfo, UserBean::class.java)
+        } catch (e: Exception) {
+            null
+        } ?: return
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            val responseBase: ResponseBase? = try {
+                if (Prefs.isLoginFromPhone) {
+                    UserUtils.loginWithPhone(user.phone!!)
+                } else {
+                    UserUtils.login(user.account!!, user.password!!)
+                }
+            } catch (e: Exception) {
+                null
+            }
+
+            val admin = try {
+                AdminUtils.getAdminById(user.belong.toString())
+            } catch (e: Exception) {
+                e.printStackTrace()
+                null
+            }
+
+            withContext(Dispatchers.Main) {
+                if (responseBase != null && responseBase.code == 200) {
+                    Prefs.userInfo = Gson().toJson(responseBase.data)
+                } else {
+                    Prefs.userInfo = ""
+                }
+
+                if (admin != null) {
+                    Prefs.adminInfo = Gson().toJson(admin)
+                } else {
+                    Prefs.adminInfo = ""
+                }
+            }
+        }
+
     }
 
     private fun initMainCard() {
@@ -203,60 +255,33 @@ class MainActivity : AppCompatActivity() {
             null
         }
 
-//        if (user == null) {
-//            Toast.makeText(this, "请先登录", Toast.LENGTH_SHORT).show()
-//            return
-//        }
+        if (user == null) {
+            Toast.makeText(this, "请先登录", Toast.LENGTH_SHORT).show()
+            return
+        }
 
-//        if (user.role == 2) {
+        if (user.role == 2) {
             startActivity(Intent(this, ManagerActivity::class.java))
-//        } else {
-//            Toast.makeText(this, "请先申请成为管理员", Toast.LENGTH_SHORT).show()
-//            startActivity(Intent(this, RegisterManagerActivity::class.java))
-//        }
+        } else {
+            Toast.makeText(this, "请先申请成为管理员", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, RegisterManagerActivity::class.java))
+        }
 
     }
 
     override fun onResume() {
         super.onResume()
-        val user: UserBean? = try {
-            Gson().fromJson(Prefs.userInfo, UserBean::class.java)
-        } catch (e: Exception) {
-            null
-        }
         val admin: AdminBean? = try {
             Gson().fromJson(Prefs.adminInfo, AdminBean::class.java)
         } catch (e: Exception) {
             null
         }
 
-        val curRegionId = if (user == null) {
-            "-1"  //全系统
-        } else {
-            user.belong.toString()
-        }
-
-        binding.content.contentTitle.text = if (curRegionId == "-1") "<全系统>" else admin?.name
-
-        lifecycleScope.launch(Dispatchers.IO) {
-            val admin = try {
-                AdminUtils.getAdminById(curRegionId)
-            } catch (e: Exception) {
-                e.printStackTrace()
-                null
-            }
-            withContext(Dispatchers.Main) {
-                if (admin != null) {
-                    binding.content.contentTitle.text = admin.name
-
-                    Prefs.adminInfo = Gson().toJson(admin)
-                }
-            }
-        }
+        binding.content.contentTitle.text = admin?.name
 
         lifecycleScope.launch(Dispatchers.IO) {
             val labelBean = try {
-                LabelUtils.getLabel(curRegionId)
+                LabelUtils.getLabel(admin?.id.toString())
             } catch (e: java.lang.Exception) {
                 e.printStackTrace()
                 null
@@ -264,7 +289,7 @@ class MainActivity : AppCompatActivity() {
 
             val img = if (labelBean != null && labelBean.visible == 1) {
                 try {
-                    LabelImgUtils.getLabelImgList(curRegionId)
+                    LabelImgUtils.getLabelImgList(labelBean.id.toString())
                 } catch (e: java.lang.Exception) {
                     e.printStackTrace()
                     null
@@ -284,7 +309,7 @@ class MainActivity : AppCompatActivity() {
                         BannerItem().apply {
                             this.id = it.id
                             this.imagePath = it.uri
-                            this.order = it.tid
+                            this.lid = it.lid
                         }
                     })
                 }

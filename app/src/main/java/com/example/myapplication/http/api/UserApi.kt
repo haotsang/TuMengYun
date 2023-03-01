@@ -64,7 +64,7 @@ interface UserApi {
     fun modifyBelong(
         @Part("account") account: RequestBody,
         @Part("id") id: RequestBody
-    ): Call<Boolean>
+    ): Call<ResponseBase>
 
 
 

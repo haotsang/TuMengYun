@@ -70,6 +70,8 @@ class CustomDialog(private val builder: Builder2) : AlertDialog(builder.context)
                 binding.dialogVDiver.visibility = View.GONE
             }
         }
+
+        setCancelable(builder.cancelable)
     }
 
     private fun initEvent(builder: Builder2) {
@@ -94,6 +96,8 @@ class CustomDialog(private val builder: Builder2) : AlertDialog(builder.context)
         var confirmListener: (() -> Unit)? = null
 
         var customView: View? = null
+
+        var cancelable: Boolean = true
 
         fun setIcon(icon: Int?): Builder2 {
             this.icon = icon
@@ -128,6 +132,11 @@ class CustomDialog(private val builder: Builder2) : AlertDialog(builder.context)
 
         fun setCustomView(v: View?): Builder2 {
             this.customView = v
+            return this
+        }
+
+        fun setCancelable(cancel: Boolean): Builder2 {
+            this.cancelable = cancel
             return this
         }
 

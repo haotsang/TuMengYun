@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
+import com.example.myapplication.activity.label.LabelActivity
 import com.example.myapplication.databinding.ActivityManagerBinding
 import com.example.myapplication.entity.AdminBean
 import com.example.myapplication.entity.SettingsItem

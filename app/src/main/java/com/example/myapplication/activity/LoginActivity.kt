@@ -144,6 +144,11 @@ class LoginActivity : AppCompatActivity() {
                         return;
                     }
                     v1.tvTip.text = ""
+
+                    ///
+                    val phoneNumber = PhoneUtils.trimTelNum(PhoneUtils.getNativePhoneNumber(this@LoginActivity))
+                        ?.replace("+", "")
+                    v1.tvPhoneNumber.text = phoneNumber?.replace("(\\d{3})\\d{4}(\\d{4})".toRegex(),"$1****$2") ?: "未知号码"
                 }
 
                 override fun onDenied(permissions: MutableList<String>, doNotAskAgain: Boolean) {

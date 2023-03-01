@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
 import com.example.myapplication.entity.AdminBean
 import com.example.myapplication.databinding.ActivityBaseListBinding
+import com.example.myapplication.entity.ResponseBase
 import com.example.myapplication.entity.UserBean
 import com.example.myapplication.http.AdminUtils
 import com.example.myapplication.http.UserUtils
@@ -74,20 +75,25 @@ class AdminActivity : AppCompatActivity() {
             val adminBean = list[position]
 
             lifecycleScope.launch(Dispatchers.IO) {
-                val flag = try {
+                val newUser: ResponseBase? = try {
                     UserUtils.modifyBelong(user.account!!, adminBean.id.toString())
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    false
+                    null
                 }
 
                 withContext(Dispatchers.Main) {
-                    if (flag) {
+                    if (newUser != null && newUser.code == 200) {
                         Prefs.adminInfo = Gson().toJson(adminBean)
+                        Prefs.userInfo = Gson().toJson(newUser.data)
+                        println("--------------------\n")
+                        println(Prefs.adminInfo)
+                        println("--------------------\n")
+                        println(Prefs.userInfo)
                         Toast.makeText(this@AdminActivity, "切换成功", Toast.LENGTH_SHORT).show()
                         finish()
                     } else {
-                        Toast.makeText(this@AdminActivity, "切换失败，请检查网络", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@AdminActivity, "切换失败，${newUser?.message}", Toast.LENGTH_SHORT).show()
                     }
                 }
             }

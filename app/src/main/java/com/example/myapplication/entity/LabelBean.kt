@@ -6,6 +6,5 @@ data class LabelBean(
     var content: String? = null,
     var question: Int = 0,
     var visible: Int = 0,
-    var region: Int = 0,
-    var type: Int = 0
+    var region: Int = 0
 )
