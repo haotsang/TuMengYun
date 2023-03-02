@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
@@ -19,12 +20,16 @@ import com.example.myapplication.http.UserUtils
 import com.example.myapplication.utils.Prefs
 import com.example.myapplication.utils.ViewUtils
 import com.example.myapplication.utils.extensions.setOnItemClickListener
+import com.example.myapplication.utils.livebus.LiveDataBus
+import com.example.myapplication.viewmodel.MainViewModel
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class AdminActivity : AppCompatActivity() {
+
+    private val mainViewModel by viewModels<MainViewModel>()
 
     private lateinit var binding: ActivityBaseListBinding
 
@@ -86,10 +91,8 @@ class AdminActivity : AppCompatActivity() {
                     if (newUser != null && newUser.code == 200) {
                         Prefs.adminInfo = Gson().toJson(adminBean)
                         Prefs.userInfo = Gson().toJson(newUser.data)
-                        println("--------------------\n")
-                        println(Prefs.adminInfo)
-                        println("--------------------\n")
-                        println(Prefs.userInfo)
+
+                        LiveDataBus.send("liveBus_update_label", true)
                         Toast.makeText(this@AdminActivity, "切换成功", Toast.LENGTH_SHORT).show()
                         finish()
                     } else {

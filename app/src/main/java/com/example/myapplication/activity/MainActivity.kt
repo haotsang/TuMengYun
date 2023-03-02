@@ -11,9 +11,11 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
@@ -25,18 +27,25 @@ import com.example.myapplication.http.AdminUtils
 import com.example.myapplication.http.LabelImgUtils
 import com.example.myapplication.http.LabelUtils
 import com.example.myapplication.http.UserUtils
+import com.example.myapplication.http.api.AdminApi
 import com.example.myapplication.utils.Prefs
+import com.example.myapplication.utils.RetrofitUtils
 import com.example.myapplication.utils.Utils
 import com.example.myapplication.utils.extensions.toColor
+import com.example.myapplication.utils.livebus.LiveDataBus
 import com.example.myapplication.view.CustomDialog
+import com.example.myapplication.viewmodel.MainViewModel
 import com.google.gson.Gson
 import com.youth.banner.indicator.CircleIndicator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlin.concurrent.thread
 
 
 class MainActivity : AppCompatActivity() {
+
+    private val mainViewModel by viewModels<MainViewModel>()
 
     private lateinit var binding: ActivityMainBinding
 
@@ -55,6 +64,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         binding = ActivityMainBinding.inflate(LayoutInflater.from(this))
         setContentView(binding.root)
 
@@ -112,6 +122,56 @@ class MainActivity : AppCompatActivity() {
         initNavRecyclerView()
 
         initNewInfo()
+
+        LiveDataBus.with("liveBus_update_label").observe(this) {
+            val admin: AdminBean? = try {
+                Gson().fromJson(Prefs.adminInfo, AdminBean::class.java)
+            } catch (e: Exception) {
+                null
+            }
+
+            binding.content.contentTitle.text = admin?.name
+
+            lifecycleScope.launch(Dispatchers.IO) {
+                val labelBean = try {
+                    LabelUtils.getLabel(admin?.id.toString())
+                } catch (e: java.lang.Exception) {
+                    e.printStackTrace()
+                    null
+                }
+
+                val img = if (labelBean != null && labelBean.visible == 1) {
+                    try {
+                        LabelImgUtils.getLabelImgList(labelBean.id.toString())
+                    } catch (e: java.lang.Exception) {
+                        e.printStackTrace()
+                        null
+                    }
+                } else null
+
+                withContext(Dispatchers.Main) {
+                    if (labelBean != null) {
+                        binding.content.bannerText.text = if (labelBean.visible == 1) {
+                            (labelBean.title ?: "未设置") + "\n" + (labelBean.content ?: "未设置")
+                        } else "未设置1"
+                    }
+
+                    labelImgList.clear()
+                    if (img != null) {
+                        labelImgList.addAll(img.map {
+                            BannerItem().apply {
+                                this.id = it.id
+                                this.imagePath = it.uri
+                                this.lid = it.lid
+                            }
+                        })
+                    }
+                    binding.content.banner.adapter.notifyDataSetChanged()
+
+                }
+            }
+        }
+        LiveDataBus.send("liveBus_update_label", true)
     }
 
     private fun initNewInfo() {
@@ -267,56 +327,6 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, RegisterManagerActivity::class.java))
         }
 
-    }
-
-    override fun onResume() {
-        super.onResume()
-        val admin: AdminBean? = try {
-            Gson().fromJson(Prefs.adminInfo, AdminBean::class.java)
-        } catch (e: Exception) {
-            null
-        }
-
-        binding.content.contentTitle.text = admin?.name
-
-        lifecycleScope.launch(Dispatchers.IO) {
-            val labelBean = try {
-                LabelUtils.getLabel(admin?.id.toString())
-            } catch (e: java.lang.Exception) {
-                e.printStackTrace()
-                null
-            }
-
-            val img = if (labelBean != null && labelBean.visible == 1) {
-                try {
-                    LabelImgUtils.getLabelImgList(labelBean.id.toString())
-                } catch (e: java.lang.Exception) {
-                    e.printStackTrace()
-                    null
-                }
-            } else null
-
-            withContext(Dispatchers.Main) {
-                if (labelBean != null) {
-                    binding.content.bannerText.text = if (labelBean.visible == 1) {
-                        (labelBean.title ?: "未设置") + "\n" + (labelBean.content ?: "未设置")
-                    } else "未设置1"
-                }
-
-                labelImgList.clear()
-                if (img != null) {
-                    labelImgList.addAll(img.map {
-                        BannerItem().apply {
-                            this.id = it.id
-                            this.imagePath = it.uri
-                            this.lid = it.lid
-                        }
-                    })
-                }
-                binding.content.banner.adapter.notifyDataSetChanged()
-
-            }
-        }
     }
 
 

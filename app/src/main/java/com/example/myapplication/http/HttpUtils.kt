@@ -12,6 +12,33 @@ import java.io.IOException
 object HttpUtils {
 
 
+    fun uploadImageFileTest(file: File) {
+        val url = "http://192.168.1.10:8085/label_img/upload_image"
+        val client = OkHttpClient()
+
+        val part = MultipartBody.Part.createFormData("file", file.name, file.asRequestBody("image/*".toMediaTypeOrNull()))
+
+        val body: RequestBody = MultipartBody.Builder()
+            .setType(MultipartBody.FORM)
+            .addPart(part)
+            .build()
+
+        val request: Request = Request.Builder()
+            .url(url)
+            .post(body)
+            .build()
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                println("-------------------->\n${e.stackTraceToString()}")
+            }
+            override fun onResponse(call: Call, response: Response) {
+                val result = response.body?.string()
+                println("-------------------->${result}")
+            }
+        })
+    }
+
+
     fun uploadImageFile(file: File, id: String) {
         val url = "http://106.15.94.206:8084/upload/image"
         val client = OkHttpClient()

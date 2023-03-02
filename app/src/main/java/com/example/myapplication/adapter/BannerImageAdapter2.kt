@@ -29,10 +29,11 @@ class BannerImageAdapter2(imageUrls: MutableList<BannerItem>, val context: Conte
     override fun onBindView(holder: ImageHolder, data: BannerItem, position: Int, size: Int) {
         Glide.with(holder.itemView)
             .load(data.imagePath)
+            .placeholder(R.drawable.ic_launcher_background)
             .apply(RequestOptions.bitmapTransform(RoundedCorners(30)))
             .into(holder.imageView)
 
-        holder.tvTitle.text = data.title
+//        holder.tvTitle.text = data.imagePath
     }
 
     class ImageHolder(view: View) : RecyclerView.ViewHolder(view) {

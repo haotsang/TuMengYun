@@ -14,11 +14,16 @@ import com.example.myapplication.databinding.ActivityLabelBinding
 import com.example.myapplication.databinding.ViewDialogSinglechoiceBinding
 import com.example.myapplication.entity.BannerItem
 import com.example.myapplication.entity.LabelBean
+import com.example.myapplication.entity.LabelImgBean
 import com.example.myapplication.entity.UserBean
+import com.example.myapplication.http.HttpUtils
 import com.example.myapplication.http.LabelImgUtils
 import com.example.myapplication.http.LabelUtils
+import com.example.myapplication.http.api.LabelImgApi
 import com.example.myapplication.utils.GlideEngine
 import com.example.myapplication.utils.Prefs
+import com.example.myapplication.utils.RetrofitUtils
+import com.example.myapplication.utils.livebus.LiveDataBus
 import com.example.myapplication.view.CustomDialog
 import com.google.gson.Gson
 import com.luck.picture.lib.basic.PictureSelector
@@ -30,6 +35,10 @@ import com.youth.banner.listener.OnPageChangeListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import java.io.File
 
 
 class LabelActivity: AppCompatActivity() {
@@ -40,7 +49,6 @@ class LabelActivity: AppCompatActivity() {
 
     private lateinit var adapter: BannerImageAdapter2
     private val labelImgList = mutableListOf<BannerItem>()
-
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -86,7 +94,8 @@ class LabelActivity: AppCompatActivity() {
                     positionOffset: Float,
                     positionOffsetPixels: Int,
                 ) {}
-                override fun onPageSelected(position: Int) {}
+                override fun onPageSelected(position: Int) {
+                }
                 override fun onPageScrollStateChanged(state: Int) {}
             })
         binding.banner2Text.setOnClickListener {
@@ -143,17 +152,36 @@ class LabelActivity: AppCompatActivity() {
                 .forResult(object : OnResultCallbackListener<LocalMedia?> {
                     override fun onResult(result: ArrayList<LocalMedia?>?) {
                         if (result != null) {
-                            if (labelImgList.size < 3) {
-                                for (i in 0 until Math.min(result.size, 3)) {
-                                    val item = BannerItem().apply {
-                                        imagePath = result.getOrNull(i)?.path
-                                    }
-                                    labelImgList.add(item)
+                            val dialog = CustomDialog.Builder2(this@LabelActivity)
+                                .setCancelable(false)
+                                .setCustomView(ProgressBar(this@LabelActivity))
+                                .show()
+
+                            val subList = result.map {
+                                BannerItem().apply {
+                                    imagePath = it?.path
                                 }
-                                adapter.notifyDataSetChanged()
-                            } else {
-                                Toast.makeText(this@LabelActivity, "你已选择3张图片，请移除后重新选择", Toast.LENGTH_SHORT).show()
                             }
+                            labelImgList.addAll(subList)
+                            adapter.notifyDataSetChanged()
+                            binding.banner2.setCurrentItem(0, true)
+
+                            lifecycleScope.launch(Dispatchers.IO) {
+                                for (item in subList) {
+                                    try {
+                                        val res = LabelImgUtils.uploadImage(labelBean?.id.toString())
+                                        val a = Gson().fromJson(res?.data?.toString(), LabelImgBean::class.java)
+                                        item.id = a.id
+                                    } catch (e: Exception) {
+                                        e.printStackTrace()
+                                    }
+                                }
+
+                                withContext(Dispatchers.Main) {
+                                    dialog.dismiss()
+                                }
+                            }
+
                         }
                     }
                     override fun onCancel() {}
@@ -161,10 +189,32 @@ class LabelActivity: AppCompatActivity() {
         }
 
         binding.buttonRemoveImg.setOnClickListener {
-            val i = if (binding.banner2.currentItem == 0) 0 else binding.banner2.currentItem - 1
-            if (labelImgList.size > 0) {
-                labelImgList.removeAt(i)
-                adapter.notifyDataSetChanged()
+            val item = labelImgList.getOrNull(binding.banner2.currentItem)
+            if (item != null) {
+                val dialog = CustomDialog.Builder2(this@LabelActivity)
+                    .setCancelable(false)
+                    .setCustomView(ProgressBar(this@LabelActivity))
+                    .show()
+
+                lifecycleScope.launch(Dispatchers.IO) {
+                    val flag = try {
+                        LabelImgUtils.deleteLabelImg(item.imagePath.toString(), item.id.toString())
+                    } catch (e: Exception) {
+                        false
+                    }
+                    withContext(Dispatchers.Main) {
+                        dialog.dismiss()
+                        if (flag) {
+                            labelImgList.remove(item)
+                            adapter.notifyDataSetChanged()
+                            binding.banner2.setCurrentItem(0, true)
+
+                            Toast.makeText(this@LabelActivity, "删除成功", Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(this@LabelActivity, "删除失败", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
             }
         }
 
@@ -214,6 +264,7 @@ class LabelActivity: AppCompatActivity() {
                     })
                 }
                 adapter.notifyDataSetChanged()
+                binding.banner2.setCurrentItem(0, true)
 
                 updateViewStatus()
 
@@ -221,6 +272,11 @@ class LabelActivity: AppCompatActivity() {
         }
 
 
+    }
+
+    override fun onDestroy() {
+        LiveDataBus.send("liveBus_update_label", true)
+        super.onDestroy()
     }
 
     private fun updateViewStatus() {

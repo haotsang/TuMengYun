@@ -18,7 +18,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="64dp"
-        android:text="1111111"
         android:textStyle="bold"
         android:textSize="24sp"
         android:gravity="center"

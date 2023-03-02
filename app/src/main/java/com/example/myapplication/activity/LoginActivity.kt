@@ -18,6 +18,7 @@ import com.example.myapplication.utils.PhoneUtils
 import com.example.myapplication.utils.Prefs
 import com.example.myapplication.utils.Utils
 import com.example.myapplication.http.UserUtils
+import com.example.myapplication.utils.livebus.LiveDataBus
 import com.google.gson.Gson
 import com.hjq.permissions.OnPermissionCallback
 import com.hjq.permissions.Permission
@@ -177,6 +178,7 @@ class LoginActivity : AppCompatActivity() {
                         Prefs.userInfo = Gson().toJson(responseBase.data)
                         Prefs.isLoginFromPhone = false
 
+                        LiveDataBus.send("liveBus_update_label", true)
                         Toast.makeText(this@LoginActivity, "登录成功！", Toast.LENGTH_LONG).show()
                         finish()
                     } else {
@@ -206,6 +208,7 @@ class LoginActivity : AppCompatActivity() {
                     Prefs.userInfo = Gson().toJson(responseBase.data)
                     Prefs.isLoginFromPhone = true
 
+                    LiveDataBus.send("liveBus_update_label", true)
                     Toast.makeText(this@LoginActivity, "登录成功！", Toast.LENGTH_LONG).show()
                     finish()
                 } else {
