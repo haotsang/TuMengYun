@@ -113,7 +113,6 @@ class QuestionAddActivity : AppCompatActivity() {
                 this.answerD = answerD
                 this.rightAnswer = rightAnswer
                 this.explanation = ""
-                this.selectedAnswer = ""
                 this.startTime = startTime
                 this.endTime = endTime
                 this.reward = reward.toInt()

@@ -24,4 +24,11 @@ class MultiStatusButton @JvmOverloads constructor(
             setTextColor(ContextCompat.getColorStateList(context, R.color.text_selector_disabled))
         }
     }
+
+    override fun isEnabled(): Boolean {
+        val enable = super.isEnabled()
+//        setStatus(!enable)
+
+        return enable
+    }
 }

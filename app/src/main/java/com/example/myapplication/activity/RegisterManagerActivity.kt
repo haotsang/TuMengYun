@@ -8,8 +8,10 @@ import androidx.lifecycle.lifecycleScope
 import com.example.myapplication.R
 import com.example.myapplication.entity.UserBean
 import com.example.myapplication.databinding.ActivityRegisterManagerBinding
+import com.example.myapplication.entity.ResponseBase
 import com.example.myapplication.http.UserUtils
 import com.example.myapplication.utils.Prefs
+import com.example.myapplication.utils.livebus.LiveDataBus
 import com.example.myapplication.view.CustomDialog
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
@@ -40,7 +42,7 @@ class RegisterManagerActivity : AppCompatActivity() {
         binding.editTextTextPhone.setText(user.phone)
 
         binding.buttonLogin.setOnClickListener {
-            Toast.makeText(this, "wait...", Toast.LENGTH_SHORT).show()
+            loginWithPhone(user.phone!!, true)
         }
 
         binding.buttonApply.setOnClickListener {
@@ -67,5 +69,40 @@ class RegisterManagerActivity : AppCompatActivity() {
             }
         }
 
+    }
+
+    private fun loginWithPhone(phone: String, saveState: Boolean) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            val responseBase: ResponseBase? = try {
+                UserUtils.loginWithPhone(phone)
+            } catch (e: Exception) {
+                null
+            }
+            withContext(Dispatchers.Main) {
+                if (responseBase != null && responseBase.code == 200) {
+                    val newUser = Gson().fromJson(Gson().toJson(responseBase.data), UserBean::class.java)
+                    if (newUser.role == 2) {
+                        Prefs.isSaveStatus = saveState
+                        Prefs.userInfo = Gson().toJson(responseBase.data)
+                        Prefs.isLoginFromPhone = true
+
+                        LiveDataBus.send("liveBus_update_info", true)
+                        LiveDataBus.send("liveBus_update_label", true)
+                        Toast.makeText(this@RegisterManagerActivity, "管理员登录成功！", Toast.LENGTH_LONG).show()
+                        finish()
+                    } else {
+                        Toast.makeText(this@RegisterManagerActivity, "您不是管理员，请重新申请或等待系统却认", Toast.LENGTH_LONG).show()
+                    }
+                } else {
+                    Prefs.isSaveStatus = false
+                    Prefs.userInfo = ""
+                    Toast.makeText(
+                        this@RegisterManagerActivity,
+                        "登录失败，${responseBase?.message}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+        }
     }
 }

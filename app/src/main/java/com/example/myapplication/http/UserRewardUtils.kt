@@ -1,30 +1,30 @@
 package com.example.myapplication.http
 
-import com.example.myapplication.entity.ResponseBase
-import com.example.myapplication.entity.UserQuestionBean
 import com.example.myapplication.http.api.UserQuestionApi
+import com.example.myapplication.http.api.UserRewardApi
 import com.example.myapplication.utils.RetrofitUtils
 import okhttp3.RequestBody.Companion.toRequestBody
 
-object UserQuestionUtils {
+object UserRewardUtils {
+
 
     @Throws(Exception::class)
-    fun isAlreadyAnswered(jsonString: String): ResponseBase? {
+    fun getReward(uid: String, region: String): Int {
         val retrofit = RetrofitUtils.getInstance().retrofit
-        val call = retrofit.create(UserQuestionApi::class.java).isAlreadyAnswered(jsonString.toRequestBody())
+        val call = retrofit.create(UserRewardApi::class.java).getReward(uid.toRequestBody(), region.toRequestBody())
         val response = call.execute()
         val result = response.body()
 
         if (result != null) {
             return result
         }
-        return null
+        return 0
     }
 
     @Throws(Exception::class)
-    fun setAnswered(uid: String, qid: String, selected: String): Boolean {
+    fun setReward(uid: String, region: String, reward: String): Boolean {
         val retrofit = RetrofitUtils.getInstance().retrofit
-        val call = retrofit.create(UserQuestionApi::class.java).setAnswered(uid.toRequestBody(), qid.toRequestBody(), selected.toRequestBody())
+        val call = retrofit.create(UserRewardApi::class.java).setReward(uid.toRequestBody(), region.toRequestBody(), reward.toRequestBody())
         val response = call.execute()
         val result = response.body()
 

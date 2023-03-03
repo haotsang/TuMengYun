@@ -8,6 +8,7 @@ buildscript {
         jcenter() // Warning: this repository is going to shut down soon
         maven { url "https://jitpack.io" }
         maven { url 'https://repo1.maven.org/maven2/' }
+        //banner2
         maven { url "https://s01.oss.sonatype.org/content/groups/public" }
         ///
         maven { url 'https://maven.aliyun.com/repository/central' }
@@ -35,6 +36,7 @@ allprojects {
 
         maven { url "https://jitpack.io" }
         maven { url 'https://repo1.maven.org/maven2/' }
+        //banner2
         maven { url "https://s01.oss.sonatype.org/content/groups/public" }
         ///
         maven { url 'https://maven.aliyun.com/repository/central' }

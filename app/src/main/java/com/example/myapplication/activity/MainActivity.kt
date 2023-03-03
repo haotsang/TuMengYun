@@ -40,6 +40,7 @@ import com.youth.banner.indicator.CircleIndicator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
 import kotlin.concurrent.thread
 
 
@@ -121,57 +122,70 @@ class MainActivity : AppCompatActivity() {
         initMainCard()
         initNavRecyclerView()
 
-        initNewInfo()
+        LiveDataBus.with("liveBus_update_info").observe(this) {
+            println("###   "+"liveBus_update_info")
+            initNewInfo()
+        }
+        LiveDataBus.send("liveBus_update_info", true)
 
         LiveDataBus.with("liveBus_update_label").observe(this) {
-            val admin: AdminBean? = try {
-                Gson().fromJson(Prefs.adminInfo, AdminBean::class.java)
-            } catch (e: Exception) {
+            println("###   "+"liveBus_update_label")
+            initNewLabel()
+        }
+        LiveDataBus.send("liveBus_update_label", true)
+
+    }
+
+
+    private fun initNewLabel() {
+        val admin: AdminBean? = try {
+            Gson().fromJson(Prefs.adminInfo, AdminBean::class.java)
+        } catch (e: Exception) {
+            null
+        }
+
+        binding.content.contentTitle.text = admin?.name ?: ""
+
+        if (admin == null) return
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            val labelBean = try {
+                LabelUtils.getLabel(admin.id.toString())
+            } catch (e: java.lang.Exception) {
+                e.printStackTrace()
                 null
             }
 
-            binding.content.contentTitle.text = admin?.name
-
-            lifecycleScope.launch(Dispatchers.IO) {
-                val labelBean = try {
-                    LabelUtils.getLabel(admin?.id.toString())
+            val img = if (labelBean != null && labelBean.visible == 1) {
+                try {
+                    LabelImgUtils.getLabelImgList(labelBean.id.toString())
                 } catch (e: java.lang.Exception) {
                     e.printStackTrace()
                     null
                 }
+            } else null
 
-                val img = if (labelBean != null && labelBean.visible == 1) {
-                    try {
-                        LabelImgUtils.getLabelImgList(labelBean.id.toString())
-                    } catch (e: java.lang.Exception) {
-                        e.printStackTrace()
-                        null
-                    }
-                } else null
-
-                withContext(Dispatchers.Main) {
-                    if (labelBean != null) {
-                        binding.content.bannerText.text = if (labelBean.visible == 1) {
-                            (labelBean.title ?: "未设置") + "\n" + (labelBean.content ?: "未设置")
-                        } else "未设置1"
-                    }
-
-                    labelImgList.clear()
-                    if (img != null) {
-                        labelImgList.addAll(img.map {
-                            BannerItem().apply {
-                                this.id = it.id
-                                this.imagePath = it.uri
-                                this.lid = it.lid
-                            }
-                        })
-                    }
-                    binding.content.banner.adapter.notifyDataSetChanged()
-
+            withContext(Dispatchers.Main) {
+                if (labelBean != null) {
+                    binding.content.bannerText.text = if (labelBean.visible == 1) {
+                        (labelBean.title ?: "未设置") + "\n" + (labelBean.content ?: "未设置")
+                    } else "未设置1"
                 }
+
+                labelImgList.clear()
+                if (img != null) {
+                    labelImgList.addAll(img.map {
+                        BannerItem().apply {
+                            this.id = it.id
+                            this.imagePath = it.uri
+                            this.lid = it.lid
+                        }
+                    })
+                }
+                binding.content.banner.adapter.notifyDataSetChanged()
+
             }
         }
-        LiveDataBus.send("liveBus_update_label", true)
     }
 
     private fun initNewInfo() {
@@ -211,6 +225,13 @@ class MainActivity : AppCompatActivity() {
                 } else {
                     Prefs.adminInfo = ""
                 }
+
+//                try {
+//                    binding.content.contentTitle.text =
+//                        Gson().fromJson(Prefs.adminInfo, AdminBean::class.java)?.name ?:""
+//                } catch (e: Exception) {
+//                    e.printStackTrace()
+//                }
             }
         }
 
@@ -334,6 +355,18 @@ class MainActivity : AppCompatActivity() {
         if (!Prefs.isSaveStatus) {
             Prefs.userInfo = ""
         }
+
+        val user: UserBean? = try {
+            Gson().fromJson(Prefs.userInfo, UserBean::class.java)
+        } catch (e: Exception) {
+            null
+        }
+        if (user != null) {
+            val file = File(getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), "${user.id}.questions")
+            if (file.exists()) file.delete()
+        }
+
+
         super.onDestroy()
     }
 

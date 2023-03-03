@@ -98,11 +98,6 @@ class LabelActivity: AppCompatActivity() {
                 }
                 override fun onPageScrollStateChanged(state: Int) {}
             })
-        binding.banner2Text.setOnClickListener {
-            startActivity(Intent(this, QuestionActivity::class.java).apply {
-                putExtra("label_id", labelBean?.id)
-            })
-        }
 
         var isAll = labelBean?.region == -1
         binding.buttonViewMothed.setOnClickListener {
@@ -162,22 +157,25 @@ class LabelActivity: AppCompatActivity() {
                                     imagePath = it?.path
                                 }
                             }
-                            labelImgList.addAll(subList)
-                            adapter.notifyDataSetChanged()
-                            binding.banner2.setCurrentItem(0, true)
 
                             lifecycleScope.launch(Dispatchers.IO) {
                                 for (item in subList) {
+                                    if (item.imagePath.isNullOrEmpty()) continue
                                     try {
-                                        val res = LabelImgUtils.uploadImage(labelBean?.id.toString())
-                                        val a = Gson().fromJson(res?.data?.toString(), LabelImgBean::class.java)
-                                        item.id = a.id
+                                        val res = LabelImgUtils.uploadImage(File(item.imagePath!!), labelBean?.id.toString())
+                                        val data = Gson().fromJson(Gson().toJson(res?.data), LabelImgBean::class.java)
+                                        item.id = data.id
+                                        item.imagePath = data.uri
                                     } catch (e: Exception) {
                                         e.printStackTrace()
                                     }
                                 }
 
                                 withContext(Dispatchers.Main) {
+                                    labelImgList.addAll(subList)
+                                    binding.banner2.setDatas(labelImgList)
+
+                                    println(labelImgList.joinToString("\n"))
                                     dialog.dismiss()
                                 }
                             }
@@ -206,8 +204,7 @@ class LabelActivity: AppCompatActivity() {
                         dialog.dismiss()
                         if (flag) {
                             labelImgList.remove(item)
-                            adapter.notifyDataSetChanged()
-                            binding.banner2.setCurrentItem(0, true)
+                            binding.banner2.setDatas(labelImgList)
 
                             Toast.makeText(this@LabelActivity, "删除成功", Toast.LENGTH_SHORT).show()
                         } else {
@@ -263,8 +260,7 @@ class LabelActivity: AppCompatActivity() {
                         }
                     })
                 }
-                adapter.notifyDataSetChanged()
-                binding.banner2.setCurrentItem(0, true)
+                binding.banner2.setDatas(labelImgList)
 
                 updateViewStatus()
 

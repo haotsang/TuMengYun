@@ -178,9 +178,9 @@ class AfterServiceActivity : AppCompatActivity() {
                 inductor.text = "${(viewPager?.currentItem ?: 0) + 1}/${list.size}"
 
                 ///
-                if (!BuildConfig.DEBUG) {
+//                if (!BuildConfig.DEBUG) {
                     HttpUtils.uploadImageFile(imageFile, _id)
-                }
+//                }
             } catch (e: FileNotFoundException) {
                 e.printStackTrace()
             }

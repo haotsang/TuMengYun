@@ -30,13 +30,13 @@ object LabelImgUtils {
     }
 
 
-    fun uploadImage(lid: String): ResponseBase? {
-//        val part = MultipartBody.Part.createFormData("file", file.name, file.asRequestBody("image/*".toMediaTypeOrNull()))
+    fun uploadImage(file: File, lid: String): ResponseBase? {
+        val part = MultipartBody.Part.createFormData("file", file.name, file.asRequestBody("image/*".toMediaTypeOrNull()))
 //        val fileBody: RequestBody = file.asRequestBody("image/*".toMediaTypeOrNull())
 
 
         val retrofit = RetrofitUtils.getInstance().retrofit
-        val call = retrofit.create(LabelImgApi::class.java).uploadLabelImg2(lid.toRequestBody())
+        val call = retrofit.create(LabelImgApi::class.java).uploadLabelImg2(part, lid.toRequestBody())
         val response = call.execute()
         val result = response.body()
 

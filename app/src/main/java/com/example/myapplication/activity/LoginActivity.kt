@@ -84,8 +84,9 @@ class LoginActivity : AppCompatActivity() {
         v1.tvPhoneNumber.text = phoneNumber?.replace("(\\d{3})\\d{4}(\\d{4})".toRegex(),"$1****$2") ?: "未知号码"
         v1.tvTip.text = ""
         v1.btnAutoLogin.setOnClickListener {
-            if (Utils.isMobileNO(phoneNumber)) {
-                loginWithPhone(phoneNumber!!, saveState = true)
+            val relPhone = v1.tvPhoneNumber.hint.toString()
+            if (Utils.isMobileNO(relPhone)) {
+                loginWithPhone(relPhone, saveState = true)
             } else {
                 Toast.makeText(this, "未知号码，自动登录失败", Toast.LENGTH_SHORT).show()
             }
@@ -149,6 +150,7 @@ class LoginActivity : AppCompatActivity() {
                     ///
                     val phoneNumber = PhoneUtils.trimTelNum(PhoneUtils.getNativePhoneNumber(this@LoginActivity))
                         ?.replace("+", "")
+                    v1.tvPhoneNumber.hint = phoneNumber
                     v1.tvPhoneNumber.text = phoneNumber?.replace("(\\d{3})\\d{4}(\\d{4})".toRegex(),"$1****$2") ?: "未知号码"
                 }
 
@@ -178,6 +180,7 @@ class LoginActivity : AppCompatActivity() {
                         Prefs.userInfo = Gson().toJson(responseBase.data)
                         Prefs.isLoginFromPhone = false
 
+                        LiveDataBus.send("liveBus_update_info", true)
                         LiveDataBus.send("liveBus_update_label", true)
                         Toast.makeText(this@LoginActivity, "登录成功！", Toast.LENGTH_LONG).show()
                         finish()
@@ -208,6 +211,7 @@ class LoginActivity : AppCompatActivity() {
                     Prefs.userInfo = Gson().toJson(responseBase.data)
                     Prefs.isLoginFromPhone = true
 
+                    LiveDataBus.send("liveBus_update_info", true)
                     LiveDataBus.send("liveBus_update_label", true)
                     Toast.makeText(this@LoginActivity, "登录成功！", Toast.LENGTH_LONG).show()
                     finish()

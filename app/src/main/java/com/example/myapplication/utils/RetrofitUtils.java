@@ -85,8 +85,8 @@ public class RetrofitUtils {
 
         Retrofit retrofit = new Retrofit.Builder()
                 .client(okHttpClient)
-//                .baseUrl("http://106.15.94.206:8085/")
-                .baseUrl("http://192.168.1.10:8085/")
+                .baseUrl("http://106.15.94.206:8085/")
+//                .baseUrl("http://192.168.1.10:8085/")
                 .addCallAdapterFactory(new LiveDataCallAdapterFactory())
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();

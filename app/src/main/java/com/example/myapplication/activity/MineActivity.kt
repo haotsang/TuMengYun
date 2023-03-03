@@ -7,8 +7,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.myapplication.entity.UserBean
 import com.example.myapplication.databinding.ActivityMineBinding
+import com.example.myapplication.entity.AdminBean
+import com.example.myapplication.http.UserRewardUtils
 import com.example.myapplication.http.UserUtils
 import com.example.myapplication.utils.Prefs
+import com.example.myapplication.utils.livebus.LiveDataBus
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -28,6 +31,11 @@ class MineActivity : AppCompatActivity() {
         } catch (e: Exception) {
             null
         }
+        val admin: AdminBean? = try {
+            Gson().fromJson(Prefs.adminInfo, AdminBean::class.java)
+        } catch (e: Exception) {
+            null
+        }
 
         if (user == null) {
             binding.textView7.text = "请先登录"
@@ -39,18 +47,41 @@ class MineActivity : AppCompatActivity() {
                 2 -> "管理员"
                 else -> null
             }
-            binding.textView7.text = "已登录：" + "\n" +
+            val s = "已登录：" + "\n" +
                     "名称：" + user.nickname + "\n" +
                     "账号：" + user.account + "\n" +
                     "角色：" + role + "\n" +
                     "是否在申请管理员：" + if (user.isAdmin == 0) "否" else "是" +
-                    "\n\n" + user.toString()
+                    "\n\n" + user.toString() +
+
+                    "\n\n" + admin.toString() +
+                    "\n\n" + "积分：{@}"
+            binding.textView7.text = s
+
+
+            lifecycleScope.launch(Dispatchers.IO) {
+                val reward = try {
+                    UserRewardUtils.getReward(user.id.toString(), admin?.id.toString())
+                } catch (e:Exception){
+                    e.printStackTrace()
+                    0
+                }
+                withContext(Dispatchers.Main){
+                    val s2 = s.replace("{@}", "" + reward)
+                    binding.textView7.text = s2
+                }
+
+            }
+
         }
 
         binding.logout.setOnClickListener {
             Prefs.userInfo = ""
+            Prefs.adminInfo = ""
             Prefs.isSaveStatus = false
 
+            LiveDataBus.send("liveBus_update_info", true)
+            LiveDataBus.send("liveBus_update_label", true)
             finish()
         }
 
@@ -65,7 +96,11 @@ class MineActivity : AppCompatActivity() {
                 withContext(Dispatchers.Main) {
                     if (b) {
                         Prefs.userInfo = ""
+                        Prefs.adminInfo = ""
                         Prefs.isSaveStatus = false
+
+                        LiveDataBus.send("liveBus_update_info", true)
+                        LiveDataBus.send("liveBus_update_label", true)
 
                         Toast.makeText(this@MineActivity, "注销成功", Toast.LENGTH_SHORT).show()
                         finish()

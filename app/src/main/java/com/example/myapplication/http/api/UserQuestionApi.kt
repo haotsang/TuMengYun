@@ -1,5 +1,7 @@
 package com.example.myapplication.http.api
 
+import com.example.myapplication.entity.ResponseBase
+import com.example.myapplication.entity.UserQuestionBean
 import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.Multipart
@@ -12,13 +14,14 @@ interface UserQuestionApi {
     @POST("user_question/already_answered")
     fun isAlreadyAnswered(
         @Part("jsonString") jsonString: RequestBody
-    ): Call<Boolean>
+    ): Call<ResponseBase>
 
 
     @Multipart
     @POST("user_question/answered")
     fun setAnswered(
         @Part("uid") uid: RequestBody,
-        @Part("qid") qid: RequestBody
+        @Part("qid") qid: RequestBody,
+        @Part("selected") selected: RequestBody,
     ): Call<Boolean>
 }

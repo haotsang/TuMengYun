@@ -27,9 +27,10 @@ class BannerImageAdapter2(imageUrls: MutableList<BannerItem>, val context: Conte
     }
 
     override fun onBindView(holder: ImageHolder, data: BannerItem, position: Int, size: Int) {
+        val url = "http://106.15.94.206:8081/img/" + data.imagePath
         Glide.with(holder.itemView)
-            .load(data.imagePath)
-            .placeholder(R.drawable.ic_launcher_background)
+            .load(url)
+            .placeholder(R.drawable.bg)
             .apply(RequestOptions.bitmapTransform(RoundedCorners(30)))
             .into(holder.imageView)
 

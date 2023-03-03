@@ -13,11 +13,13 @@ data class LabelQuestionBean(
 
     //解释
     var explanation: String? = null,
-
-    //用户选择的答案
-    var selectedAnswer: String? = null,
     var startTime: Date? = null,
     var endTime: Date? = null,
     var reward: Int? = 0,
     var labelId: Int? = null,
+
+
+    var alreadyAnswered: Boolean = false,
+    //用户选择的答案
+    var selectedAnswer: String = "",
 )

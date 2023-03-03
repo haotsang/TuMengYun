@@ -89,6 +89,7 @@ class RegisterActivity : AppCompatActivity() {
                             Prefs.userInfo = Gson().toJson(responseBase.data)
                             Prefs.isLoginFromPhone = false
 
+                            LiveDataBus.send("liveBus_update_info", true)
                             LiveDataBus.send("liveBus_update_label", true)
                             Toast.makeText(this@RegisterActivity, "注册成功，已登录！", Toast.LENGTH_LONG).show()
                             finish()

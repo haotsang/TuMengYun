@@ -21,7 +21,7 @@ interface LabelImgApi {
 
     @Multipart
     @POST("label_img/upload_image")
-    fun uploadLabelImg2(@Part("lid") lid: RequestBody): Call<ResponseBase>
+    fun uploadLabelImg2(@Part part: MultipartBody.Part, @Part("lid") lid: RequestBody): Call<ResponseBase>
 
     @Multipart
     @POST("label_img/delete_image")

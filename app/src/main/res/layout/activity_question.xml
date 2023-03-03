@@ -167,6 +167,15 @@
                     />
 
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_already_answered"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textSize="38sp"
+                android:text="已回答"
+                android:visibility="gone"/>
         </com.google.android.material.card.MaterialCardView>
 
         <LinearLayout
