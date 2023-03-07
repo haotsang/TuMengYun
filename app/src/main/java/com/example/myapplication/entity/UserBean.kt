@@ -9,7 +9,9 @@ data class UserBean(
     var password: String? = null,
     var phone: String? = null,
     var role: Int = 0,
-    var isAdmin: Int = 0,
-    var belong: Int = -1,
-    var createTime: Date?=null
+    var pin: String? = null,
+    var createTime: Date?=null,
+    var isApply: Int = 0,
+    var applyTime: Date?=null,
+
 )

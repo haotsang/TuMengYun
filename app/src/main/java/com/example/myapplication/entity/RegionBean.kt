@@ -1,6 +1,6 @@
 package com.example.myapplication.entity
 
-data class AdminBean(
+data class RegionBean(
     var id: Int? = null,
     var name: String? = null,
     var account: String? = null,
@@ -8,5 +8,6 @@ data class AdminBean(
     var contactName: String? = null,
     var contactPhone: String? = null,
     var address: String? = null,
-    var enable: Int = 0
+    var enable: Int = 0,
+    var pin: String? = null,
 )

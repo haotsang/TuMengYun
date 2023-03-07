@@ -1,7 +1,10 @@
 package com.example.myapplication.activity.label
 
 import android.content.Intent
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.view.LayoutInflater
 import android.widget.ProgressBar
 import android.widget.Toast
@@ -13,18 +16,17 @@ import com.example.myapplication.adapter.BannerImageAdapter2
 import com.example.myapplication.databinding.ActivityLabelBinding
 import com.example.myapplication.databinding.ViewDialogSinglechoiceBinding
 import com.example.myapplication.entity.BannerItem
-import com.example.myapplication.entity.LabelBean
 import com.example.myapplication.entity.LabelImgBean
-import com.example.myapplication.entity.UserBean
-import com.example.myapplication.http.HttpUtils
+import com.example.myapplication.entity.ResponseBase
 import com.example.myapplication.http.LabelImgUtils
 import com.example.myapplication.http.LabelUtils
-import com.example.myapplication.http.api.LabelImgApi
 import com.example.myapplication.utils.GlideEngine
+import com.example.myapplication.utils.JavaHelper
 import com.example.myapplication.utils.Prefs
-import com.example.myapplication.utils.RetrofitUtils
 import com.example.myapplication.utils.livebus.LiveDataBus
 import com.example.myapplication.view.CustomDialog
+import com.example.myapplication.viewmodel.LabelViewModel
+import com.example.myapplication.viewmodel.UserViewModel
 import com.google.gson.Gson
 import com.luck.picture.lib.basic.PictureSelector
 import com.luck.picture.lib.config.SelectMimeType
@@ -35,17 +37,13 @@ import com.youth.banner.listener.OnPageChangeListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
+import java.io.IOException
 
 
 class LabelActivity: AppCompatActivity() {
 
     private lateinit var binding: ActivityLabelBinding
-
-    private var labelBean: LabelBean? = null
 
     private lateinit var adapter: BannerImageAdapter2
     private val labelImgList = mutableListOf<BannerItem>()
@@ -55,10 +53,10 @@ class LabelActivity: AppCompatActivity() {
         if (data != null && requestCode == 0 && resultCode == 3) {
             val title = data.getStringExtra("title")
             val content = data.getStringExtra("content")
-            labelBean?.title = title
-            labelBean?.content = content
+            LabelViewModel.label?.title = title
+            LabelViewModel.label?.content = content
 
-            binding.banner2Text.text = (labelBean?.title ?: "未设置") + "\n" + (labelBean?.content ?: "未设置")
+            binding.banner2Text.text = (LabelViewModel.label?.title ?: "未设置") + "\n" + (LabelViewModel.label?.content ?: "未设置")
             submitToCloud()
 
         }
@@ -71,17 +69,11 @@ class LabelActivity: AppCompatActivity() {
 
         binding.labelToolbarBack.setOnClickListener { finish() }
 
-        val user: UserBean? = try {
-            Gson().fromJson(Prefs.userInfo, UserBean::class.java)
-        } catch (e: Exception) {
-            null
-        }
-
-        if (user == null) {
+        if (UserViewModel.user == null) {
             Toast.makeText(this, "未登录，请先登录", Toast.LENGTH_SHORT).show()
             return
         }
-        val curRegionId = user.belong.toString()
+        val curRegionId = UserViewModel.user?.pin.toString()
 
         adapter = BannerImageAdapter2(labelImgList, this)
         binding.banner2.setAdapter(adapter)
@@ -99,7 +91,7 @@ class LabelActivity: AppCompatActivity() {
                 override fun onPageScrollStateChanged(state: Int) {}
             })
 
-        var isAll = labelBean?.region == -1
+        var isAll = false//labelBean?.pin == -1
         binding.buttonViewMothed.setOnClickListener {
             val v = ViewDialogSinglechoiceBinding.inflate(LayoutInflater.from(this))
             v.radioGroup.setOnCheckedChangeListener { radioGroup, i ->
@@ -117,24 +109,24 @@ class LabelActivity: AppCompatActivity() {
                 .setCancelListener {  }
                 .setConfirmListener {
                     if (isAll) {
-                        labelBean?.region = -1
+//                        labelBean?.pin = -1
                     } else {
-                        labelBean?.region = curRegionId.toInt()
+//                        labelBean?.pin = curRegionId.toInt()
                     }
                 }.show()
         }
 
-        binding.buttonAddQuestion.setOnClickListener {
-            startActivity(Intent(this, QuestionAddActivity::class.java).apply {
-                putExtra("label_id", labelBean?.id)
+        binding.buttonQuestionList.setOnClickListener {
+            startActivity(Intent(this, QuestionListActivity::class.java).apply {
+                putExtra("label_id", LabelViewModel.label?.id)
             })
         }
 
         binding.buttonAddText.setOnClickListener {
             startActivityForResult(
                 Intent(this, LabelTitleEditActivity::class.java).apply {
-                    putExtra("title", labelBean?.title)
-                    putExtra("content", labelBean?.content)
+                    putExtra("title", LabelViewModel.label?.title)
+                    putExtra("content", LabelViewModel.label?.content)
                 }, 0
             )
         }
@@ -152,20 +144,53 @@ class LabelActivity: AppCompatActivity() {
                                 .setCustomView(ProgressBar(this@LabelActivity))
                                 .show()
 
-                            val subList = result.map {
-                                BannerItem().apply {
-                                    imagePath = it?.path
-                                }
-                            }
-
                             lifecycleScope.launch(Dispatchers.IO) {
+                                val subList = result.map {
+                                    val realPath = if (Build.VERSION.SDK_INT >= 29) {
+                                        try {
+                                            val input =
+                                                contentResolver.openInputStream(Uri.parse(it?.path!!))
+                                            val file = File(
+                                                getExternalFilesDir(Environment.DIRECTORY_PICTURES),
+                                                System.currentTimeMillis().toString()
+                                            )
+                                            val p = JavaHelper.streamToFile(input, file)
+                                            input?.close()
+
+                                            p
+                                        } catch (e: IOException) {
+                                            e.printStackTrace()
+                                            ""
+                                        }
+                                    } else it?.path
+
+
+                                    BannerItem().apply {
+                                        imagePath = realPath
+                                    }
+                                }
+
+
                                 for (item in subList) {
-                                    if (item.imagePath.isNullOrEmpty()) continue
                                     try {
-                                        val res = LabelImgUtils.uploadImage(File(item.imagePath!!), labelBean?.id.toString())
-                                        val data = Gson().fromJson(Gson().toJson(res?.data), LabelImgBean::class.java)
-                                        item.id = data.id
-                                        item.imagePath = data.uri
+                                        println("@@@@@" + item.imagePath!! + "\n")
+//                                        val realPath = RealPathUtil.getPath(this@LabelActivity, Uri.parse(item.imagePath!!))
+                                        val res = try {
+                                            LabelImgUtils.uploadImage(
+                                                File(item.imagePath!!),
+                                                LabelViewModel.label?.id.toString()
+                                            )
+                                        } catch (e: Exception) {
+                                            e.printStackTrace()
+                                            null
+                                        }
+
+                                        if (res != null) {
+                                            val data = Gson().fromJson(Gson().toJson(res.data), LabelImgBean::class.java)
+                                            item.id = data.id
+                                            item.imagePath = data.uri
+                                            item.lid = data.lid
+                                        }
                                     } catch (e: Exception) {
                                         e.printStackTrace()
                                     }
@@ -177,6 +202,11 @@ class LabelActivity: AppCompatActivity() {
 
                                     println(labelImgList.joinToString("\n"))
                                     dialog.dismiss()
+
+                                    CustomDialog.Builder2(this@LabelActivity)
+                                        .setTitle("result${result.size}\n\n" +
+                                                result.map { it?.path?:"n1" }.joinToString { " @ \n" })
+                                        .show()
                                 }
                             }
 
@@ -218,74 +248,61 @@ class LabelActivity: AppCompatActivity() {
 
         binding.buttonLabelVisible.setOnClickListener {
 //            if (labelBean?.visible != 1) {
-                labelBean?.visible = 1
+            LabelViewModel.label?.visible = 1
             submitToCloud()
 //            }
         }
         binding.buttonLabelGone.setOnClickListener {
 //            if (labelBean?.visible != 0) {
-                labelBean?.visible = 0
+            LabelViewModel.label?.visible = 0
             submitToCloud()
 //            }
         }
 
-        lifecycleScope.launch(Dispatchers.IO) {
-
-            labelBean = try {
-                LabelUtils.getOrInsert(curRegionId)
-            } catch (e: java.lang.Exception) {
-                e.printStackTrace()
-                null
-            }
-            if (labelBean == null) {
-                throw ExceptionInInitializerError("labelBean is null")
-            }
-
-            val img = try {
-                LabelImgUtils.getLabelImgList(labelBean!!.id.toString())
-            } catch (e: java.lang.Exception) {
-                e.printStackTrace()
-                null
-            }
 
 
-            withContext(Dispatchers.Main) {
-                labelImgList.clear()
-                if (img != null) {
-                    labelImgList.addAll(img.map {
-                        BannerItem().apply {
-                            this.id = it.id
-                            this.imagePath = it.uri
-                            this.lid = it.lid
-                        }
-                    })
-                }
-                binding.banner2.setDatas(labelImgList)
-
-                updateViewStatus()
-
-            }
+        LiveDataBus.with("livebus_label_change2").observe(this) {
+            updateViewStatus()
         }
+        LiveDataBus.with("livebus_label_img_change2").observe(this) {
+            val imgList = it as List<LabelImgBean>?
+
+            labelImgList.clear()
+            if (imgList != null) {
+                labelImgList.addAll(imgList.map {
+                    BannerItem().apply {
+                        this.id = it.id
+                        this.imagePath = it.uri
+                        this.lid = it.lid
+                    }
+                })
+            }
+            binding.banner2.setDatas(labelImgList)
+        }
+
+        LabelViewModel.getLabel2(lifecycleScope, UserViewModel.user?.pin.toString())
+        LabelViewModel.getLabelImg2(lifecycleScope, LabelViewModel.label?.id.toString())
 
 
     }
 
     override fun onDestroy() {
-        LiveDataBus.send("liveBus_update_label", true)
+        LiveDataBus.send("livebus_label_change", LabelViewModel.label)
+        LiveDataBus.send("livebus_label_img_change", LabelViewModel.labelImg)
         super.onDestroy()
     }
 
     private fun updateViewStatus() {
-        binding.banner2Text.text = (labelBean?.title ?: "未设置") + "\n" + (labelBean?.content ?: "未设置")
-        binding.labelStatus.text = if (labelBean?.visible == 1) "标签状态：已上传" else "标签状态：已撤销"
-        binding.labelStatus.setTextColor(if (labelBean?.visible == 1) ContextCompat.getColor(this@LabelActivity, android.R.color.holo_green_dark) else ContextCompat.getColor(this@LabelActivity, android.R.color.holo_red_dark))
-        Prefs.labelSettingItemStatus = labelBean?.visible == 1
+        binding.banner2Text.text = (LabelViewModel.label?.title ?: "未设置") + "\n" + (LabelViewModel.label?.content ?: "未设置")
+        binding.labelStatus.text = if (LabelViewModel.label?.visible == 1) "标签状态：已上传" else "标签状态：已撤销"
+        binding.labelStatus.setTextColor(if (LabelViewModel.label?.visible == 1) ContextCompat.getColor(this@LabelActivity, android.R.color.holo_green_dark) else ContextCompat.getColor(this@LabelActivity, android.R.color.holo_red_dark))
+        Prefs.labelSettingItemStatus = LabelViewModel.label?.visible == 1
     }
 
     private fun submitToCloud() {
         lifecycleScope.launch(Dispatchers.IO) {
             val state = try {
-                LabelUtils.modifyOrInsert(labelBean!!)
+                LabelUtils.modifyOrInsert(LabelViewModel.label!!)
             } catch (e: java.lang.Exception) {
                 false
             }

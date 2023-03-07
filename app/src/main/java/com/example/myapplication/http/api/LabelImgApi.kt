@@ -1,7 +1,5 @@
 package com.example.myapplication.http.api
 
-import androidx.lifecycle.LiveData
-import com.example.myapplication.entity.ApiResponse
 import com.example.myapplication.entity.LabelImgBean
 import com.example.myapplication.entity.ResponseBase
 import okhttp3.MultipartBody
@@ -17,11 +15,11 @@ interface LabelImgApi {
 
     @Multipart
     @POST("label_img/upload_image")
-    fun uploadLabelImg(@Part part: MultipartBody.Part, @Part("lid") lid: RequestBody): Call<String>
-
-    @Multipart
-    @POST("label_img/upload_image")
     fun uploadLabelImg2(@Part part: MultipartBody.Part, @Part("lid") lid: RequestBody): Call<ResponseBase>
+
+//    @Multipart
+//    @POST("label_img/upload_image")
+//    fun uploadLabelImg2(@Part("file") part: RequestBody, @Part("lid") lid: RequestBody): Call<ResponseBase>
 
     @Multipart
     @POST("label_img/delete_image")

@@ -33,5 +33,31 @@ object LabelQuestionUtils {
         return false
     }
 
+    @Throws(Exception::class)
+    fun updateQuestion(jsonString: String): Boolean {
+        val retrofit = RetrofitUtils.getInstance().retrofit
+        val call = retrofit.create(LabelQuestionApi::class.java).update(jsonString.toRequestBody())
+        val response = call.execute()
+        val result = response.body()
+
+        if (result != null) {
+            return result
+        }
+        return false
+    }
+
+    @Throws(Exception::class)
+    fun deleteQuestion(id: String): Boolean {
+        val retrofit = RetrofitUtils.getInstance().retrofit
+        val call = retrofit.create(LabelQuestionApi::class.java).delete(id.toRequestBody())
+        val response = call.execute()
+        val result = response.body()
+
+        if (result != null) {
+            return result
+        }
+        return false
+    }
+
 
 }

@@ -5,5 +5,5 @@ data class LabelBean(
     var title: String? = null,
     var content: String? = null,
     var visible: Int = 0,
-    var region: Int = 0
+    var pin: String? = null,
 )

@@ -14,9 +14,9 @@ object LabelUtils {
         @params visible 0 全部显示  1 只显示提交的
     */
     @Throws(Exception::class)
-    fun getLabel(labelId: String): LabelBean? {
+    fun getLabelByPin(pin: String): LabelBean? {
        val retrofit = RetrofitUtils.getInstance().retrofit
-       val call = retrofit.create(LabelApi::class.java).getLabel(labelId)
+       val call = retrofit.create(LabelApi::class.java).getLabelByPin(pin)
        val response = call.execute()
        val result = response.body()
 
@@ -28,9 +28,9 @@ object LabelUtils {
     }
 
     @Throws(Exception::class)
-    fun getOrInsert(labelId: String): LabelBean? {
+    fun getOrInsert(pin: String): LabelBean? {
        val retrofit = RetrofitUtils.getInstance().retrofit
-       val call = retrofit.create(LabelApi::class.java).getOrInsert(labelId.toRequestBody())
+       val call = retrofit.create(LabelApi::class.java).getOrInsert(pin.toRequestBody())
        val response = call.execute()
        val result = response.body()
 

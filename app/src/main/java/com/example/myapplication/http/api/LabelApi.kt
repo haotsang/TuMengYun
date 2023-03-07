@@ -12,13 +12,15 @@ interface LabelApi {
     @GET("label/list")
     fun getAll(): Call<List<LabelBean>>
 
-    @GET("label/get/{region}")
-    fun getLabel(@Path("region") id: String): Call<LabelBean>
+    @GET("label/get/{pin}")
+    fun getLabelByPin(@Path("pin") pin: String): Call<LabelBean>
+
+
 
     @Multipart
     @POST("label/get_or_insert")
     fun getOrInsert(
-        @Part("region") region: RequestBody,
+        @Part("pin") pin: RequestBody,
     ): Call<LabelBean>
 
     @Multipart
@@ -28,6 +30,7 @@ interface LabelApi {
     ): Call<Int>
 
 
+    //UnUsed
     @POST("label/form")
     @FormUrlEncoded
     fun testFormUrlEncoded1(

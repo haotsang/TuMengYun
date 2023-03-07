@@ -119,13 +119,12 @@
                 android:layout_weight="1"
                 android:text="编辑文案" />
             <com.example.myapplication.view.MultiStatusButton
-                android:id="@+id/button_add_question"
+                android:id="@+id/button_question_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="12dp"
                 android:layout_weight="1"
-                android:text="添加题目" />
-
+                android:text="编辑题库" />
             <com.example.myapplication.view.MultiStatusButton
                 android:id="@+id/button_add_img"
                 android:layout_width="match_parent"

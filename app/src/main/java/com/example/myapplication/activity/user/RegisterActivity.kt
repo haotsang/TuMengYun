@@ -1,4 +1,4 @@
-package com.example.myapplication.activity
+package com.example.myapplication.activity.user
 
 import android.os.Bundle
 import android.text.Editable
@@ -7,16 +7,10 @@ import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.example.myapplication.entity.ResponseBase
 import com.example.myapplication.databinding.ActivityRegisterBinding
-import com.example.myapplication.http.UserUtils
-import com.example.myapplication.utils.Prefs
 import com.example.myapplication.utils.Utils
 import com.example.myapplication.utils.livebus.LiveDataBus
-import com.google.gson.Gson
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import com.example.myapplication.viewmodel.UserViewModel
 
 class RegisterActivity : AppCompatActivity() {
 
@@ -67,45 +61,19 @@ class RegisterActivity : AppCompatActivity() {
             }
 
 
-            register(username, password, phone)
+            UserViewModel.register(lifecycleScope, username, password, phone)
         }
 
-    }
 
-
-    private fun register(username: String, password: String, phone: String) {
-        lifecycleScope.launch(Dispatchers.IO) {
-            val responseBase: ResponseBase? = try {
-                UserUtils.register(username, password, phone)
-            } catch (e: Exception) {
-                null
-            }
-
-            withContext(Dispatchers.Main) {
-                if (responseBase != null) {
-                    when (responseBase.code) {
-                        200 -> {
-                            Prefs.isSaveStatus = true
-                            Prefs.userInfo = Gson().toJson(responseBase.data)
-                            Prefs.isLoginFromPhone = false
-
-                            LiveDataBus.send("liveBus_update_info", true)
-                            LiveDataBus.send("liveBus_update_label", true)
-                            Toast.makeText(this@RegisterActivity, "注册成功，已登录！", Toast.LENGTH_LONG).show()
-                            finish()
-                        }
-                        else -> {
-                            Prefs.isSaveStatus = false
-                            Prefs.userInfo = ""
-                            Toast.makeText(this@RegisterActivity, responseBase.message, Toast.LENGTH_LONG).show()
-                        }
-                    }
-                } else {
-                    Toast.makeText(this@RegisterActivity, "register failed: response body is null", Toast.LENGTH_LONG).show()
-                }
+        LiveDataBus.with("livebus_login").observe(this) {
+            val pair = it as Pair<Boolean, String>
+            if (pair.first) {
+                Toast.makeText(this@RegisterActivity, pair.second, Toast.LENGTH_LONG).show()
+                finish()
+            } else {
+                Toast.makeText(this@RegisterActivity, pair.second, Toast.LENGTH_LONG).show()
             }
         }
     }
-
 
 }

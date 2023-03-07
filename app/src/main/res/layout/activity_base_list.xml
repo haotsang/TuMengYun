@@ -16,7 +16,7 @@
         <ImageView
             android:id="@+id/base_back"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
             style="@style/Widget.AppCompat.Toolbar.Button.Navigation"
             android:src="@drawable/ic_arrow_back" />
@@ -30,7 +30,15 @@
             android:textColor="@color/black"
             android:textSize="20sp"
             android:textStyle="bold" />
-
+        <TextView
+            android:id="@+id/base_overflow"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:layout_marginEnd="6dp"
+            style="@style/Widget.AppCompat.Toolbar.Button.Navigation" />
     </FrameLayout>
 
     <com.google.android.material.card.MaterialCardView

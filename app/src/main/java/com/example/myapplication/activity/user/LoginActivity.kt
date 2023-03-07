@@ -1,4 +1,4 @@
-package com.example.myapplication.activity
+package com.example.myapplication.activity.user
 
 import android.content.Intent
 import android.os.Bundle
@@ -10,22 +10,16 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.myapplication.adapter.MyPagerAdapter
-import com.example.myapplication.entity.ResponseBase
 import com.example.myapplication.databinding.ActivityLoginBinding
 import com.example.myapplication.databinding.ViewLoginPager1Binding
 import com.example.myapplication.databinding.ViewLoginPager2Binding
 import com.example.myapplication.utils.PhoneUtils
-import com.example.myapplication.utils.Prefs
 import com.example.myapplication.utils.Utils
-import com.example.myapplication.http.UserUtils
 import com.example.myapplication.utils.livebus.LiveDataBus
-import com.google.gson.Gson
+import com.example.myapplication.viewmodel.UserViewModel
 import com.hjq.permissions.OnPermissionCallback
 import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 
 class LoginActivity : AppCompatActivity() {
@@ -68,8 +62,9 @@ class LoginActivity : AppCompatActivity() {
 
         val list = mutableListOf<View>()
 
-        val phoneNumber = PhoneUtils.trimTelNum(PhoneUtils.getNativePhoneNumber(this))
-            ?.replace("+", "")
+        var realNumber = PhoneUtils.trimTelNum(PhoneUtils.getNativePhoneNumber(this))?.replace("+", "")
+        var fakeNumber = realNumber?.replace("(\\d{3})\\d{4}(\\d{4})".toRegex(),"$1****$2") ?: "未知号码"
+
         val v1 = ViewLoginPager1Binding.inflate(LayoutInflater.from(this))
         val listener1 = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -80,13 +75,11 @@ class LoginActivity : AppCompatActivity() {
             }
         }
         v1.tvPhoneNumber.addTextChangedListener(listener1)
-        v1.tvPhoneNumber.hint = phoneNumber
-        v1.tvPhoneNumber.text = phoneNumber?.replace("(\\d{3})\\d{4}(\\d{4})".toRegex(),"$1****$2") ?: "未知号码"
+        v1.tvPhoneNumber.text = fakeNumber
         v1.tvTip.text = ""
         v1.btnAutoLogin.setOnClickListener {
-            val relPhone = v1.tvPhoneNumber.hint.toString()
-            if (Utils.isMobileNO(relPhone)) {
-                loginWithPhone(relPhone, saveState = true)
+            if (Utils.isMobileNO(realNumber)) {
+                UserViewModel.loginWithPhone(lifecycleScope, realNumber!!, saveState = true)
             } else {
                 Toast.makeText(this, "未知号码，自动登录失败", Toast.LENGTH_SHORT).show()
             }
@@ -120,7 +113,7 @@ class LoginActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            login(username, password, v2.saveStatus.isChecked)
+            UserViewModel.login(lifecycleScope, username, password, v2.saveStatus.isChecked)
         }
         v2.loginRegister.setOnClickListener {
             startActivity(Intent(this, RegisterActivity::class.java))
@@ -148,10 +141,9 @@ class LoginActivity : AppCompatActivity() {
                     v1.tvTip.text = ""
 
                     ///
-                    val phoneNumber = PhoneUtils.trimTelNum(PhoneUtils.getNativePhoneNumber(this@LoginActivity))
-                        ?.replace("+", "")
-                    v1.tvPhoneNumber.hint = phoneNumber
-                    v1.tvPhoneNumber.text = phoneNumber?.replace("(\\d{3})\\d{4}(\\d{4})".toRegex(),"$1****$2") ?: "未知号码"
+                    realNumber = PhoneUtils.trimTelNum(PhoneUtils.getNativePhoneNumber(this@LoginActivity))?.replace("+", "")
+                    fakeNumber = realNumber?.replace("(\\d{3})\\d{4}(\\d{4})".toRegex(),"$1****$2") ?: "未知号码"
+                    v1.tvPhoneNumber.text = fakeNumber
                 }
 
                 override fun onDenied(permissions: MutableList<String>, doNotAskAgain: Boolean) {
@@ -163,67 +155,18 @@ class LoginActivity : AppCompatActivity() {
                     }
                 }
             })
-    }
 
-    private fun login(username: String, password: String, saveState: Boolean) {
-        lifecycleScope.launch(Dispatchers.IO) {
-            val responseBase: ResponseBase? = try {
-                UserUtils.login(username, password)
-            } catch (e: Exception) {
-                null
-            }
 
-            withContext(Dispatchers.Main) {
-                if (responseBase != null) {
-                    if (responseBase.code == 200) {
-                        Prefs.isSaveStatus = saveState
-                        Prefs.userInfo = Gson().toJson(responseBase.data)
-                        Prefs.isLoginFromPhone = false
 
-                        LiveDataBus.send("liveBus_update_info", true)
-                        LiveDataBus.send("liveBus_update_label", true)
-                        Toast.makeText(this@LoginActivity, "登录成功！", Toast.LENGTH_LONG).show()
-                        finish()
-                    } else {
-                        Prefs.isSaveStatus = false
-                        Prefs.userInfo = ""
-                        Toast.makeText(this@LoginActivity, responseBase.message, Toast.LENGTH_LONG).show()
-                    }
-                } else {
-                    Toast.makeText(this@LoginActivity, "login failed: response body is null", Toast.LENGTH_LONG).show()
-                }
-
+        LiveDataBus.with("livebus_login").observe(this) {
+            val pair = it as Pair<Boolean, String>
+            if (pair.first) {
+                Toast.makeText(this@LoginActivity, pair.second, Toast.LENGTH_LONG).show()
+                finish()
+            } else {
+                Toast.makeText(this@LoginActivity, pair.second, Toast.LENGTH_LONG).show()
             }
         }
-
-
-    }
-    private fun loginWithPhone(phone: String, saveState: Boolean) {
-        lifecycleScope.launch(Dispatchers.IO) {
-            val responseBase: ResponseBase? = try {
-                UserUtils.loginWithPhone(phone)
-            } catch (e: Exception) {
-                null
-            }
-            withContext(Dispatchers.Main) {
-                if (responseBase != null && responseBase.code == 200) {
-                    Prefs.isSaveStatus = saveState
-                    Prefs.userInfo = Gson().toJson(responseBase.data)
-                    Prefs.isLoginFromPhone = true
-
-                    LiveDataBus.send("liveBus_update_info", true)
-                    LiveDataBus.send("liveBus_update_label", true)
-                    Toast.makeText(this@LoginActivity, "登录成功！", Toast.LENGTH_LONG).show()
-                    finish()
-                } else {
-                    Prefs.isSaveStatus = false
-                    Prefs.userInfo = ""
-                    Toast.makeText(this@LoginActivity, "自动登录失败，${responseBase?.message}", Toast.LENGTH_LONG).show()
-                }
-            }
-        }
-
-
     }
 
 

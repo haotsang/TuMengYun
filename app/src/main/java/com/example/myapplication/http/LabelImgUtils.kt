@@ -1,17 +1,15 @@
 package com.example.myapplication.http
 
-import androidx.lifecycle.LiveData
-import com.example.myapplication.entity.ApiResponse
 import com.example.myapplication.entity.LabelImgBean
 import com.example.myapplication.entity.ResponseBase
 import com.example.myapplication.http.api.LabelImgApi
 import com.example.myapplication.utils.RetrofitUtils
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
+
 
 object LabelImgUtils {
 
@@ -31,8 +29,11 @@ object LabelImgUtils {
 
 
     fun uploadImage(file: File, lid: String): ResponseBase? {
-        val part = MultipartBody.Part.createFormData("file", file.name, file.asRequestBody("image/*".toMediaTypeOrNull()))
+        val part = MultipartBody.Part.createFormData("file", file.name, file.asRequestBody("multipart/form-data".toMediaTypeOrNull()))
 //        val fileBody: RequestBody = file.asRequestBody("image/*".toMediaTypeOrNull())
+
+
+//        val requestBody: RequestBody = img.toRequestBody("multipart/form-data".toMediaTypeOrNull())
 
 
         val retrofit = RetrofitUtils.getInstance().retrofit

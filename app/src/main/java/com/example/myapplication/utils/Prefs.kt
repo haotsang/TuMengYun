@@ -31,10 +31,6 @@ object Prefs {
         get() = manager.getBoolean("sp_isLoginFromPhone", false)
         set(value) = put("sp_isLoginFromPhone", value)
 
-    var adminInfo: String
-        get() = manager.getString("sp_admin_info", "")!!
-        set(value) = put("sp_admin_info", value)
-
     var userInfo: String
         get() = manager.getString("sp_user_info", "")!!
         set(value) = put("sp_user_info", value)

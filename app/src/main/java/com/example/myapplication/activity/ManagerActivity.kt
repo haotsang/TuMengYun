@@ -3,19 +3,20 @@ package com.example.myapplication.activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
 import com.example.myapplication.activity.label.LabelActivity
+import com.example.myapplication.activity.user.RegionActivity
+import com.example.myapplication.activity.user.StaffActivity
+import com.example.myapplication.adapter.KotlinDataAdapter
 import com.example.myapplication.databinding.ActivityManagerBinding
-import com.example.myapplication.entity.AdminBean
 import com.example.myapplication.entity.SettingsItem
 import com.example.myapplication.utils.Prefs
 import com.example.myapplication.utils.ViewUtils
-import com.google.gson.Gson
+import com.example.myapplication.utils.extensions.setOnItemClickListener
+import com.example.myapplication.viewmodel.UserViewModel
 
 class ManagerActivity: AppCompatActivity() {
 
@@ -42,48 +43,40 @@ class ManagerActivity: AppCompatActivity() {
 
         binding.settingsBack.setOnClickListener { finish() }
 
-        binding.settingsRecyclerView.adapter = object : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-            override fun onCreateViewHolder(
-                parent: ViewGroup,
-                viewType: Int
-            ): RecyclerView.ViewHolder {
-                val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.item_settings, parent, false)
-                return object : RecyclerView.ViewHolder(view) {}
-            }
-            override fun getItemCount(): Int = settingsList.size
-            override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-                val item = settingsList[holder.adapterPosition]
+        val adapter = KotlinDataAdapter.Builder<SettingsItem>()
+            .setLayoutId(R.layout.item_settings)
+            .setData(settingsList)
+            .addBindView { itemView, itemData ->
+                val icon = itemView.findViewById<ImageView>(R.id.item_settings_icon)
+                val title = itemView.findViewById<TextView>(R.id.item_settings_title)
+                val subtitle = itemView.findViewById<TextView>(R.id.item_settings_subtitle)
 
-                val icon = holder.itemView.findViewById<ImageView>(R.id.item_settings_icon)
-                val title = holder.itemView.findViewById<TextView>(R.id.item_settings_title)
-                val subtitle = holder.itemView.findViewById<TextView>(R.id.item_settings_subtitle)
-
-                icon.setImageResource(item.icon)
-                title.text = item.title
-                subtitle.text = item.subtitle
-
-                holder.itemView.setOnClickListener {
-                    when (item.id) {
-                        "settings_label" -> {
-                            startActivity(Intent(this@ManagerActivity, LabelActivity::class.java))
-                        }
-                        "settings_zhuti" -> {
-                            startActivity(Intent(this@ManagerActivity, AdminActivity::class.java))
-                        }
-                        "settings_after_service" -> startActivity(
-                            Intent(
-                                this@ManagerActivity,
-                                AfterServiceActivity::class.java
-                            )
-                        )
-                        "settings_staff" -> {
-                            startActivity(Intent(this@ManagerActivity, StaffActivity::class.java))
-                        }
-                    }
+                icon.setImageResource(itemData.icon)
+                title.text = itemData.title
+                subtitle.text = itemData.subtitle
+            }.create()
+        binding.settingsRecyclerView.adapter = adapter
+        binding.settingsRecyclerView.setOnItemClickListener { holder, position ->
+            val item = settingsList[position]
+            when (item.id) {
+                "settings_label" -> {
+                    startActivity(Intent(this@ManagerActivity, LabelActivity::class.java))
+                }
+                "settings_zhuti" -> {
+                    startActivity(Intent(this@ManagerActivity, RegionActivity::class.java))
+                }
+                "settings_after_service" -> startActivity(
+                    Intent(
+                        this@ManagerActivity,
+                        AfterServiceActivity::class.java
+                    )
+                )
+                "settings_staff" -> {
+                    startActivity(Intent(this@ManagerActivity, StaffActivity::class.java))
                 }
             }
         }
+
     }
 
     override fun onResume() {
@@ -93,13 +86,9 @@ class ManagerActivity: AppCompatActivity() {
         settingsList.getOrNull(0)?.subtitle = if (Prefs.labelSettingItemStatus) "已设置" else "未设置"
         binding.settingsRecyclerView.adapter?.notifyItemChanged(0)
 
-        val admin: AdminBean? = try {
-            Gson().fromJson(Prefs.adminInfo, AdminBean::class.java)
-        } catch (e: Exception) {
-            null
-        }
-        if (admin != null) {
-            settingsList.getOrNull(1)?.subtitle = admin.name!!
+
+        if (UserViewModel.region != null) {
+            settingsList.getOrNull(1)?.subtitle = UserViewModel.region?.name ?: ""
             binding.settingsRecyclerView.adapter?.notifyItemChanged(1)
         }
 

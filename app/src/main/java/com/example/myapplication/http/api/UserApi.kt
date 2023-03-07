@@ -25,9 +25,10 @@ interface UserApi {
     ): Call<ResponseBase>
 
     @Multipart
-    @POST("user/phone_login")
+    @POST("user/login_with_phone")
     fun loginWithPhone(
-        @Part("phone") phone: RequestBody
+        @Part("phone") phone: RequestBody,
+        @Part("pin") pin: RequestBody,
     ): Call<ResponseBase>
 
     @Multipart
@@ -60,10 +61,10 @@ interface UserApi {
     ): Call<Boolean>
 
     @Multipart
-    @POST("user/update_belong")
+    @POST("user/update_pin")
     fun modifyBelong(
         @Part("account") account: RequestBody,
-        @Part("id") id: RequestBody
+        @Part("pin") pin: RequestBody
     ): Call<ResponseBase>
 
 

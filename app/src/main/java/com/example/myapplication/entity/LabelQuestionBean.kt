@@ -8,7 +8,6 @@ data class LabelQuestionBean(
     var answerA: String? = null,
     var answerB: String? = null,
     var answerC: String? = null,
-    var answerD: String? = null,
     var rightAnswer: String? = null,
 
     //解释

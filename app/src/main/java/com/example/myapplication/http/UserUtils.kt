@@ -24,11 +24,12 @@ object UserUtils {
     }
 
     @Throws(Exception::class)
-    fun register(account: String, password: String, phone: String): ResponseBase? {
+    fun register(account: String, password: String, phone: String, pin: String): ResponseBase? {
         val json = JSONObject().apply {
             put("account", account)
             put("password", password)
             put("phone", phone)
+            put("pin", pin)
         }.toString()
 
         val retrofit = RetrofitUtils.getInstance().retrofit
@@ -59,10 +60,10 @@ object UserUtils {
     }
 
     @Throws(Exception::class)
-    fun loginWithPhone(phone: String): ResponseBase? {
+    fun loginWithPhone(phone: String, pin: String): ResponseBase? {
         val retrofit = RetrofitUtils.getInstance().retrofit
         val call = retrofit.create(UserApi::class.java)
-            .loginWithPhone(phone.toRequestBody())
+            .loginWithPhone(phone.toRequestBody(), pin.toRequestBody())
         val response = call.execute()
         val result = response.body()
         if (result != null) {
@@ -131,10 +132,10 @@ object UserUtils {
     }
 
     @Throws(Exception::class)
-    fun modifyBelong(account: String, id: String): ResponseBase? {
+    fun modifyPin(account: String, pin: String): ResponseBase? {
         val retrofit = RetrofitUtils.getInstance().retrofit
         val call = retrofit.create(UserApi::class.java)
-            .modifyBelong(account.toRequestBody(), id.toRequestBody())
+            .modifyBelong(account.toRequestBody(), pin.toRequestBody())
         val response = call.execute()
         val result = response.body()
         if (result != null) {

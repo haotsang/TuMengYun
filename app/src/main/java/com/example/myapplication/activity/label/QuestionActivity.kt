@@ -16,7 +16,7 @@ import androidx.core.view.children
 import androidx.lifecycle.lifecycleScope
 import com.example.myapplication.R
 import com.example.myapplication.databinding.ActivityQuestionBinding
-import com.example.myapplication.entity.AdminBean
+import com.example.myapplication.entity.RegionBean
 import com.example.myapplication.entity.LabelQuestionBean
 import com.example.myapplication.entity.UserBean
 import com.example.myapplication.entity.UserQuestionBean
@@ -27,6 +27,7 @@ import com.example.myapplication.utils.Prefs
 import com.example.myapplication.utils.Utils
 import com.example.myapplication.utils.extensions.toColor
 import com.example.myapplication.view.CustomDialog
+import com.example.myapplication.viewmodel.UserViewModel
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
@@ -48,34 +49,19 @@ class QuestionActivity : AppCompatActivity() {
 
         binding.toolbarBack.setOnClickListener { finish() }
 
-        val user: UserBean? = try {
-            Gson().fromJson(Prefs.userInfo, UserBean::class.java)
-        } catch (e: Exception) {
-            null
-        }
 
-        if (user == null) {
+        if (UserViewModel.user == null) {
             Toast.makeText(this, "未登录，请先登录", Toast.LENGTH_SHORT).show()
             return
         }
 
-        val admin: AdminBean? = try {
-            Gson().fromJson(Prefs.adminInfo, AdminBean::class.java)
-        } catch (e: Exception) {
-            null
-        }
-        if (admin == null) {
-            Toast.makeText(this, "请先选择场馆", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        binding.toolbarTitle.text = "答题（${admin.name ?: ""}）"
+        binding.toolbarTitle.text = "答题（${UserViewModel.region?.name ?: ""}）"
 
         val labelId = intent.getIntExtra("label_id", -1)
         if (labelId == -1) return
 
         lifecycleScope.launch(Dispatchers.IO) {
-            val file = File(getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), "${user.id}.questions")
+            val file = File(getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), "${UserViewModel.user?.id}.questions")
             val localList = try {
                 Gson().fromJson<List<LabelQuestionBean>>(
                     file.readText(),
@@ -102,7 +88,7 @@ class QuestionActivity : AppCompatActivity() {
                 }
 
                 if (subList != null) {
-                    verifyAlreadyAnswered(user.id!!, subList)
+                    verifyAlreadyAnswered(UserViewModel.user?.id!!, subList)
                 }
 
                 withContext(Dispatchers.Main) {
@@ -141,7 +127,7 @@ class QuestionActivity : AppCompatActivity() {
                 .setConfirmText(android.R.string.ok)
                 .setCancelListener { }
                 .setConfirmListener {
-                    submitAll(user.id!!, admin.id!!)
+                    submitAll(UserViewModel.user?.id!!)
                 }.show()
         }
 
@@ -150,7 +136,7 @@ class QuestionActivity : AppCompatActivity() {
                 val jsonListString = Gson().toJson(list)
                 val file = File(
                     this.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS),
-                    "${user.id}.questions"
+                    "${UserViewModel.user?.id}.questions"
                 )
                 file.writeText(jsonListString)
 
@@ -169,7 +155,7 @@ class QuestionActivity : AppCompatActivity() {
     }
 
 
-    private fun submitAll(uid: Int, rid:Int) {
+    private fun submitAll(uid: Int) {
         val dialog = CustomDialog.Builder2(this)
             .setCancelable(false)
             .setCustomView(ProgressBar(this))
@@ -195,7 +181,7 @@ class QuestionActivity : AppCompatActivity() {
             }
 
             try {
-                UserRewardUtils.setReward(uid.toString(), rid.toString(), reward.toString())
+                UserRewardUtils.setReward(uid.toString(), UserViewModel.region?.pin.toString(), reward.toString())
             } catch (e: java.lang.Exception) {
                 e.printStackTrace()
             }
@@ -267,13 +253,11 @@ class QuestionActivity : AppCompatActivity() {
         binding.singleSelect1.text = "A." + item.answerA
         binding.singleSelect2.text = "B." + item.answerB
         binding.singleSelect3.text = "C." + item.answerC
-        binding.singleSelect4.text = "D." + item.answerD
 
         val checkId = when (item.selectedAnswer) {
             "A" -> binding.singleSelect1.id
             "B" -> binding.singleSelect2.id
             "C" -> binding.singleSelect3.id
-            "D" -> binding.singleSelect4.id
             else -> -1
         }
 
@@ -303,7 +287,7 @@ class QuestionActivity : AppCompatActivity() {
         var isEnd = false
         if (item.startTime != null && item.endTime != null) {
             //已结束
-            isEnd = System.currentTimeMillis() < ((item.endTime?.time) ?: 0L)
+            isEnd = System.currentTimeMillis() > ((item.endTime?.time) ?: 0L)
 
             timeBuilder.append("时间：${Utils.formatTime(item.startTime)}" + "——" +
                     "${Utils.formatTime(item.endTime)}" + "\n")
@@ -345,12 +329,13 @@ class QuestionActivity : AppCompatActivity() {
             binding.singleSelect1.id -> "A"
             binding.singleSelect2.id -> "B"
             binding.singleSelect3.id -> "C"
-            binding.singleSelect4.id -> "D"
             else -> ""
         }
         if (fromUser) {
             item.selectedAnswer = checkId
         }
 
+
+        lifecycleScope
     }
 }

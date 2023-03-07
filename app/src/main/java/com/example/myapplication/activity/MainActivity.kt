@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -15,33 +14,31 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
 import com.example.myapplication.activity.label.QuestionActivity
+import com.example.myapplication.activity.user.*
 import com.example.myapplication.adapter.BannerImageAdapter2
+import com.example.myapplication.adapter.KotlinDataAdapter
 import com.example.myapplication.databinding.ActivityMainBinding
 import com.example.myapplication.entity.*
-import com.example.myapplication.http.AdminUtils
-import com.example.myapplication.http.LabelImgUtils
-import com.example.myapplication.http.LabelUtils
-import com.example.myapplication.http.UserUtils
-import com.example.myapplication.http.api.AdminApi
+import com.example.myapplication.http.*
 import com.example.myapplication.utils.Prefs
-import com.example.myapplication.utils.RetrofitUtils
 import com.example.myapplication.utils.Utils
+import com.example.myapplication.utils.VersionUtils
+import com.example.myapplication.utils.extensions.setOnItemClickListener
 import com.example.myapplication.utils.extensions.toColor
 import com.example.myapplication.utils.livebus.LiveDataBus
 import com.example.myapplication.view.CustomDialog
+import com.example.myapplication.viewmodel.LabelViewModel
 import com.example.myapplication.viewmodel.MainViewModel
+import com.example.myapplication.viewmodel.UserViewModel
 import com.google.gson.Gson
 import com.youth.banner.indicator.CircleIndicator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
-import kotlin.concurrent.thread
 
 
 class MainActivity : AppCompatActivity() {
@@ -61,6 +58,7 @@ class MainActivity : AppCompatActivity() {
         NavItem(true, "main_menu_issue", "意见反馈", R.drawable.ic_nav_issue),
         NavItem(true, "main_menu_group", "突梦群", R.drawable.ic_nav_group),
         NavItem(true, "main_menu_tuisong", "接受推送", R.drawable.ic_nav_tuisong),
+        NavItem(true, "main_menu_check_update", "检查更新", 0),
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,8 +67,70 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(LayoutInflater.from(this))
         setContentView(binding.root)
 
+        initView()
+        initMainCard()
+        initNavRecyclerView()
+
+        LiveDataBus.with("livebus_user_change").observe(this) {
+            LabelViewModel.getLabel(lifecycleScope, UserViewModel.user?.pin.toString())
+            LabelViewModel.getLabelImg(lifecycleScope, LabelViewModel.label?.id.toString())
+
+            val user = it as UserBean?
+            println("#####  livebus_user_change")
+        }
+        LiveDataBus.with("livebus_region_change").observe(this) {
+            LabelViewModel.getLabel(lifecycleScope, UserViewModel.user?.pin.toString())
+            LabelViewModel.getLabelImg(lifecycleScope, LabelViewModel.label?.id.toString())
+
+            val region = it as RegionBean?
+
+            binding.content.contentTitle.text = region?.name ?: ""
+            println("#####  livebus_region_change")
+        }
+
+        LiveDataBus.with("livebus_label_change").observe(this) {
+            val labelBean = it as LabelBean?
+            if (labelBean != null) {
+                binding.content.bannerText.text = if (labelBean.visible == 1) {
+                    (labelBean.title ?: "未设置") + "\n" + (labelBean.content ?: "未设置")
+                } else "未设置1"
+            } else {
+                binding.content.bannerText.text = "empty"
+            }
+
+            println("#####  livebus_label_change")
+        }
+        LiveDataBus.with("livebus_label_img_change").observe(this) {
+            val imgList = it as List<LabelImgBean>?
+
+            val img = if (LabelViewModel.label != null && LabelViewModel.label?.visible == 1) {
+                imgList
+            } else null
+
+            labelImgList.clear()
+            if (img != null) {
+                labelImgList.addAll(img.map {
+                    BannerItem().apply {
+                        this.id = it.id
+                        this.imagePath = it.uri
+                        this.lid = it.lid
+                    }
+                })
+            }
+            binding.content.banner.setDatas(labelImgList)
+
+            println("#####  livebus_label_img_change")
+        }
+
+        LabelViewModel.getLabel(lifecycleScope, UserViewModel.user?.pin.toString())
+        LabelViewModel.getLabelImg(lifecycleScope, LabelViewModel.label?.id.toString())
+
+    }
+
+    private fun initView() {
+
         binding.content.contentTitle.setOnClickListener {
-            startActivity(Intent(this, AdminActivity::class.java))
+            startActivity(Intent(this, RegionActivity::class.java))
         }
         binding.content.contentMenu.setOnClickListener {
             binding.drawerlayout.openDrawer(GravityCompat.END)
@@ -94,14 +154,9 @@ class MainActivity : AppCompatActivity() {
             .setOnBannerListener { data, position -> }
 
         binding.content.bannerText.setOnClickListener {
-            val user: UserBean? = try {
-                Gson().fromJson(Prefs.userInfo, UserBean::class.java)
-            } catch (e: Exception) {
-                null
-            }
-            if (user != null) {
+            if (UserViewModel.user != null && LabelViewModel.label != null) {
                 startActivity(Intent(this, QuestionActivity::class.java).apply {
-                    putExtra("label_id", labelImgList.getOrNull(0)?.lid)
+                    putExtra("label_id", LabelViewModel.label?.id)
                 })
             }
         }
@@ -119,27 +174,12 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-        initMainCard()
-        initNavRecyclerView()
-
-        LiveDataBus.with("liveBus_update_info").observe(this) {
-            println("###   "+"liveBus_update_info")
-            initNewInfo()
-        }
-        LiveDataBus.send("liveBus_update_info", true)
-
-        LiveDataBus.with("liveBus_update_label").observe(this) {
-            println("###   "+"liveBus_update_label")
-            initNewLabel()
-        }
-        LiveDataBus.send("liveBus_update_label", true)
-
     }
 
 
     private fun initNewLabel() {
-        val admin: AdminBean? = try {
-            Gson().fromJson(Prefs.adminInfo, AdminBean::class.java)
+        val admin: RegionBean? = try {
+            Gson().fromJson("Prefs.adminInfo", RegionBean::class.java)
         } catch (e: Exception) {
             null
         }
@@ -150,7 +190,7 @@ class MainActivity : AppCompatActivity() {
 
         lifecycleScope.launch(Dispatchers.IO) {
             val labelBean = try {
-                LabelUtils.getLabel(admin.id.toString())
+                LabelUtils.getLabelByPin(admin.id.toString())
             } catch (e: java.lang.Exception) {
                 e.printStackTrace()
                 null
@@ -198,7 +238,7 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch(Dispatchers.IO) {
             val responseBase: ResponseBase? = try {
                 if (Prefs.isLoginFromPhone) {
-                    UserUtils.loginWithPhone(user.phone!!)
+                    UserUtils.loginWithPhone(user.phone!!, user.pin.toString())
                 } else {
                     UserUtils.login(user.account!!, user.password!!)
                 }
@@ -207,7 +247,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             val admin = try {
-                AdminUtils.getAdminById(user.belong.toString())
+                RegionUtils.getRegionById(user.pin.toString())
             } catch (e: Exception) {
                 e.printStackTrace()
                 null
@@ -221,9 +261,9 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 if (admin != null) {
-                    Prefs.adminInfo = Gson().toJson(admin)
+//                    Prefs.adminInfo = Gson().toJson(admin)
                 } else {
-                    Prefs.adminInfo = ""
+//                    Prefs.adminInfo = ""
                 }
 
 //                try {
@@ -256,73 +296,85 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initNavRecyclerView() {
-        binding.navRecyclerView.adapter = object : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-            override fun onCreateViewHolder(
-                parent: ViewGroup,
-                viewType: Int,
-            ): RecyclerView.ViewHolder {
-                val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.item_nav, parent, false)
-                return object : RecyclerView.ViewHolder(view) {}
-            }
-
-            override fun getItemCount(): Int = navList.size
-            override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-                val item = navList[holder.adapterPosition]
-
-                val icon =
-                    holder.itemView.findViewById<ImageView>(R.id.item_nav_icon)
-                val title =
-                    holder.itemView.findViewById<TextView>(R.id.item_nav_title)
-                val arrow =
-                    holder.itemView.findViewById<ImageView>(R.id.item_nav_arrow)
-                icon.setImageResource(item.icon)
-                title.text = item.title
+        val adapter = KotlinDataAdapter.Builder<NavItem>()
+            .setLayoutId(R.layout.item_nav)
+            .setData(navList)
+            .addBindView { itemView, itemData ->
+                val icon = itemView.findViewById<ImageView>(R.id.item_nav_icon)
+                val title = itemView.findViewById<TextView>(R.id.item_nav_title)
+                val arrow = itemView.findViewById<ImageView>(R.id.item_nav_arrow)
+                icon.setImageResource(itemData.icon)
+                title.text = itemData.title
                 arrow.setImageResource(
-                    if (item.id == "main_menu_tuisong")
+                    if (itemData.id == "main_menu_tuisong")
                         if (Prefs.tuiSong) R.drawable.ic_switch_on else R.drawable.ic_switch_off
                     else R.drawable.ic_nav_right
                 )
 
-                title.setTextColor(if (item.enable) this@MainActivity.toColor(R.color.black) else Color.GRAY)
-                holder.itemView.isEnabled = item.enable
-                holder.itemView.setOnClickListener {
-                    if (item.id != "main_menu_tuisong") {
-                        binding.drawerlayout.closeDrawer(GravityCompat.END)
-                    }
+                title.setTextColor(if (itemData.enable) this@MainActivity.toColor(R.color.black) else Color.GRAY)
+                itemView.isEnabled = itemData.enable
+            }.create()
 
-                    when (item.id) {
-                        "main_menu_register" -> {
-                            startActivity(Intent(this@MainActivity, RegisterActivity::class.java))
-                        }
-                        "main_menu_login" -> {
-                            startActivity(Intent(this@MainActivity, LoginActivity::class.java))
-                        }
-                        "main_menu_admin" -> startManagerPage()
-                        "main_menu_clean_cache" -> {
-                            lifecycleScope.launch(Dispatchers.IO) {
-                                Utils.deleteDir(getExternalFilesDir(Environment.DIRECTORY_PICTURES))
+        binding.navRecyclerView.adapter = adapter
+        binding.navRecyclerView.setOnItemClickListener { holder, position ->
+            val item = navList[position]
+            if (item.id != "main_menu_tuisong") {
+                binding.drawerlayout.closeDrawer(GravityCompat.END)
+            }
+
+            when (item.id) {
+                "main_menu_register" -> {
+                    startActivity(Intent(this@MainActivity, RegisterActivity::class.java))
+                }
+                "main_menu_login" -> {
+                    startActivity(Intent(this@MainActivity, LoginActivity::class.java))
+                }
+                "main_menu_admin" -> startManagerPage()
+                "main_menu_clean_cache" -> {
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        Utils.deleteDir(getExternalFilesDir(Environment.DIRECTORY_PICTURES))
 
 //                        Glide.clear()
 //                        video.clear()
 //                        cache.delete
 
-                                withContext(Dispatchers.Main) {
-                                    Toast.makeText(this@MainActivity, "清理完成！", Toast.LENGTH_SHORT)
-                                        .show()
-                                }
-                            }
+                        withContext(Dispatchers.Main) {
+                            Toast.makeText(this@MainActivity, "清理完成！", Toast.LENGTH_SHORT)
+                                .show()
                         }
-                        "main_menu_issue" -> {
-                            startActivity(Intent(this@MainActivity, IssueActivity::class.java))
-                        }
-                        "main_menu_group" -> {
-                            startActivity(Intent(this@MainActivity, GroupActivity::class.java))
-                        }
-                        "main_menu_tuisong" -> {
-                            Prefs.tuiSong = !Prefs.tuiSong
-                            notifyItemChanged(position)
+                    }
+                }
+                "main_menu_issue" -> {
+                    startActivity(Intent(this@MainActivity, IssueActivity::class.java))
+                }
+                "main_menu_group" -> {
+                    startActivity(Intent(this@MainActivity, GroupActivity::class.java))
+                }
+                "main_menu_tuisong" -> {
+                    Prefs.tuiSong = !Prefs.tuiSong
+                    adapter.notifyItemChanged(position)
 //                            throw java.lang.NullPointerException("Test")
+                }
+                "main_menu_check_update" -> {
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        val version = try {
+                            VersionUtils.getNewVersion()
+                        } catch (e: Exception) {
+                            "-1"
+                        }
+
+                        withContext(Dispatchers.Main) {
+                            val cur = VersionUtils.getVersionName(this@MainActivity)
+                            if (version != "-1" && cur != version) {
+                                CustomDialog.Builder2(this@MainActivity)
+                                    .setIcon(R.drawable.ic_alert_ask)
+                                    .setTitle("检测到新版本")
+                                    .setCancelListener {  }
+                                    .setConfirmListener { startUpdate() }
+                                    .show()
+                            } else {
+                                Toast.makeText(this@MainActivity, "未检测到新版本", Toast.LENGTH_SHORT).show()
+                            }
                         }
                     }
                 }
@@ -330,12 +382,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
     private fun startManagerPage() {
-        val user: UserBean? = try {
-            Gson().fromJson(Prefs.userInfo, UserBean::class.java)
-        } catch (e: Exception) {
-            null
-        }
-
+        val user = UserViewModel.user
         if (user == null) {
             Toast.makeText(this, "请先登录", Toast.LENGTH_SHORT).show()
             return
@@ -347,20 +394,30 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "请先申请成为管理员", Toast.LENGTH_SHORT).show()
             startActivity(Intent(this, RegisterManagerActivity::class.java))
         }
-
     }
 
+    private fun startUpdate() {
+        val dialog = CustomDialog.Builder2(this)
+            .setIcon(R.drawable.ic_alert_wait)
+            .setCancelable(false)
+            .setCustomView(ProgressBar(this))
+            .show()
+        lifecycleScope.launch(Dispatchers.IO) {
+            val apkPath = VersionUtils.okDownload(this@MainActivity)
+
+            withContext(Dispatchers.Main) {
+                dialog.dismiss()
+                VersionUtils.install(this@MainActivity, File(apkPath))
+            }
+        }
+    }
 
     override fun onDestroy() {
         if (!Prefs.isSaveStatus) {
             Prefs.userInfo = ""
         }
 
-        val user: UserBean? = try {
-            Gson().fromJson(Prefs.userInfo, UserBean::class.java)
-        } catch (e: Exception) {
-            null
-        }
+        val user = UserViewModel.user
         if (user != null) {
             val file = File(getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), "${user.id}.questions")
             if (file.exists()) file.delete()

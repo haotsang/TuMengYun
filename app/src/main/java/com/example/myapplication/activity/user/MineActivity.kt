@@ -1,18 +1,15 @@
-package com.example.myapplication.activity
+package com.example.myapplication.activity.user
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.example.myapplication.entity.UserBean
 import com.example.myapplication.databinding.ActivityMineBinding
-import com.example.myapplication.entity.AdminBean
 import com.example.myapplication.http.UserRewardUtils
-import com.example.myapplication.http.UserUtils
 import com.example.myapplication.utils.Prefs
 import com.example.myapplication.utils.livebus.LiveDataBus
-import com.google.gson.Gson
+import com.example.myapplication.viewmodel.UserViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -26,16 +23,8 @@ class MineActivity : AppCompatActivity() {
         binding = ActivityMineBinding.inflate(LayoutInflater.from(this))
         setContentView(binding.root)
 
-        val user: UserBean? = try {
-            Gson().fromJson(Prefs.userInfo, UserBean::class.java)
-        } catch (e: Exception) {
-            null
-        }
-        val admin: AdminBean? = try {
-            Gson().fromJson(Prefs.adminInfo, AdminBean::class.java)
-        } catch (e: Exception) {
-            null
-        }
+        val user = UserViewModel.user
+
 
         if (user == null) {
             binding.textView7.text = "请先登录"
@@ -51,17 +40,18 @@ class MineActivity : AppCompatActivity() {
                     "名称：" + user.nickname + "\n" +
                     "账号：" + user.account + "\n" +
                     "角色：" + role + "\n" +
-                    "是否在申请管理员：" + if (user.isAdmin == 0) "否" else "是" +
+                    "是否在申请管理员：" + if (user.isApply == 0) "否" else "是" +
+                    "申請時間：" + user.applyTime.toString()
                     "\n\n" + user.toString() +
 
-                    "\n\n" + admin.toString() +
+                    "\n\n" + UserViewModel.region.toString() +
                     "\n\n" + "积分：{@}"
             binding.textView7.text = s
 
 
             lifecycleScope.launch(Dispatchers.IO) {
                 val reward = try {
-                    UserRewardUtils.getReward(user.id.toString(), admin?.id.toString())
+                    UserRewardUtils.getReward(user.id.toString(), UserViewModel.region?.pin.toString())
                 } catch (e:Exception){
                     e.printStackTrace()
                     0
@@ -75,40 +65,27 @@ class MineActivity : AppCompatActivity() {
 
         }
 
+
+        LiveDataBus.with("livebus_login").observe(this) {
+            val pair = it as Pair<Boolean, String>
+            if (pair.first) {
+                Toast.makeText(this@MineActivity, "注销成功", Toast.LENGTH_SHORT).show()
+                finish()
+            } else {
+                Toast.makeText(this@MineActivity, "注销失败", Toast.LENGTH_SHORT).show()
+            }
+        }
+
         binding.logout.setOnClickListener {
             Prefs.userInfo = ""
-            Prefs.adminInfo = ""
             Prefs.isSaveStatus = false
 
-            LiveDataBus.send("liveBus_update_info", true)
-            LiveDataBus.send("liveBus_update_label", true)
+            UserViewModel.user = null
             finish()
         }
 
         binding.button14.setOnClickListener {
-            lifecycleScope.launch(Dispatchers.IO) {
-                val b: Boolean = try {
-                    UserUtils.logout(user.account!!, user.password!!)
-                } catch (e: Exception) {
-                    e.stackTraceToString()
-                    false
-                }
-                withContext(Dispatchers.Main) {
-                    if (b) {
-                        Prefs.userInfo = ""
-                        Prefs.adminInfo = ""
-                        Prefs.isSaveStatus = false
-
-                        LiveDataBus.send("liveBus_update_info", true)
-                        LiveDataBus.send("liveBus_update_label", true)
-
-                        Toast.makeText(this@MineActivity, "注销成功", Toast.LENGTH_SHORT).show()
-                        finish()
-                    } else {
-                        Toast.makeText(this@MineActivity, "注销失败", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
+            UserViewModel.logout(lifecycleScope, user.account!!, user.password!!)
         }
 
     }

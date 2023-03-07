@@ -16,4 +16,19 @@ interface LabelQuestionApi {
     fun insert(
         @Part("jsonString") jsonString: RequestBody
     ): Call<Boolean>
+
+
+    @Multipart
+    @POST("question/update")
+    fun update(
+        @Part("jsonString") jsonString: RequestBody
+    ): Call<Boolean>
+
+    @Multipart
+    @POST("question/delete")
+    fun delete(
+        @Part("id") id: RequestBody
+    ): Call<Boolean>
+
+
 }

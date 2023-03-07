@@ -1,5 +1,6 @@
 package com.example.myapplication.activity.label
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.InputFilter
 import android.text.Spanned
@@ -8,11 +9,13 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.myapplication.databinding.ActivityQuestionAddBinding
-import com.example.myapplication.entity.AdminBean
+import com.example.myapplication.entity.RegionBean
 import com.example.myapplication.entity.LabelQuestionBean
 import com.example.myapplication.http.LabelQuestionUtils
 import com.example.myapplication.utils.Prefs
 import com.example.myapplication.utils.Utils
+import com.example.myapplication.viewmodel.LabelViewModel
+import com.example.myapplication.viewmodel.UserViewModel
 import com.google.gson.Gson
 import com.loper7.date_time_picker.dialog.CardDatePickerDialog
 import kotlinx.coroutines.Dispatchers
@@ -29,17 +32,32 @@ class QuestionAddActivity : AppCompatActivity() {
         binding = ActivityQuestionAddBinding.inflate(LayoutInflater.from(this))
         setContentView(binding.root)
 
-        binding.toolbarBack.setOnClickListener { finish() }
-        val admin: String? = try {
-            Gson().fromJson(Prefs.adminInfo, AdminBean::class.java).name ?: ""
-        } catch (e: Exception) { "" }
-        binding.toolbarTitle.text = "添加答题（${admin}）"
+        val isEdit = intent.getBooleanExtra("is_edit", false)
 
-        val id = intent.getIntExtra("label_id", -1)
-        if (id == -1) return
+        binding.toolbarBack.setOnClickListener { finish() }
+        binding.toolbarTitle.text = if (isEdit) "修改答题" else "添加答题（${UserViewModel.region?.name}）"
+
+        binding.buttonAddQuestion.text = if (isEdit) "确认修改" else "确认添加"
 
         var startTime: Date? = null
         var endTime: Date? = null
+
+        if (isEdit) {
+            val editData = intent.getStringExtra("edit_data")
+            val bean = Gson().fromJson(editData, LabelQuestionBean::class.java)
+
+            binding.questionEdit.setText(bean.question)
+            binding.answerEdit1.setText(bean.answerA)
+            binding.answerEdit2.setText(bean.answerB)
+            binding.answerEdit3.setText(bean.answerC)
+
+            binding.rightEdit.setText(bean.rightAnswer)
+            binding.rewardEdit.setText(bean.reward?.toString())
+
+            startTime = bean.startTime
+            endTime = bean.endTime
+            binding.timeStatus.text = "开始时间：${Utils.formatTime(startTime) ?: ""}\n结束时间：${Utils.formatTime(endTime) ?: ""}"
+        }
 
         binding.buttonStartTime.setOnClickListener {
             CardDatePickerDialog.Builder(this).setTitle("选择开始时间").setOnChoose {
@@ -87,14 +105,13 @@ class QuestionAddActivity : AppCompatActivity() {
             val answerA = binding.answerEdit1.text.trim().toString()
             val answerB = binding.answerEdit2.text.trim().toString()
             val answerC = binding.answerEdit3.text.trim().toString()
-            val answerD = binding.answerEdit4.text.trim().toString()
 
             val rightAnswer = binding.rightEdit.text.trim().toString()
             val reward = binding.rewardEdit.text.trim().toString()
 
 
             if (question.isEmpty() ||
-                answerA.isEmpty() || answerB.isEmpty() || answerC.isEmpty() || answerD.isEmpty()
+                answerA.isEmpty() || answerB.isEmpty() || answerC.isEmpty()
             ) {
                 Toast.makeText(this@QuestionAddActivity, "问题或答案不可为空", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
@@ -110,19 +127,33 @@ class QuestionAddActivity : AppCompatActivity() {
                 this.answerA = answerA
                 this.answerB = answerB
                 this.answerC = answerC
-                this.answerD = answerD
                 this.rightAnswer = rightAnswer
                 this.explanation = ""
                 this.startTime = startTime
                 this.endTime = endTime
-                this.reward = reward.toInt()
-                this.labelId = id
+                this.reward = try {
+                    reward.toInt()
+                } catch (e: Exception) {
+                    0
+                }
+                this.labelId = LabelViewModel.label?.id
+            }
+
+            if (isEdit) {
+                val i = intent.getIntExtra("edit_qid", -1)
+                if (i != -1) {
+                    questionEntity.id = i
+                }
             }
 
             val gsonString = Gson().toJson(questionEntity)
             lifecycleScope.launch(Dispatchers.IO) {
                 val flag = try {
-                    LabelQuestionUtils.insertQuestion(gsonString)
+                    if (isEdit) {
+                        LabelQuestionUtils.updateQuestion(gsonString)
+                    } else {
+                        LabelQuestionUtils.insertQuestion(gsonString)
+                    }
                 } catch (e: java.lang.Exception) {
                     e.printStackTrace()
                     false
@@ -130,7 +161,12 @@ class QuestionAddActivity : AppCompatActivity() {
 
                 withContext(Dispatchers.Main) {
                     if (flag) {
-                        Toast.makeText(this@QuestionAddActivity, "添加成功", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@QuestionAddActivity, if (isEdit) "修改成功" else "添加成功", Toast.LENGTH_SHORT).show()
+
+                        val i = Intent()
+                        i.putExtra("flag", true)
+                        setResult(3, i)
+
                         finish()
                     } else {
                         Toast.makeText(this@QuestionAddActivity, "失败", Toast.LENGTH_SHORT).show()
