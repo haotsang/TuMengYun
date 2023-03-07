@@ -6,6 +6,7 @@ import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 import com.example.myapplication.R
+import com.example.myapplication.activity.label.LabelActivity
 import com.example.myapplication.utils.ViewUtils
 
 
@@ -19,7 +20,7 @@ class Splash : AppCompatActivity() {
         Handler(Looper.getMainLooper()).postDelayed({
             val mainIntent = Intent(
                 this,
-                MainActivity::class.java
+                LabelActivity::class.java
             )
             startActivity(mainIntent)
 

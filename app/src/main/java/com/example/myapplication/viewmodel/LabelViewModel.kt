@@ -36,7 +36,8 @@ object LabelViewModel {
             } catch (e: java.lang.Exception) {
                 e.printStackTrace()
                 null
-            } ?: throw ExceptionInInitializerError("labelBean is null")
+            }
+//                ?: throw ExceptionInInitializerError("labelBean is null")
 
             label = labelBean
             LiveDataBus.send("livebus_label_change", labelBean)
@@ -68,7 +69,8 @@ object LabelViewModel {
             } catch (e: java.lang.Exception) {
                 e.printStackTrace()
                 null
-            } ?: throw ExceptionInInitializerError("labelBean is null")
+            }
+//                ?: throw ExceptionInInitializerError("labelBean is null")
 
             label = labelBean
             LiveDataBus.send("livebus_label_change2", labelBean)

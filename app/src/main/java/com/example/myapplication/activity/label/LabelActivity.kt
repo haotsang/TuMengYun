@@ -1,5 +1,6 @@
 package com.example.myapplication.activity.label
 
+import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -17,11 +18,11 @@ import com.example.myapplication.databinding.ActivityLabelBinding
 import com.example.myapplication.databinding.ViewDialogSinglechoiceBinding
 import com.example.myapplication.entity.BannerItem
 import com.example.myapplication.entity.LabelImgBean
-import com.example.myapplication.entity.ResponseBase
 import com.example.myapplication.http.LabelImgUtils
 import com.example.myapplication.http.LabelUtils
 import com.example.myapplication.utils.GlideEngine
 import com.example.myapplication.utils.JavaHelper
+import com.example.myapplication.utils.MeSandboxFileEngine
 import com.example.myapplication.utils.Prefs
 import com.example.myapplication.utils.livebus.LiveDataBus
 import com.example.myapplication.view.CustomDialog
@@ -58,6 +59,60 @@ class LabelActivity: AppCompatActivity() {
 
             binding.banner2Text.text = (LabelViewModel.label?.title ?: "未设置") + "\n" + (LabelViewModel.label?.content ?: "未设置")
             submitToCloud()
+
+        } else if (requestCode == 101 && resultCode == Activity.RESULT_OK) {
+            val uri = data?.data ?: return
+            try {
+                val dialog = CustomDialog.Builder2(this@LabelActivity)
+                    .setCancelable(false)
+                    .setCustomView(ProgressBar(this@LabelActivity))
+                    .show()
+
+                lifecycleScope.launch(Dispatchers.IO) {
+                    val input = contentResolver.openInputStream(uri)
+                    val file = File(
+                        getExternalFilesDir(Environment.DIRECTORY_PICTURES),
+                        System.currentTimeMillis().toString()
+                    )
+                    val path = JavaHelper.streamToFile(input, file)
+                    input?.close()
+
+                    val res = try {
+                        LabelImgUtils.uploadImage(
+                            File(path),
+                            LabelViewModel.label?.id.toString()
+                        )
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        null
+                    }
+
+                    withContext(Dispatchers.Main) {
+                        dialog.dismiss()
+
+                        if (res != null) {
+                            val data = Gson().fromJson(Gson().toJson(res.data), LabelImgBean::class.java)
+
+                            val item = BannerItem()
+                            item.id = data.id
+                            item.imagePath = data.uri
+                            item.lid = data.lid
+
+                            labelImgList.add(item)
+                            binding.banner2.setDatas(labelImgList)
+                            Toast.makeText(this@LabelActivity, "成功", Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(this@LabelActivity, "失败", Toast.LENGTH_SHORT).show()
+                        }
+
+                    }
+
+                }
+
+
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
 
         }
     }
@@ -132,16 +187,23 @@ class LabelActivity: AppCompatActivity() {
         }
 
         binding.buttonAddImg.setOnClickListener {
+            val intent = Intent(Intent.ACTION_PICK)
+            intent.type = "image/*"
+            startActivityForResult(intent, 101)
+
+            /*
             PictureSelector.create(this)
                 .openGallery(SelectMimeType.ofImage())
                 .setMaxSelectNum(3)
                 .setImageEngine(GlideEngine.createGlideEngine())
+                .setSandboxFileEngine(MeSandboxFileEngine())
                 .forResult(object : OnResultCallbackListener<LocalMedia?> {
                     override fun onResult(result: ArrayList<LocalMedia?>?) {
                         if (result != null) {
                             val dialog = CustomDialog.Builder2(this@LabelActivity)
-                                .setCancelable(false)
-                                .setCustomView(ProgressBar(this@LabelActivity))
+//                                .setCancelable(false)
+                                .setTitle("? "+result.map {  it.toString() }.joinToString { "\n" })
+//                                .setCustomView(ProgressBar(this@LabelActivity))
                                 .show()
 
                             lifecycleScope.launch(Dispatchers.IO) {
@@ -201,12 +263,12 @@ class LabelActivity: AppCompatActivity() {
                                     binding.banner2.setDatas(labelImgList)
 
                                     println(labelImgList.joinToString("\n"))
-                                    dialog.dismiss()
+//                                    dialog.dismiss()
 
-                                    CustomDialog.Builder2(this@LabelActivity)
-                                        .setTitle("result${result.size}\n\n" +
-                                                result.map { it?.path?:"n1" }.joinToString { " @ \n" })
-                                        .show()
+//                                    CustomDialog.Builder2(this@LabelActivity)
+//                                        .setTitle("result${result.size}\n\n" +
+//                                                result.map { Gson().toJson(it) }.joinToString { " @ \n" })
+//                                        .show()
                                 }
                             }
 
@@ -214,6 +276,9 @@ class LabelActivity: AppCompatActivity() {
                     }
                     override fun onCancel() {}
                 })
+
+*/
+
         }
 
         binding.buttonRemoveImg.setOnClickListener {

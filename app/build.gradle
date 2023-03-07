@@ -51,7 +51,7 @@ android {
 }
 
 dependencies {
-
+// 图片媒体选择器
     implementation 'io.github.lucksiege:pictureselector:v3.10.7'
     implementation 'com.github.loperSeven:DateTimePicker:0.6.2'
     implementation 'com.github.getActivity:XXPermissions:16.6'
