@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/menu1_fragment"
+        android:id="@+id/nav_fragment1"
         android:icon="@drawable/ic_bottom_scan"
         android:title="首页" />
     <item
-        android:id="@+id/menu2_fragment"
+        android:id="@+id/nav_fragment2"
         android:icon="@drawable/ic_bottom_space"
         android:title="科普空间" />
     <item
-        android:id="@+id/menu3_fragment"
+        android:id="@+id/nav_fragment3"
         android:icon="@drawable/ic_bottom_shop"
         android:title="科普商城" />
     <item
-        android:id="@+id/menu4_fragment"
+        android:id="@+id/nav_fragment4"
         android:icon="@drawable/ic_bottom_mine"
         android:title="我的" />
 </menu>

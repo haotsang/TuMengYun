@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="@dimen/layout_margin_16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/banner_card"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:layout_marginHorizontal="@dimen/layout_margin_16dp"
+            android:orientation="horizontal"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="@dimen/layout_margin_12dp"
+            app:cardElevation="1dp"
+            app:cardUseCompatPadding="true"
+            app:contentPadding="0dp"
+            app:strokeColor="#37000000"
+            app:strokeWidth="0dp">
+
+            <com.youth.banner.Banner
+                android:id="@+id/banner"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:focusable="true"
+                app:banner_indicator_normal_width="11dp"
+                app:banner_indicator_selected_color="#95F2EC"
+                app:banner_indicator_selected_width="13dp"
+                app:banner_radius="@dimen/layout_margin_12dp" />
+
+            <TextView
+                android:id="@+id/banner_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:shadowColor="@color/black"
+                android:shadowDx="0.5"
+                android:shadowDy="0.5"
+                android:shadowRadius="1"
+                android:text="未设置"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/text_size_16sp" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/linear1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/layout_margin_16dp"
+            android:minHeight="255dp"
+            android:orientation="horizontal"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="@dimen/layout_margin_12dp"
+            app:cardElevation="1dp"
+            app:cardUseCompatPadding="true"
+            app:contentPadding="2dp"
+            app:strokeColor="#37000000"
+            app:strokeWidth="0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="36dp">
+
+                <TextView
+                    android:id="@+id/chart1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="@dimen/layout_margin_16dp"
+                    android:drawableStart="@drawable/ic_yesterday_data"
+                    android:drawablePadding="@dimen/layout_margin_6dp"
+                    android:text="昨日数据"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_size_16sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <include
+                        android:id="@+id/card_item1"
+                        layout="@layout/view_card_item" />
+
+                    <include
+                        android:id="@+id/card_item2"
+                        layout="@layout/view_card_item" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <include
+                        android:id="@+id/card_item3"
+                        layout="@layout/view_card_item" />
+
+                    <include
+                        android:id="@+id/card_item4"
+                        layout="@layout/view_card_item" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+
+</ScrollView>

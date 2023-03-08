@@ -29,7 +29,7 @@
         android:gravity="center_vertical"
         android:text="SubTitle"
         android:textColor="@color/black"
-        android:textSize="16sp" />
+        android:textSize="@dimen/text_size_16sp" />
 
     <TextView
         android:id="@+id/item_settings_title"
@@ -39,5 +39,5 @@
         android:gravity="center_vertical"
         android:text="Title"
         android:textColor="@color/black"
-        android:textSize="16sp" />
+        android:textSize="@dimen/text_size_16sp" />
 </RelativeLayout>

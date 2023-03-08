@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:startDestination="@+id/menu1_fragment"
+    app:startDestination="@+id/nav_fragment1"
     android:id="@+id/nav_bottom_nav">
 
     <fragment
-        android:id="@+id/menu1_fragment"
-        android:name="com.example.myapplication.fragment.OneFragment"
-        android:label="111" />
+        android:id="@+id/nav_fragment1"
+        android:name="com.example.myapplication.fragment.HomeFragment"
+        android:label="1" />
     <fragment
-        android:id="@+id/menu2_fragment"
-        android:name="com.example.myapplication.fragment.TwoFragment"
-        android:label="222" />
+        android:id="@+id/nav_fragment2"
+        android:name="com.example.myapplication.fragment.ZoneFragment"
+        android:label="2" />
     <fragment
-        android:id="@+id/menu3_fragment"
-        android:name="com.example.myapplication.fragment.ThreeFragment"
-        android:label="333" />
+        android:id="@+id/nav_fragment3"
+        android:name="com.example.myapplication.fragment.ShopFragment"
+        android:label="3" />
     <fragment
-        android:id="@+id/menu4_fragment"
-        android:name="com.example.myapplication.fragment.FourFragment"
-        android:label="444" />
+        android:id="@+id/nav_fragment4"
+        android:name="com.example.myapplication.fragment.MineFragment"
+        android:label="4" />
 
 </navigation>

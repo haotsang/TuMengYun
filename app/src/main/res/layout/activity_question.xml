@@ -46,10 +46,10 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginVertical="12dp"
+            android:layout_marginHorizontal="@dimen/layout_margin_16dp"
+            android:layout_marginVertical="@dimen/layout_margin_12dp"
             app:cardBackgroundColor="@color/white"
-            app:cardCornerRadius="12dp"
+            app:cardCornerRadius="@dimen/layout_margin_12dp"
             app:cardElevation="1dp"
             app:cardUseCompatPadding="true"
             app:contentPadding="0dp"
@@ -65,17 +65,17 @@
                     android:id="@+id/tv_index"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="12dp"
-                    android:layout_marginTop="24dp"
-                    android:textSize="16sp" />
+                    android:layout_marginHorizontal="@dimen/layout_margin_12dp"
+                    android:layout_marginTop="@dimen/layout_margin_24dp"
+                    android:textSize="@dimen/text_size_16sp" />
                 <TextView
                     android:id="@+id/question_content"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="12dp"
-                    android:layout_marginVertical="6dp"
+                    android:layout_marginHorizontal="@dimen/layout_margin_12dp"
+                    android:layout_marginVertical="@dimen/layout_margin_6dp"
                     android:maxLines="10"
-                    android:textSize="16sp"
+                    android:textSize="@dimen/text_size_16sp"
                     android:textColor="@color/black" />
 
                 <LinearLayout
@@ -88,33 +88,33 @@
                         android:id="@+id/single_select1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="12dp"
-                        android:layout_marginVertical="6dp"
+                        android:layout_marginHorizontal="@dimen/layout_margin_12dp"
+                        android:layout_marginVertical="@dimen/layout_margin_6dp"
                         android:textColor="@color/black"
                         android:padding="14dp"
-                        android:textSize="16sp"
+                        android:textSize="@dimen/text_size_16sp"
                         android:background="@drawable/shape_answer_normal"/>
 
                     <TextView
                         android:id="@+id/single_select2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="12dp"
-                        android:layout_marginVertical="6dp"
+                        android:layout_marginHorizontal="@dimen/layout_margin_12dp"
+                        android:layout_marginVertical="@dimen/layout_margin_6dp"
                         android:textColor="@color/black"
                         android:padding="14dp"
-                        android:textSize="16sp"
+                        android:textSize="@dimen/text_size_16sp"
                         android:background="@drawable/shape_answer_normal"/>
 
                     <TextView
                         android:id="@+id/single_select3"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="12dp"
-                        android:layout_marginVertical="6dp"
+                        android:layout_marginHorizontal="@dimen/layout_margin_12dp"
+                        android:layout_marginVertical="@dimen/layout_margin_6dp"
                         android:textColor="@color/black"
                         android:padding="14dp"
-                        android:textSize="16sp"
+                        android:textSize="@dimen/text_size_16sp"
                         android:background="@drawable/shape_answer_normal"/>
 
                 </LinearLayout>
@@ -126,10 +126,10 @@
                         android:id="@+id/tv_right_status"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="12dp"
+                        android:layout_marginHorizontal="@dimen/layout_margin_12dp"
                         android:layout_alignParentStart="true"
-                        android:layout_marginVertical="6dp"
-                        android:textSize="16sp"
+                        android:layout_marginVertical="@dimen/layout_margin_6dp"
+                        android:textSize="@dimen/text_size_16sp"
                         android:textStyle="bold"
                         />
                     <TextView
@@ -137,9 +137,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
-                        android:layout_marginHorizontal="12dp"
-                        android:layout_marginVertical="6dp"
-                        android:textSize="16sp"
+                        android:layout_marginHorizontal="@dimen/layout_margin_12dp"
+                        android:layout_marginVertical="@dimen/layout_margin_6dp"
+                        android:textSize="@dimen/text_size_16sp"
                         android:textStyle="bold"
                         />
                 </RelativeLayout>
@@ -149,9 +149,9 @@
                     android:id="@+id/tv_time"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="12dp"
-                    android:layout_marginVertical="6dp"
-                    android:textSize="16sp"
+                    android:layout_marginHorizontal="@dimen/layout_margin_12dp"
+                    android:layout_marginVertical="@dimen/layout_margin_6dp"
+                    android:textSize="@dimen/text_size_16sp"
                     />
 
             </LinearLayout>
@@ -177,7 +177,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_margin="8dp"
+                android:layout_margin="@dimen/layout_margin_8dp"
                 android:text="暂存" />
 
             <com.example.myapplication.view.MultiStatusButton
@@ -185,7 +185,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_margin="8dp"
+                android:layout_margin="@dimen/layout_margin_8dp"
                 android:text="上一题" />
 
             <com.example.myapplication.view.MultiStatusButton
@@ -193,7 +193,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_margin="8dp"
+                android:layout_margin="@dimen/layout_margin_8dp"
                 android:text="下一题" />
         </LinearLayout>
 
@@ -201,8 +201,8 @@
             android:id="@+id/button_submit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="12dp"
-            android:layout_marginHorizontal="12dp"
+            android:layout_marginVertical="@dimen/layout_margin_12dp"
+            android:layout_marginHorizontal="@dimen/layout_margin_12dp"
             android:text="提交" />
 
     </LinearLayout>

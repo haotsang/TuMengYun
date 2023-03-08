@@ -3,7 +3,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_weight="1"
-    android:padding="6dp"
+    android:padding="@dimen/layout_margin_6dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ImageView
@@ -20,7 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="@dimen/layout_margin_16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -28,8 +28,8 @@
             android:id="@+id/card_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="6dp"
-            android:textSize="20sp"
+            android:paddingTop="@dimen/layout_margin_6dp"
+            android:textSize="@dimen/text_size_20sp"
             android:textStyle="bold"
             android:textColor="@color/white"
             android:text="200人" />
@@ -38,8 +38,8 @@
             android:id="@+id/card_tips"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingBottom="6dp"
-            android:textSize="18sp"
+            android:paddingBottom="@dimen/layout_margin_6dp"
+            android:textSize="@dimen/text_size_18sp"
             android:textColor="@color/white"
             android:text="客流" />
     </LinearLayout>

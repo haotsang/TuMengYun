@@ -38,7 +38,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:paddingTop="16dp"
+        android:paddingTop="@dimen/layout_margin_16dp"
         android:gravity="center|top"
         android:orientation="vertical"
         android:background="@color/bg_color">
@@ -48,16 +48,16 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="26dp"
             android:text="预览："
-            android:textSize="16sp"
+            android:textSize="@dimen/text_size_16sp"
             android:textColor="@color/black" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/banner_card"
             android:layout_width="match_parent"
             android:layout_height="180dp"
-            android:layout_marginHorizontal="24dp"
+            android:layout_marginHorizontal="@dimen/layout_margin_24dp"
             app:cardBackgroundColor="@color/white"
-            app:cardCornerRadius="12dp"
+            app:cardCornerRadius="@dimen/layout_margin_12dp"
             app:cardElevation="1dp"
             app:cardUseCompatPadding="true"
             app:contentPadding="0dp"
@@ -74,7 +74,7 @@
                 app:banner_indicator_normal_width="11dp"
                 app:banner_indicator_selected_color="#95F2EC"
                 app:banner_indicator_selected_width="13dp"
-                app:banner_radius="12dp" />
+                app:banner_radius="@dimen/layout_margin_12dp" />
             <TextView
                 android:id="@+id/banner2_text"
                 android:layout_width="wrap_content"
@@ -86,12 +86,12 @@
                 android:shadowDy="0.5"
                 android:shadowRadius="1"
                 android:textColor="@android:color/white"
-                android:textSize="16sp" />
+                android:textSize="@dimen/text_size_16sp" />
             <ImageView
                 android:id="@+id/button_remove_img"
                 android:layout_width="56dp"
                 android:layout_height="56dp"
-                android:layout_margin="12dp"
+                android:layout_margin="@dimen/layout_margin_12dp"
                 android:layout_gravity="top|end"
                 android:src="@drawable/ps_ic_delete"
                 android:background="@drawable/selector_login_btn_enabled"/>
@@ -101,9 +101,9 @@
             android:id="@+id/label_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="@dimen/layout_margin_24dp"
             android:text="标签状态：已撤销"
-            android:textSize="16sp"
+            android:textSize="@dimen/text_size_16sp"
             android:textColor="@android:color/holo_red_dark" />
 
         <LinearLayout
@@ -115,21 +115,21 @@
                 android:id="@+id/button_add_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="12dp"
+                android:layout_margin="@dimen/layout_margin_12dp"
                 android:layout_weight="1"
                 android:text="编辑文案" />
             <com.example.myapplication.view.MultiStatusButton
                 android:id="@+id/button_question_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="12dp"
+                android:layout_margin="@dimen/layout_margin_12dp"
                 android:layout_weight="1"
                 android:text="编辑题库" />
             <com.example.myapplication.view.MultiStatusButton
                 android:id="@+id/button_add_img"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="12dp"
+                android:layout_margin="@dimen/layout_margin_12dp"
                 android:layout_weight="1"
                 android:text="添加图片" />
 
@@ -144,13 +144,13 @@
                 android:id="@+id/button_set_start_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="24dp"
+                android:layout_marginHorizontal="@dimen/layout_margin_24dp"
                 android:text="设置答题开始时间" />
             <com.example.myapplication.view.MultiStatusButton
                 android:id="@+id/button_set_end_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="24dp"
+                android:layout_marginHorizontal="@dimen/layout_margin_24dp"
                 android:text="设置答题结束时间" />
         </LinearLayout>
 
@@ -159,7 +159,7 @@
             android:id="@+id/button_view_mothed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="24dp"
+            android:layout_marginHorizontal="@dimen/layout_margin_24dp"
             android:visibility="invisible"
             android:text="浏览方式" />
 
@@ -174,7 +174,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_margin="24dp"
+                android:layout_margin="@dimen/layout_margin_24dp"
                 android:text="上传" />
 
             <com.example.myapplication.view.MultiStatusButton
@@ -183,7 +183,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="撤销"
-                android:layout_margin="24dp" />
+                android:layout_margin="@dimen/layout_margin_24dp" />
 
         </LinearLayout>
     </LinearLayout>

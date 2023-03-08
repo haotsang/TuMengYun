@@ -12,13 +12,13 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:text="允许全系统浏览"
-        android:textSize="16sp" />
+        android:textSize="@dimen/text_size_16sp" />
 
     <RadioButton
         android:id="@+id/radio_button2"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:text="允许管内浏览"
-        android:textSize="16sp" />
+        android:textSize="@dimen/text_size_16sp" />
 </RadioGroup>
 

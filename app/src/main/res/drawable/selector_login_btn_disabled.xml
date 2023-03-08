@@ -3,14 +3,14 @@
     <item android:state_pressed="false">
         <shape>
             <solid android:color="@color/bg_color" />
-            <corners android:radius="24dp"/>
+            <corners android:radius="@dimen/layout_margin_24dp"/>
         </shape>
     </item>
     <!--单击时是一个带圆角,白色背景,绿色边框的矩形-->
     <item android:state_pressed="true">
         <shape>
             <solid android:color="@color/blue_bright" />
-            <corners android:radius="24dp"/>
+            <corners android:radius="@dimen/layout_margin_24dp"/>
         </shape>
     </item>
 </selector>

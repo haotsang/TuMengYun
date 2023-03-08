@@ -4,17 +4,17 @@
     android:layout_height="match_parent"
     android:gravity="center|top"
     android:orientation="vertical"
-    android:paddingTop="24dp"
-    android:paddingHorizontal="24dp">
+    android:paddingTop="@dimen/layout_margin_24dp"
+    android:paddingHorizontal="@dimen/layout_margin_24dp">
 
     <TextView
         android:id="@+id/tv_phone_number"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginVertical="16dp"
+        android:layout_marginVertical="@dimen/layout_margin_16dp"
         android:text="未知号码"
         android:textColor="@android:color/white"
-        android:textSize="18sp" />
+        android:textSize="@dimen/text_size_18sp" />
 
 
     <com.example.myapplication.view.MultiStatusButton
@@ -27,7 +27,7 @@
         android:id="@+id/tv_tip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginVertical="16dp"
+        android:layout_marginVertical="@dimen/layout_margin_16dp"
         android:textColor="@android:color/white"
-        android:textSize="12sp" />
+        android:textSize="@dimen/text_size_12sp" />
 </LinearLayout>

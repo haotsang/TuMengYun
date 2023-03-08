@@ -5,11 +5,8 @@ import android.app.Application
 import android.os.Bundle
 import androidx.core.view.WindowCompat
 import com.example.myapplication.activity.CrashActivity
-import com.example.myapplication.activity.TestActivity
-import com.example.myapplication.entity.RegionBean
 import com.example.myapplication.utils.NeverCrash
 import com.example.myapplication.utils.ViewUtils
-import com.google.gson.Gson
 import kotlin.properties.Delegates
 
 class MyApplication : Application(), Application.ActivityLifecycleCallbacks {
@@ -41,12 +38,10 @@ class MyApplication : Application(), Application.ActivityLifecycleCallbacks {
 
 
     override fun onActivityCreated(activity: Activity, bundle: Bundle?) {
-        if (activity !is TestActivity) {
-            WindowCompat.setDecorFitsSystemWindows(activity.window, false)
-            ViewUtils.setFullScreenWindowLayoutInDisplayCutout(activity, true)
-            ViewUtils.setSystemBarTransparent(activity)
-            ViewUtils.initSystemBarColor(activity)
-        }
+        WindowCompat.setDecorFitsSystemWindows(activity.window, false)
+        ViewUtils.setFullScreenWindowLayoutInDisplayCutout(activity, true)
+        ViewUtils.setSystemBarTransparent(activity)
+        ViewUtils.initSystemBarColor(activity)
     }
 
     override fun onActivityStarted(activity: Activity) {
