@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
+import com.example.myapplication.MyApplication
 import com.example.myapplication.R
 import com.example.myapplication.adapter.BannerImageAdapter2
 import com.example.myapplication.databinding.ActivityLabelBinding
@@ -20,15 +21,13 @@ import com.example.myapplication.entity.BannerItem
 import com.example.myapplication.entity.LabelImgBean
 import com.example.myapplication.http.LabelImgUtils
 import com.example.myapplication.http.LabelUtils
-import com.example.myapplication.utils.GlideEngine
-import com.example.myapplication.utils.JavaHelper
-import com.example.myapplication.utils.MeSandboxFileEngine
-import com.example.myapplication.utils.Prefs
+import com.example.myapplication.utils.*
 import com.example.myapplication.utils.livebus.LiveDataBus
 import com.example.myapplication.view.CustomDialog
 import com.example.myapplication.viewmodel.LabelViewModel
 import com.example.myapplication.viewmodel.UserViewModel
 import com.google.gson.Gson
+import com.loper7.date_time_picker.dialog.CardDatePickerDialog
 import com.luck.picture.lib.basic.PictureSelector
 import com.luck.picture.lib.config.SelectMimeType
 import com.luck.picture.lib.entity.LocalMedia
@@ -40,6 +39,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.IOException
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class LabelActivity: AppCompatActivity() {
@@ -48,6 +49,9 @@ class LabelActivity: AppCompatActivity() {
 
     private lateinit var adapter: BannerImageAdapter2
     private val labelImgList = mutableListOf<BannerItem>()
+
+    private var startTime: Date? = null
+    private var endTime: Date? = null
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -128,7 +132,6 @@ class LabelActivity: AppCompatActivity() {
             Toast.makeText(this, "未登录，请先登录", Toast.LENGTH_SHORT).show()
             return
         }
-        val curRegionId = UserViewModel.user?.pin.toString()
 
         adapter = BannerImageAdapter2(labelImgList, this)
         binding.banner2.setAdapter(adapter)
@@ -177,6 +180,37 @@ class LabelActivity: AppCompatActivity() {
             })
         }
 
+        binding.buttonSetStartTime.setOnClickListener {
+            CardDatePickerDialog.Builder(this)
+                .setDefaultTime((LabelViewModel.label!!.startTime?.time) ?: System.currentTimeMillis())
+                .setTitle("选择开始时间")
+                .setOnChoose {
+                    startTime = Date(it)
+                    LabelViewModel.label!!.startTime = startTime
+
+                    submitToCloud()
+                }.build().show()
+        }
+        binding.buttonSetEndTime.setOnClickListener {
+            CardDatePickerDialog.Builder(this)
+                .setDefaultTime((LabelViewModel.label!!.endTime?.time) ?: System.currentTimeMillis())
+                .setTitle("选择结束时间").setOnChoose {
+                    if (startTime != null && startTime!!.time < it) {
+                        endTime = Date(it)
+                        LabelViewModel.label!!.endTime = endTime
+
+                        submitToCloud()
+                    } else {
+                        CustomDialog.Builder2(this)
+                            .setIcon(R.drawable.ic_alert_ask)
+                            .setTitle("错误：结束时间应大于开始时间")
+                            .setConfirmListener { }
+                            .show()
+                    }
+                }.build().show()
+        }
+
+
         binding.buttonAddText.setOnClickListener {
             startActivityForResult(
                 Intent(this, LabelTitleEditActivity::class.java).apply {
@@ -187,11 +221,11 @@ class LabelActivity: AppCompatActivity() {
         }
 
         binding.buttonAddImg.setOnClickListener {
-            val intent = Intent(Intent.ACTION_PICK)
-            intent.type = "image/*"
-            startActivityForResult(intent, 101)
+//            val intent = Intent(Intent.ACTION_PICK)
+//            intent.type = "image/*"
+//            startActivityForResult(intent, 101)
 
-            /*
+
             PictureSelector.create(this)
                 .openGallery(SelectMimeType.ofImage())
                 .setMaxSelectNum(3)
@@ -201,9 +235,8 @@ class LabelActivity: AppCompatActivity() {
                     override fun onResult(result: ArrayList<LocalMedia?>?) {
                         if (result != null) {
                             val dialog = CustomDialog.Builder2(this@LabelActivity)
-//                                .setCancelable(false)
-                                .setTitle("? "+result.map {  it.toString() }.joinToString { "\n" })
-//                                .setCustomView(ProgressBar(this@LabelActivity))
+                                .setCancelable(false)
+                                .setCustomView(ProgressBar(this@LabelActivity))
                                 .show()
 
                             lifecycleScope.launch(Dispatchers.IO) {
@@ -235,8 +268,6 @@ class LabelActivity: AppCompatActivity() {
 
                                 for (item in subList) {
                                     try {
-                                        println("@@@@@" + item.imagePath!! + "\n")
-//                                        val realPath = RealPathUtil.getPath(this@LabelActivity, Uri.parse(item.imagePath!!))
                                         val res = try {
                                             LabelImgUtils.uploadImage(
                                                 File(item.imagePath!!),
@@ -263,12 +294,7 @@ class LabelActivity: AppCompatActivity() {
                                     binding.banner2.setDatas(labelImgList)
 
                                     println(labelImgList.joinToString("\n"))
-//                                    dialog.dismiss()
-
-//                                    CustomDialog.Builder2(this@LabelActivity)
-//                                        .setTitle("result${result.size}\n\n" +
-//                                                result.map { Gson().toJson(it) }.joinToString { " @ \n" })
-//                                        .show()
+                                    dialog.dismiss()
                                 }
                             }
 
@@ -277,7 +303,6 @@ class LabelActivity: AppCompatActivity() {
                     override fun onCancel() {}
                 })
 
-*/
 
         }
 
@@ -345,16 +370,16 @@ class LabelActivity: AppCompatActivity() {
             binding.banner2.setDatas(labelImgList)
         }
 
-        LabelViewModel.getLabel2(lifecycleScope, UserViewModel.user?.pin.toString())
+        LabelViewModel.getLabel2(lifecycleScope, UserViewModel.region?.pin!!)
         LabelViewModel.getLabelImg2(lifecycleScope, LabelViewModel.label?.id.toString())
 
 
     }
 
-    override fun onDestroy() {
-        LiveDataBus.send("livebus_label_change", LabelViewModel.label)
-        LiveDataBus.send("livebus_label_img_change", LabelViewModel.labelImg)
-        super.onDestroy()
+    override fun onPause() {
+        super.onPause()
+        LabelViewModel.getLabel(lifecycleScope, UserViewModel.region?.pin!!)
+        LabelViewModel.getLabelImg(lifecycleScope, LabelViewModel.label?.id.toString())
     }
 
     private fun updateViewStatus() {

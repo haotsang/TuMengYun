@@ -1,6 +1,6 @@
 package com.example.myapplication.activity.label
 
-import android.content.Intent
+import android.app.Activity
 import android.os.Bundle
 import android.text.InputFilter
 import android.text.Spanned
@@ -9,19 +9,19 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.myapplication.databinding.ActivityQuestionAddBinding
-import com.example.myapplication.entity.RegionBean
 import com.example.myapplication.entity.LabelQuestionBean
 import com.example.myapplication.http.LabelQuestionUtils
-import com.example.myapplication.utils.Prefs
 import com.example.myapplication.utils.Utils
 import com.example.myapplication.viewmodel.LabelViewModel
 import com.example.myapplication.viewmodel.UserViewModel
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.loper7.date_time_picker.dialog.CardDatePickerDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
+
 
 class QuestionAddActivity : AppCompatActivity() {
 
@@ -33,6 +33,7 @@ class QuestionAddActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val isEdit = intent.getBooleanExtra("is_edit", false)
+        var questionId: Int? = -1
 
         binding.toolbarBack.setOnClickListener { finish() }
         binding.toolbarTitle.text = if (isEdit) "修改答题" else "添加答题（${UserViewModel.region?.name}）"
@@ -57,6 +58,7 @@ class QuestionAddActivity : AppCompatActivity() {
             startTime = bean.startTime
             endTime = bean.endTime
             binding.timeStatus.text = "开始时间：${Utils.formatTime(startTime) ?: ""}\n结束时间：${Utils.formatTime(endTime) ?: ""}"
+            questionId = bean.id
         }
 
         binding.buttonStartTime.setOnClickListener {
@@ -139,14 +141,12 @@ class QuestionAddActivity : AppCompatActivity() {
                 this.labelId = LabelViewModel.label?.id
             }
 
-            if (isEdit) {
-                val i = intent.getIntExtra("edit_qid", -1)
-                if (i != -1) {
-                    questionEntity.id = i
-                }
+            if (isEdit && questionId != -1) {
+                questionEntity.id = questionId
             }
 
-            val gsonString = Gson().toJson(questionEntity)
+            val gson = GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create()
+            val gsonString = gson.toJson(questionEntity)
             lifecycleScope.launch(Dispatchers.IO) {
                 val flag = try {
                     if (isEdit) {
@@ -161,12 +161,9 @@ class QuestionAddActivity : AppCompatActivity() {
 
                 withContext(Dispatchers.Main) {
                     if (flag) {
+                        setResult(Activity.RESULT_OK)
+
                         Toast.makeText(this@QuestionAddActivity, if (isEdit) "修改成功" else "添加成功", Toast.LENGTH_SHORT).show()
-
-                        val i = Intent()
-                        i.putExtra("flag", true)
-                        setResult(3, i)
-
                         finish()
                     } else {
                         Toast.makeText(this@QuestionAddActivity, "失败", Toast.LENGTH_SHORT).show()

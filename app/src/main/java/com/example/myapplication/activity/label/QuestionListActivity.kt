@@ -1,5 +1,6 @@
 package com.example.myapplication.activity.label
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -31,9 +32,8 @@ class QuestionListActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (data != null && requestCode == 0 && resultCode == 3) {
+        if (requestCode == 101 && resultCode == Activity.RESULT_OK) {
             getALl()
-            println("@@  onActivityResult")
         }
     }
 
@@ -50,10 +50,10 @@ class QuestionListActivity : AppCompatActivity() {
 
         binding.baseOverflow.text = "添加题库"
         binding.baseOverflow.setOnClickListener {
-            startActivity(Intent(this, QuestionAddActivity::class.java).apply {
+            startActivityForResult(Intent(this, QuestionAddActivity::class.java).apply {
                 putExtra("is_edit", false)
                 putExtra("label_id", LabelViewModel.label?.id)
-            })
+            }, 101)
         }
 
         adapter = KotlinDataAdapter.Builder<LabelQuestionBean>()
@@ -77,9 +77,9 @@ class QuestionListActivity : AppCompatActivity() {
                 }
 
                 val item = questionList[pos]
-                val isEnd = if (item.startTime != null && item.endTime != null) {
+                val isEnd = if (LabelViewModel.label?.startTime != null && LabelViewModel.label?.endTime != null) {
                     //已结束
-                    System.currentTimeMillis() > ((item.endTime?.time) ?: 0L)
+                    System.currentTimeMillis() > ((LabelViewModel.label?.endTime?.time) ?: 0L)
                 } else {
                     false
                 }
@@ -92,9 +92,8 @@ class QuestionListActivity : AppCompatActivity() {
             startActivityForResult(Intent(this, QuestionAddActivity::class.java).apply {
                 putExtra("is_edit", true)
                 putExtra("label_id", LabelViewModel.label?.id)
-                putExtra("edit_qid", questionList[position].id)
                 putExtra("edit_data", Gson().toJson(questionList[position]))
-            }, 0)
+            }, 101)
         }
 
 

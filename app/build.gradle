@@ -13,7 +13,7 @@ android {
         minSdk 21
         targetSdk 33
         versionCode 1
-        versionName "1.0"
+        versionName "1.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -64,6 +64,10 @@ dependencies {
     implementation 'com.github.chrisbanes:PhotoView:1.2.6'
     implementation 'com.github.jenly1314:zxing-lite:2.3.0'
 //    implementation 'com.bm.photoview:library:2.0.7'
+
+
+    implementation "androidx.navigation:navigation-fragment-ktx:2.5.3"
+    implementation "androidx.navigation:navigation-ui-ktx:2.5.3"
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 

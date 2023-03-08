@@ -5,13 +5,16 @@ import com.example.myapplication.MyApplication
 import com.example.myapplication.entity.RegionBean
 import com.example.myapplication.entity.ResponseBase
 import com.example.myapplication.entity.UserBean
+import com.example.myapplication.entity.UserRewardBean
 import com.example.myapplication.http.RegionUtils
+import com.example.myapplication.http.UserRewardUtils
 import com.example.myapplication.http.UserUtils
 import com.example.myapplication.utils.Prefs
 import com.example.myapplication.utils.livebus.LiveDataBus
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 object UserViewModel {
 
@@ -108,7 +111,7 @@ object UserViewModel {
     fun loginWithPhone(viewModelScope: LifecycleCoroutineScope, phone: String, saveState: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
             val responseBase: ResponseBase? = try {
-                UserUtils.loginWithPhone(phone, MyApplication.pinCode)
+                UserUtils.loginWithPhone(phone, region?.pin!!)
             } catch (e: Exception) {
                 null
             }
@@ -137,7 +140,7 @@ object UserViewModel {
     fun loginWithAdmin(viewModelScope: LifecycleCoroutineScope, phone: String, saveState: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
             val responseBase: ResponseBase? = try {
-                UserUtils.loginWithPhone(phone, MyApplication.pinCode)
+                UserUtils.loginWithPhone(phone, region?.pin!!)
             } catch (e: Exception) {
                 null
             }
@@ -160,10 +163,30 @@ object UserViewModel {
         }
     }
 
+    fun verify(viewModelScope: LifecycleCoroutineScope) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val responseBase: ResponseBase? = try {
+                if (Prefs.isLoginFromPhone) {
+                    UserUtils.loginWithPhone(user?.phone.toString(), region?.pin!!)
+                } else {
+                    UserUtils.login(user?.account.toString(), user?.password.toString())
+                }
+            } catch (e: Exception) {
+                null
+            }
+
+            if (responseBase != null && responseBase.code == 200) {
+                Prefs.userInfo = Gson().toJson(responseBase.data)
+            } else {
+                Prefs.userInfo = ""
+            }
+            requestUserInfo()
+        }
+    }
     fun register(viewModelScope: LifecycleCoroutineScope, username: String, password: String, phone: String) {
         viewModelScope.launch(Dispatchers.IO) {
             val responseBase: ResponseBase? = try {
-                UserUtils.register(username, password, phone, MyApplication.pinCode)
+                UserUtils.register(username, password, phone, region?.pin!!)
             } catch (e: Exception) {
                 null
             }
@@ -210,6 +233,26 @@ object UserViewModel {
             } else {
                 LiveDataBus.send("livebus_login", Pair(false, "注销失败"))
             }
+        }
+    }
+
+    fun getReward(viewModelScope: LifecycleCoroutineScope) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val reward: Int = try {
+                UserRewardUtils.getReward(
+                    Gson().toJson(
+                        UserRewardBean().apply {
+                            this.uid = user?.id
+                            this.pin = region?.pin
+                        }
+                    )
+                )
+            } catch (e: Exception) {
+                e.printStackTrace()
+                0
+            }
+
+            LiveDataBus.send("livebus_get_reward", reward)
         }
     }
 

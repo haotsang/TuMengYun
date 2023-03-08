@@ -95,6 +95,7 @@
         <activity android:name="com.example.myapplication.activity.MainActivity" />
         <activity android:name="com.example.myapplication.activity.label.QuestionAddActivity" />
         <activity android:name="com.example.myapplication.activity.label.QuestionListActivity" />
+        <activity android:name="com.example.myapplication.activity.TestActivity" />
 
 
         <provider

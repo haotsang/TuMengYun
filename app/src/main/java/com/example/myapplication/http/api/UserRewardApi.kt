@@ -11,16 +11,13 @@ interface UserRewardApi {
     @Multipart
     @POST("user_reward/get")
     fun getReward(
-        @Part("uid") uid: RequestBody,
-        @Part("region") region: RequestBody,
+        @Part("gson") gson: RequestBody
     ): Call<Int>
 
 
     @Multipart
     @POST("user_reward/set")
     fun setReward(
-        @Part("uid") uid: RequestBody,
-        @Part("region") region: RequestBody,
-        @Part("reward") reward: RequestBody,
+        @Part("gson") gson: RequestBody,
     ): Call<Boolean>
 }

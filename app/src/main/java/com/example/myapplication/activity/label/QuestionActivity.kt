@@ -16,10 +16,7 @@ import androidx.core.view.children
 import androidx.lifecycle.lifecycleScope
 import com.example.myapplication.R
 import com.example.myapplication.databinding.ActivityQuestionBinding
-import com.example.myapplication.entity.RegionBean
-import com.example.myapplication.entity.LabelQuestionBean
-import com.example.myapplication.entity.UserBean
-import com.example.myapplication.entity.UserQuestionBean
+import com.example.myapplication.entity.*
 import com.example.myapplication.http.LabelQuestionUtils
 import com.example.myapplication.http.UserQuestionUtils
 import com.example.myapplication.http.UserRewardUtils
@@ -27,6 +24,7 @@ import com.example.myapplication.utils.Prefs
 import com.example.myapplication.utils.Utils
 import com.example.myapplication.utils.extensions.toColor
 import com.example.myapplication.view.CustomDialog
+import com.example.myapplication.viewmodel.LabelViewModel
 import com.example.myapplication.viewmodel.UserViewModel
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -164,9 +162,13 @@ class QuestionActivity : AppCompatActivity() {
         var rightCount = 0
         var reward = 0
         lifecycleScope.launch(Dispatchers.IO) {
-            list.filter { !it.alreadyAnswered }.forEach { item ->
+            //  提交时  1过滤已答的题  2过滤未选择的题
+            list.filter { !it.alreadyAnswered }.filter { it.selectedAnswer.isNotEmpty() }.forEach { item ->
                 try {
-                    UserQuestionUtils.setAnswered(uid.toString(), item.id.toString(),
+                    //  设置用户已答过
+                    UserQuestionUtils.setAnswered(
+                        uid.toString(),
+                        item.id.toString(),
                         item.selectedAnswer
                     )
 
@@ -181,12 +183,28 @@ class QuestionActivity : AppCompatActivity() {
             }
 
             try {
-                UserRewardUtils.setReward(uid.toString(), UserViewModel.region?.pin.toString(), reward.toString())
+                val gson = Gson().toJson(
+                    UserRewardBean().apply {
+                        this.uid = uid
+                        this.pin = UserViewModel.region?.pin
+                        this.reward = reward
+                    }
+                )
+                UserRewardUtils.setReward(gson)
             } catch (e: java.lang.Exception) {
                 e.printStackTrace()
             }
 
             withContext(Dispatchers.Main) {
+                val user = UserViewModel.user
+                if (user != null) {
+                    val file = File(getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), "${user.id}.questions")
+                    if (file.exists()) file.delete()
+                }
+
+                //刷新积分
+                UserViewModel.getReward(lifecycleScope)
+
                 Toast.makeText(this@QuestionActivity, "操作已完成，答对${rightCount}题，共获得${reward}积分", Toast.LENGTH_LONG).show()
 
                 dialog.dismiss()
@@ -285,12 +303,12 @@ class QuestionActivity : AppCompatActivity() {
         }
 
         var isEnd = false
-        if (item.startTime != null && item.endTime != null) {
+        if (LabelViewModel.label?.startTime != null && LabelViewModel.label?.endTime != null) {
             //已结束
-            isEnd = System.currentTimeMillis() > ((item.endTime?.time) ?: 0L)
+            isEnd = System.currentTimeMillis() > ((LabelViewModel.label?.endTime?.time) ?: 0L)
 
-            timeBuilder.append("时间：${Utils.formatTime(item.startTime)}" + "——" +
-                    "${Utils.formatTime(item.endTime)}" + "\n")
+            timeBuilder.append("时间：${Utils.formatTime(LabelViewModel.label?.startTime)}" + "——" +
+                    "${Utils.formatTime(LabelViewModel.label?.endTime)}" + "\n")
 
             if (isEnd) {
                 val s = "已结束"

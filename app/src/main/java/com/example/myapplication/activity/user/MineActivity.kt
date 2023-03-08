@@ -5,11 +5,15 @@ import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.example.myapplication.R
 import com.example.myapplication.databinding.ActivityMineBinding
+import com.example.myapplication.entity.UserRewardBean
 import com.example.myapplication.http.UserRewardUtils
 import com.example.myapplication.utils.Prefs
 import com.example.myapplication.utils.livebus.LiveDataBus
+import com.example.myapplication.view.CustomDialog
 import com.example.myapplication.viewmodel.UserViewModel
+import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -51,7 +55,14 @@ class MineActivity : AppCompatActivity() {
 
             lifecycleScope.launch(Dispatchers.IO) {
                 val reward = try {
-                    UserRewardUtils.getReward(user.id.toString(), UserViewModel.region?.pin.toString())
+                    UserRewardUtils.getReward(
+                        Gson().toJson(
+                            UserRewardBean().apply {
+                                this.uid = UserViewModel.user?.id
+                                this.pin = UserViewModel.region?.pin
+                            }
+                        )
+                    )
                 } catch (e:Exception){
                     e.printStackTrace()
                     0
@@ -59,6 +70,7 @@ class MineActivity : AppCompatActivity() {
                 withContext(Dispatchers.Main){
                     val s2 = s.replace("{@}", "" + reward)
                     binding.textView7.text = s2
+                    Toast.makeText(this@MineActivity, "{${reward}}", Toast.LENGTH_SHORT).show()
                 }
 
             }
@@ -85,7 +97,15 @@ class MineActivity : AppCompatActivity() {
         }
 
         binding.button14.setOnClickListener {
-            UserViewModel.logout(lifecycleScope, user.account!!, user.password!!)
+            CustomDialog.Builder2(this)
+                .setIcon(R.drawable.ic_alert_ask)
+                .setTitle("将删除此账户所有数据，包括已获得的积分，是否继续？")
+                .setCancelListener {  }
+                .setConfirmListener {
+                    UserViewModel.logout(lifecycleScope, user.account!!, user.password!!)
+                }
+                .show()
+
         }
 
     }

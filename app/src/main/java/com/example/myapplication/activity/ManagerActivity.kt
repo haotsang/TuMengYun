@@ -11,7 +11,7 @@ import com.example.myapplication.activity.label.LabelActivity
 import com.example.myapplication.activity.user.RegionActivity
 import com.example.myapplication.activity.user.StaffActivity
 import com.example.myapplication.adapter.KotlinDataAdapter
-import com.example.myapplication.databinding.ActivityManagerBinding
+import com.example.myapplication.databinding.ActivityBaseListBinding
 import com.example.myapplication.entity.SettingsItem
 import com.example.myapplication.utils.Prefs
 import com.example.myapplication.utils.ViewUtils
@@ -20,7 +20,7 @@ import com.example.myapplication.viewmodel.UserViewModel
 
 class ManagerActivity: AppCompatActivity() {
 
-    private lateinit var binding: ActivityManagerBinding
+    private lateinit var binding: ActivityBaseListBinding
 
     private val settingsList = mutableListOf(
         SettingsItem("settings_label", "突梦标签", "未设置", R.drawable.ic_admin_label),
@@ -38,10 +38,11 @@ class ManagerActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         ViewUtils.setBarsFontLightColor(this, true)
 
-        binding = ActivityManagerBinding.inflate(LayoutInflater.from(this))
+        binding = ActivityBaseListBinding.inflate(LayoutInflater.from(this))
         setContentView(binding.root)
 
-        binding.settingsBack.setOnClickListener { finish() }
+        binding.baseBack.setOnClickListener { finish() }
+        binding.baseTitle.text = "智慧管理"
 
         val adapter = KotlinDataAdapter.Builder<SettingsItem>()
             .setLayoutId(R.layout.item_settings)
@@ -55,8 +56,8 @@ class ManagerActivity: AppCompatActivity() {
                 title.text = itemData.title
                 subtitle.text = itemData.subtitle
             }.create()
-        binding.settingsRecyclerView.adapter = adapter
-        binding.settingsRecyclerView.setOnItemClickListener { holder, position ->
+        binding.baseRecyclerView.adapter = adapter
+        binding.baseRecyclerView.setOnItemClickListener { holder, position ->
             val item = settingsList[position]
             when (item.id) {
                 "settings_label" -> {
@@ -84,12 +85,12 @@ class ManagerActivity: AppCompatActivity() {
 
 
         settingsList.getOrNull(0)?.subtitle = if (Prefs.labelSettingItemStatus) "已设置" else "未设置"
-        binding.settingsRecyclerView.adapter?.notifyItemChanged(0)
+        binding.baseRecyclerView.adapter?.notifyItemChanged(0)
 
 
         if (UserViewModel.region != null) {
             settingsList.getOrNull(1)?.subtitle = UserViewModel.region?.name ?: ""
-            binding.settingsRecyclerView.adapter?.notifyItemChanged(1)
+            binding.baseRecyclerView.adapter?.notifyItemChanged(1)
         }
 
     }

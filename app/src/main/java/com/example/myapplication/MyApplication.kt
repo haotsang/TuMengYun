@@ -5,6 +5,7 @@ import android.app.Application
 import android.os.Bundle
 import androidx.core.view.WindowCompat
 import com.example.myapplication.activity.CrashActivity
+import com.example.myapplication.activity.TestActivity
 import com.example.myapplication.entity.RegionBean
 import com.example.myapplication.utils.NeverCrash
 import com.example.myapplication.utils.ViewUtils
@@ -35,17 +36,17 @@ class MyApplication : Application(), Application.ActivityLifecycleCallbacks {
 
         fun instance() = instance
 
-        val pinCode = "AAA"
-
     }
 
 
 
     override fun onActivityCreated(activity: Activity, bundle: Bundle?) {
-        WindowCompat.setDecorFitsSystemWindows(activity.window, false)
-        ViewUtils.setFullScreenWindowLayoutInDisplayCutout(activity, true)
-        ViewUtils.setSystemBarTransparent(activity)
-        ViewUtils.initSystemBarColor(activity)
+        if (activity !is TestActivity) {
+            WindowCompat.setDecorFitsSystemWindows(activity.window, false)
+            ViewUtils.setFullScreenWindowLayoutInDisplayCutout(activity, true)
+            ViewUtils.setSystemBarTransparent(activity)
+            ViewUtils.initSystemBarColor(activity)
+        }
     }
 
     override fun onActivityStarted(activity: Activity) {

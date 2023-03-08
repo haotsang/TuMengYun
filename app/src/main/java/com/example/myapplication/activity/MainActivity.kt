@@ -2,8 +2,11 @@ package com.example.myapplication.activity
 
 import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
@@ -22,7 +25,7 @@ import com.example.myapplication.adapter.BannerImageAdapter2
 import com.example.myapplication.adapter.KotlinDataAdapter
 import com.example.myapplication.databinding.ActivityMainBinding
 import com.example.myapplication.entity.*
-import com.example.myapplication.http.*
+import com.example.myapplication.http.UserRewardUtils
 import com.example.myapplication.utils.Prefs
 import com.example.myapplication.utils.Utils
 import com.example.myapplication.utils.VersionUtils
@@ -33,7 +36,6 @@ import com.example.myapplication.view.CustomDialog
 import com.example.myapplication.viewmodel.LabelViewModel
 import com.example.myapplication.viewmodel.MainViewModel
 import com.example.myapplication.viewmodel.UserViewModel
-import com.google.gson.Gson
 import com.youth.banner.indicator.CircleIndicator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -48,7 +50,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
     private val labelImgList = mutableListOf<BannerItem>()
-
+    private var apkPath = ""
 
     private val navList = mutableListOf(
         NavItem(true, "main_menu_register", "注册账号", R.drawable.ic_nav_register),
@@ -61,6 +63,24 @@ class MainActivity : AppCompatActivity() {
         NavItem(true, "main_menu_check_update", "检查更新", 0),
     )
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 123) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                if (packageManager.canRequestPackageInstalls()) {
+                    val file = File(apkPath)
+                    if (apkPath.isNotEmpty() && file.exists()) {
+                        VersionUtils.installApkFile(this@MainActivity, file)
+                        apkPath = ""
+                    }
+                } else {
+                    Toast.makeText(this, "", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -72,14 +92,17 @@ class MainActivity : AppCompatActivity() {
         initNavRecyclerView()
 
         LiveDataBus.with("livebus_user_change").observe(this) {
-            LabelViewModel.getLabel(lifecycleScope, UserViewModel.user?.pin.toString())
+            LabelViewModel.getLabel(lifecycleScope, UserViewModel.region?.pin!!)
             LabelViewModel.getLabelImg(lifecycleScope, LabelViewModel.label?.id.toString())
 
             val user = it as UserBean?
+
+            UserViewModel.getReward(lifecycleScope)
+
             println("#####  livebus_user_change")
         }
         LiveDataBus.with("livebus_region_change").observe(this) {
-            LabelViewModel.getLabel(lifecycleScope, UserViewModel.user?.pin.toString())
+            LabelViewModel.getLabel(lifecycleScope, UserViewModel.region?.pin!!)
             LabelViewModel.getLabelImg(lifecycleScope, LabelViewModel.label?.id.toString())
 
             val region = it as RegionBean?
@@ -93,7 +116,7 @@ class MainActivity : AppCompatActivity() {
             if (labelBean != null) {
                 binding.content.bannerText.text = if (labelBean.visible == 1) {
                     (labelBean.title ?: "未设置") + "\n" + (labelBean.content ?: "未设置")
-                } else "未设置1"
+                } else "标签未上传"
             } else {
                 binding.content.bannerText.text = "empty"
             }
@@ -105,7 +128,7 @@ class MainActivity : AppCompatActivity() {
 
             val img = if (LabelViewModel.label != null && LabelViewModel.label?.visible == 1) {
                 imgList
-            } else null
+            } else listOf(LabelImgBean())  //占位图
 
             labelImgList.clear()
             if (img != null) {
@@ -119,16 +142,28 @@ class MainActivity : AppCompatActivity() {
             }
             binding.content.banner.setDatas(labelImgList)
 
-            println("#####  livebus_label_img_change")
+            println("#####  livebus_label_img_change  ${imgList?.size}")
         }
 
-        LabelViewModel.getLabel(lifecycleScope, UserViewModel.user?.pin.toString())
-        LabelViewModel.getLabelImg(lifecycleScope, LabelViewModel.label?.id.toString())
+        LiveDataBus.with("livebus_get_reward").observe(this) {
+            val reward = it as Int?
 
+            println("###   ${reward}")
+
+            if (reward != null) {
+                binding.content.cardItem4.cardTips.text = "积分数量"
+                binding.content.cardItem4.cardValue.text = "${reward}分"
+            }
+        }
+
+        UserViewModel.verify(lifecycleScope)
+
+
+
+        checkUpdate(false)
     }
 
     private fun initView() {
-
         binding.content.contentTitle.setOnClickListener {
             startActivity(Intent(this, RegionActivity::class.java))
         }
@@ -151,15 +186,13 @@ class MainActivity : AppCompatActivity() {
             .addBannerLifecycleObserver(this)
             .setIndicator(CircleIndicator(this))
             .setLoopTime(1500)
-            .setOnBannerListener { data, position -> }
-
-        binding.content.bannerText.setOnClickListener {
-            if (UserViewModel.user != null && LabelViewModel.label != null) {
-                startActivity(Intent(this, QuestionActivity::class.java).apply {
-                    putExtra("label_id", LabelViewModel.label?.id)
-                })
+            .setOnBannerListener { data, position ->
+                if (UserViewModel.user != null && LabelViewModel.label != null && LabelViewModel.label?.visible == 1) {
+                    startActivity(Intent(this, QuestionActivity::class.java).apply {
+                        putExtra("label_id", LabelViewModel.label?.id)
+                    })
+                }
             }
-        }
         binding.content.bottomScan.setOnClickListener {
             startActivity(Intent(this, ScanActivity::class.java))
         }
@@ -167,113 +200,14 @@ class MainActivity : AppCompatActivity() {
 
         }
         binding.content.bottomShop.setOnClickListener {
+            Toast.makeText(this, "aaa", Toast.LENGTH_SHORT).show()
 
+            startActivity(Intent(this, TestActivity::class.java))
         }
         binding.content.bottomMine.setOnClickListener {
             startActivity(Intent(this, MineActivity::class.java))
         }
 
-
-    }
-
-
-    private fun initNewLabel() {
-        val admin: RegionBean? = try {
-            Gson().fromJson("Prefs.adminInfo", RegionBean::class.java)
-        } catch (e: Exception) {
-            null
-        }
-
-        binding.content.contentTitle.text = admin?.name ?: ""
-
-        if (admin == null) return
-
-        lifecycleScope.launch(Dispatchers.IO) {
-            val labelBean = try {
-                LabelUtils.getLabelByPin(admin.id.toString())
-            } catch (e: java.lang.Exception) {
-                e.printStackTrace()
-                null
-            }
-
-            val img = if (labelBean != null && labelBean.visible == 1) {
-                try {
-                    LabelImgUtils.getLabelImgList(labelBean.id.toString())
-                } catch (e: java.lang.Exception) {
-                    e.printStackTrace()
-                    null
-                }
-            } else null
-
-            withContext(Dispatchers.Main) {
-                if (labelBean != null) {
-                    binding.content.bannerText.text = if (labelBean.visible == 1) {
-                        (labelBean.title ?: "未设置") + "\n" + (labelBean.content ?: "未设置")
-                    } else "未设置1"
-                }
-
-                labelImgList.clear()
-                if (img != null) {
-                    labelImgList.addAll(img.map {
-                        BannerItem().apply {
-                            this.id = it.id
-                            this.imagePath = it.uri
-                            this.lid = it.lid
-                        }
-                    })
-                }
-                binding.content.banner.adapter.notifyDataSetChanged()
-
-            }
-        }
-    }
-
-    private fun initNewInfo() {
-        val user: UserBean = try {
-            Gson().fromJson(Prefs.userInfo, UserBean::class.java)
-        } catch (e: Exception) {
-            null
-        } ?: return
-
-        lifecycleScope.launch(Dispatchers.IO) {
-            val responseBase: ResponseBase? = try {
-                if (Prefs.isLoginFromPhone) {
-                    UserUtils.loginWithPhone(user.phone!!, user.pin.toString())
-                } else {
-                    UserUtils.login(user.account!!, user.password!!)
-                }
-            } catch (e: Exception) {
-                null
-            }
-
-            val admin = try {
-                RegionUtils.getRegionById(user.pin.toString())
-            } catch (e: Exception) {
-                e.printStackTrace()
-                null
-            }
-
-            withContext(Dispatchers.Main) {
-                if (responseBase != null && responseBase.code == 200) {
-                    Prefs.userInfo = Gson().toJson(responseBase.data)
-                } else {
-                    Prefs.userInfo = ""
-                }
-
-                if (admin != null) {
-//                    Prefs.adminInfo = Gson().toJson(admin)
-                } else {
-//                    Prefs.adminInfo = ""
-                }
-
-//                try {
-//                    binding.content.contentTitle.text =
-//                        Gson().fromJson(Prefs.adminInfo, AdminBean::class.java)?.name ?:""
-//                } catch (e: Exception) {
-//                    e.printStackTrace()
-//                }
-            }
-        }
 
     }
 
@@ -293,6 +227,7 @@ class MainActivity : AppCompatActivity() {
         binding.content.cardItem4.cardImg.setImageResource(R.drawable.ic_card_staff)
         binding.content.cardItem4.cardTips.text = "工作人员"
         binding.content.cardItem4.cardValue.text = "30人"
+
     }
 
     private fun initNavRecyclerView() {
@@ -356,31 +291,12 @@ class MainActivity : AppCompatActivity() {
 //                            throw java.lang.NullPointerException("Test")
                 }
                 "main_menu_check_update" -> {
-                    lifecycleScope.launch(Dispatchers.IO) {
-                        val version = try {
-                            VersionUtils.getNewVersion()
-                        } catch (e: Exception) {
-                            "-1"
-                        }
-
-                        withContext(Dispatchers.Main) {
-                            val cur = VersionUtils.getVersionName(this@MainActivity)
-                            if (version != "-1" && cur != version) {
-                                CustomDialog.Builder2(this@MainActivity)
-                                    .setIcon(R.drawable.ic_alert_ask)
-                                    .setTitle("检测到新版本")
-                                    .setCancelListener {  }
-                                    .setConfirmListener { startUpdate() }
-                                    .show()
-                            } else {
-                                Toast.makeText(this@MainActivity, "未检测到新版本", Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                    }
+                    checkUpdate(true)
                 }
             }
         }
     }
+
     private fun startManagerPage() {
         val user = UserViewModel.user
         if (user == null) {
@@ -396,6 +312,32 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun checkUpdate(toast: Boolean) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            val version = try {
+                VersionUtils.getNewVersion()
+            } catch (e: Exception) {
+                "-1"
+            }
+
+            withContext(Dispatchers.Main) {
+                val cur = VersionUtils.getVersionName(this@MainActivity)
+                if (version != "-1" && cur != version) {
+                    CustomDialog.Builder2(this@MainActivity)
+                        .setIcon(R.drawable.ic_alert_ask)
+                        .setTitle("检测到新版本")
+                        .setCancelListener {  }
+                        .setConfirmListener { startUpdate() }
+                        .show()
+                } else {
+                    if (toast) {
+                        Toast.makeText(this@MainActivity, "未检测到新版本", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
+    }
+
     private fun startUpdate() {
         val dialog = CustomDialog.Builder2(this)
             .setIcon(R.drawable.ic_alert_wait)
@@ -403,11 +345,20 @@ class MainActivity : AppCompatActivity() {
             .setCustomView(ProgressBar(this))
             .show()
         lifecycleScope.launch(Dispatchers.IO) {
-            val apkPath = VersionUtils.okDownload(this@MainActivity)
+            apkPath = VersionUtils.okDownload(this@MainActivity)
 
             withContext(Dispatchers.Main) {
                 dialog.dismiss()
-                VersionUtils.install(this@MainActivity, File(apkPath))
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !packageManager.canRequestPackageInstalls()) {
+                    val packageURI = Uri.parse("package:$packageName")
+                    startActivityForResult(
+                        Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, packageURI),
+                        123
+                    )
+                } else {
+                    VersionUtils.installApkFile(this@MainActivity, File(apkPath))
+                }
             }
         }
     }

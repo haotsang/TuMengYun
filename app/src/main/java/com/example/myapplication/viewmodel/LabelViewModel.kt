@@ -8,6 +8,7 @@ import com.example.myapplication.http.LabelUtils
 import com.example.myapplication.utils.livebus.LiveDataBus
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 object LabelViewModel {
 
@@ -28,6 +29,7 @@ object LabelViewModel {
     }
 
 
+
     fun getLabel(viewModelScope: LifecycleCoroutineScope, region: String) {
         viewModelScope.launch(Dispatchers.IO) {
 
@@ -39,8 +41,10 @@ object LabelViewModel {
             }
 //                ?: throw ExceptionInInitializerError("labelBean is null")
 
-            label = labelBean
-            LiveDataBus.send("livebus_label_change", labelBean)
+            withContext(Dispatchers.Main) {
+                label = labelBean
+                LiveDataBus.send("livebus_label_change", labelBean)
+            }
         }
 
     }
@@ -54,8 +58,10 @@ object LabelViewModel {
                 null
             }
 
-            labelImg = img
-            LiveDataBus.send("livebus_label_img_change", img)
+            withContext(Dispatchers.Main) {
+                labelImg = img
+                LiveDataBus.send("livebus_label_img_change", img)
+            }
         }
     }
 

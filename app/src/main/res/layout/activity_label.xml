@@ -135,11 +135,32 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+            <com.example.myapplication.view.MultiStatusButton
+                android:id="@+id/button_set_start_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
+                android:text="设置答题开始时间" />
+            <com.example.myapplication.view.MultiStatusButton
+                android:id="@+id/button_set_end_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
+                android:text="设置答题结束时间" />
+        </LinearLayout>
+
+
         <com.example.myapplication.view.MultiStatusButton
             android:id="@+id/button_view_mothed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="24dp"
+            android:visibility="invisible"
             android:text="浏览方式" />
 
         <LinearLayout

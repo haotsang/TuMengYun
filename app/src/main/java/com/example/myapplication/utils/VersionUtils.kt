@@ -121,7 +121,7 @@ object VersionUtils {
         }
     }
 
-    private fun installApkFile(context: Context?, file: File?) {
+    fun installApkFile(context: Context?, file: File?) {
         if (context == null || file == null) {
             return
         }
