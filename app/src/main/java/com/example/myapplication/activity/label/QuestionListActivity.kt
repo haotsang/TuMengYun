@@ -39,7 +39,7 @@ class QuestionListActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        ViewUtils.setBarsFontLightColor(this, true)
+        ViewUtils.setBarsFontLightColor(this, status = true, navigation = true)
         binding = ActivityBaseListBinding.inflate(LayoutInflater.from(this))
         setContentView(binding.root)
 

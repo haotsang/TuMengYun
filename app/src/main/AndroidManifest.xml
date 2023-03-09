@@ -62,17 +62,14 @@
         <activity android:name=".activity.CangkuActivity"  android:exported="false" />
         <activity android:name=".activity.ErrorActivity"  android:exported="false" />
         <activity android:name=".activity.ScanActivity"  android:exported="false" />
-        <activity android:name=".activity.user.RegisterActivity"  android:exported="false" />
         <activity android:name=".activity.ManagerActivity"  android:exported="false" />
         <activity android:name=".activity.label.LabelActivity"  android:exported="false" />
         <activity android:name=".activity.user.GroupActivity"  android:exported="false" />
         <activity android:name=".activity.IssueActivity"  android:exported="false" />
-        <activity android:name=".activity.user.RegisterManagerActivity"  android:exported="false" />
         <activity android:name=".activity.user.StaffActivity"  android:exported="false" />
         <activity android:name=".activity.label.LabelTitleEditActivity"  android:exported="false" />
         <activity android:name=".activity.label.QuestionActivity"  android:exported="false" />
         <activity android:name=".activity.user.RegionActivity"  android:exported="false" />
-        <activity android:name=".activity.user.LoginActivity"  android:exported="false" />
         <activity
             android:name=".activity.CrashActivity"
             android:exported="false"
@@ -81,6 +78,7 @@
         <activity android:name=".activity.label.QuestionAddActivity"  android:exported="false" />
         <activity android:name=".activity.label.QuestionListActivity"  android:exported="false" />
         <activity android:name=".activity.MainActivity"  android:exported="false" />
+        <activity android:name="com.example.myapplication.activity.LoginActivity" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

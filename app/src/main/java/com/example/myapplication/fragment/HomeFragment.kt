@@ -46,8 +46,8 @@ class HomeFragment : Fragment() {
             LabelViewModel.getLabelImg(lifecycleScope, LabelViewModel.label?.id.toString())
 
             val user = it as UserBean?
-
-            UserViewModel.getReward(lifecycleScope)
+            binding?.cardItem4?.cardTips?.text = "积分数量"
+            binding?.cardItem4?.cardValue?.text = "${user?.reward ?: 0}分"
 
             println("#####  livebus_user_change")
         }
@@ -93,17 +93,6 @@ class HomeFragment : Fragment() {
             binding?.banner?.setDatas(labelImgList)
 
             println("#####  livebus_label_img_change  ${imgList?.size}")
-        }
-
-        LiveDataBus.with("livebus_get_reward").observe(this) {
-            val reward = it as Int?
-
-            println("###   ${reward}")
-
-            if (reward != null) {
-                binding?.cardItem4?.cardTips?.text = "积分数量"
-                binding?.cardItem4?.cardValue?.text = "${reward}分"
-            }
         }
 
         UserViewModel.verify(lifecycleScope)

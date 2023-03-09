@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Splash" parent="NoTitle">
+        <item name="android:windowBackground">@drawable/bg</item>
+
+        <!-- 单色填充背景 -->
+        <item name="android:windowSplashScreenBackground">@android:color/transparent</item>
+        <!-- 替换ICON -->
+        <item name="android:windowSplashScreenAnimatedIcon">@null</item>
+        <!-- 设置启动画面在关闭之前显示的时长。最长时间为 1000 毫秒 -->
+        <item name="android:windowSplashScreenAnimationDuration">10</item>
+        <!-- 设置启动画面图标后面的背景 -->
+        <item name="android:windowSplashScreenIconBackgroundColor">@android:color/transparent</item>
+        <!-- 设置要显示在启动画面底部的图片。设计准则建议不要使用品牌图片。 -->
+        <item name="android:windowSplashScreenBrandingImage">@null</item>
+    </style>
+
+</resources>

@@ -202,8 +202,10 @@ class QuestionActivity : AppCompatActivity() {
                     if (file.exists()) file.delete()
                 }
 
-                //刷新积分
-                UserViewModel.getReward(lifecycleScope)
+                val userReward = (user?.reward ?: 0) + reward
+                user?.reward = userReward
+                //刷新用户积分
+                UserViewModel.user = user
 
                 Toast.makeText(this@QuestionActivity, "操作已完成，答对${rightCount}题，共获得${reward}积分", Toast.LENGTH_LONG).show()
 

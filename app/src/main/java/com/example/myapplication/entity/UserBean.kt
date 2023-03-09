@@ -13,5 +13,6 @@ data class UserBean(
     var createTime: Date?=null,
     var isApply: Int = 0,
     var applyTime: Date?=null,
+    var reward: Int = 0
 
 )

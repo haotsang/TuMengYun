@@ -14,6 +14,7 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -23,7 +24,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
-import androidx.navigation.ui.setupWithNavController
 import com.example.myapplication.R
 import com.example.myapplication.activity.user.*
 import com.example.myapplication.adapter.KotlinDataAdapter
@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity() {
         NavItem(true, "main_menu_check_update", "检查更新", 0),
     )
     private var apkPath = ""
-
+    private var doublePressedTime: Long = 0
 
     private val installApkLauncher: ActivityResultLauncher<Intent> =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -79,21 +79,32 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+    private val onBackPressedCallback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            onBack()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        ViewUtils.setNavigationLightColor(this, true)
+        ViewUtils.setBarsFontLightColor(this, status = false, navigation = true)
 
         binding = ActivityMainBinding.inflate(LayoutInflater.from(this))
         setContentView(binding.root)
 
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
+
         val fragmentContainerView =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container) as NavHostFragment
-
         navController = fragmentContainerView.navController
 //        val navController = findNavController(R.id.nav_host_fragment_container)
 //        val appBarConfiguration= AppBarConfiguration(setOf(R.id.menu1_fragment,R.id.menu2_fragment,R.id.menu3_fragment,R.id.menu4_fragment))
 //        setupActionBarWithNavController(navController,appBarConfiguration)
-        binding.bottom.setupWithNavController(navController)
+
+        NavigationUI.setupWithNavController(binding.bottom, navController)
+
+//        Navigation.findNavController(this, R.id.nav_host_fragment_container)
+
 
         initView()
         initNavRecyclerView()
@@ -102,7 +113,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initView() {
-        binding.contentTitle.setOnClickListener {
+        binding.contentScan.setOnClickListener {
+            startActivity(Intent(this, ScanActivity::class.java))
+        }
+        binding.contentSearch.setOnClickListener {
             startActivity(Intent(this, RegionActivity::class.java))
         }
         binding.contentMenu.setOnClickListener {
@@ -117,9 +131,33 @@ class MainActivity : AppCompatActivity() {
 //                navList.getOrNull(1)?.enable = !Prefs.isLogin
                 binding.navRecyclerView.adapter?.notifyDataSetChanged()
 
+//                ViewUtils.setBarsFontLightColor(this@MainActivity, status = true, navigation = true)
+            }
+
+            override fun onDrawerClosed(drawerView: View) {
+                super.onDrawerClosed(drawerView)
+
+//                ViewUtils.setBarsFontLightColor(this@MainActivity, status = false, navigation = true)
             }
         })
 
+//        binding.bottom.setOnItemSelectedListener {
+//            // 避免再次点击重复创建
+//            if (it.isChecked) {
+//                return@setOnItemSelectedListener true
+//            }
+//            // 避免B返回到A重复创建
+//            val popBackStack = navController.popBackStack(it.itemId, false)
+//            if (popBackStack) {
+//                // 已创建
+//                return@setOnItemSelectedListener popBackStack
+//            } else {
+//                // 未创建
+//                return@setOnItemSelectedListener NavigationUI.onNavDestinationSelected(
+//                    it, navController
+//                )
+//            }
+//        }
     }
 
     private fun initNavRecyclerView() {
@@ -151,10 +189,10 @@ class MainActivity : AppCompatActivity() {
 
             when (item.id) {
                 "main_menu_register" -> {
-                    startActivity(Intent(this@MainActivity, RegisterActivity::class.java))
+                    LoginActivity.start(this, "register")
                 }
                 "main_menu_login" -> {
-                    startActivity(Intent(this@MainActivity, LoginActivity::class.java))
+                    LoginActivity.start(this, "login")
                 }
                 "main_menu_admin" -> startManagerPage()
                 "main_menu_clean_cache" -> {
@@ -200,7 +238,7 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, ManagerActivity::class.java))
         } else {
             Toast.makeText(this, "请先申请成为管理员", Toast.LENGTH_SHORT).show()
-            startActivity(Intent(this, RegisterManagerActivity::class.java))
+            LoginActivity.start(this, "admin")
         }
     }
 
@@ -253,11 +291,19 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onBackPressed() {
+    private fun onBack() {
         if (binding.drawerlayout.isDrawerOpen(GravityCompat.END)) {
             binding.drawerlayout.closeDrawer(GravityCompat.END)
         } else {
-            super.onBackPressed()
+            if (!navController.navigateUp()) {
+                val mNowTime = System.currentTimeMillis()  //记录本次按键时刻
+                if (mNowTime - doublePressedTime > 2000) {  //比较两次按键时间差
+                    Toast.makeText(this, "再次点击退出", Toast.LENGTH_SHORT).show()
+                    doublePressedTime = mNowTime
+                } else {
+                    finish()
+                }
+            }
         }
     }
 

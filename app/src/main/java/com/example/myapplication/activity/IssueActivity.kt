@@ -15,7 +15,7 @@ class IssueActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        ViewUtils.setBarsFontLightColor(this, true)
+        ViewUtils.setBarsFontLightColor(this, status = true, navigation = true)
         binding = ActivityIssueBinding.inflate(LayoutInflater.from(this))
 
         setContentView(binding.root)

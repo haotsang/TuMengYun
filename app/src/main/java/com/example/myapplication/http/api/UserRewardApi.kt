@@ -9,13 +9,6 @@ import retrofit2.http.Part
 interface UserRewardApi {
 
     @Multipart
-    @POST("user_reward/get")
-    fun getReward(
-        @Part("gson") gson: RequestBody
-    ): Call<Int>
-
-
-    @Multipart
     @POST("user_reward/set")
     fun setReward(
         @Part("gson") gson: RequestBody,

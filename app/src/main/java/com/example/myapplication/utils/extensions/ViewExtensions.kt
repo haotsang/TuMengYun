@@ -9,7 +9,7 @@ fun RecyclerView.setOnItemClickListener(onItemClickListener: ((holder: RecyclerV
             if (onItemClickListener != null) {
                 view.setOnClickListener {
                     val holder = getChildViewHolder(it)
-                    onItemClickListener.invoke(holder, holder.adapterPosition)
+                    onItemClickListener.invoke(holder, holder.absoluteAdapterPosition)
                 }
             }
         }
@@ -26,7 +26,7 @@ fun RecyclerView.setOnItemLongClickListener(onItemLongClickListener: ((holder: R
             if (onItemLongClickListener != null) {
                 view.setOnLongClickListener {
                     val holder = getChildViewHolder(it)
-                    onItemLongClickListener.invoke(holder, holder.adapterPosition)
+                    onItemLongClickListener.invoke(holder, holder.absoluteAdapterPosition)
                 }
             }
         }

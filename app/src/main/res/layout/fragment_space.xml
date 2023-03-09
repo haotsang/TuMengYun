@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:id="@+id/view_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="@dimen/layout_margin_16dp"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_space_item_science"
+            android:layout_marginHorizontal="@dimen/layout_margin_6dp"
+            android:layout_marginVertical="@dimen/layout_margin_6dp"
+            android:scaleType="centerCrop"
+            android:contentDescription="@null"
+            android:background="?attr/selectableItemBackground"/>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_space_item_chemistry"
+            android:layout_marginHorizontal="@dimen/layout_margin_6dp"
+            android:layout_marginVertical="@dimen/layout_margin_6dp"
+            android:scaleType="centerCrop"
+            android:contentDescription="@null"
+            android:background="?attr/selectableItemBackground"/>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/layout_margin_6dp"
+            android:layout_marginVertical="@dimen/layout_margin_6dp"
+            android:src="@drawable/ic_space_item_sw"
+            android:scaleType="centerCrop"
+            android:contentDescription="@null"
+            android:background="?attr/selectableItemBackground"/>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/layout_margin_6dp"
+            android:layout_marginVertical="@dimen/layout_margin_6dp"
+            android:src="@drawable/ic_space_item_math"
+            android:scaleType="centerCrop"
+            android:contentDescription="@null"
+            android:background="?attr/selectableItemBackground"/>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/layout_margin_6dp"
+            android:layout_marginVertical="@dimen/layout_margin_6dp"
+            android:src="@drawable/ic_space_item_safety"
+            android:scaleType="centerCrop"
+            android:contentDescription="@null"
+            android:background="?attr/selectableItemBackground"/>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/layout_margin_6dp"
+            android:layout_marginVertical="@dimen/layout_margin_6dp"
+            android:src="@drawable/ic_space_item_diy"
+            android:scaleType="centerCrop"
+            android:contentDescription="@null"
+            android:background="?attr/selectableItemBackground"/>
+
+    </LinearLayout>
+
+</ScrollView>

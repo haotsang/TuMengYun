@@ -4,25 +4,31 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.children
 import androidx.fragment.app.Fragment
-import com.example.myapplication.databinding.ActivityBaseListBinding
+import com.example.myapplication.databinding.FragmentSpaceBinding
 
-class ZoneFragment : Fragment() {
+class SpaceFragment : Fragment() {
 
-    private var binding: ActivityBaseListBinding? = null
+    private var binding: FragmentSpaceBinding? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = ActivityBaseListBinding.inflate(inflater, container, false)
+        binding = FragmentSpaceBinding.inflate(inflater, container, false)
         return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding?.baseBack?.setImageResource(0)
-        binding?.baseTitle?.text = "科普空间"
+        for ((index,e) in binding?.viewGroup?.children!!.withIndex()) {
+            e.setOnClickListener {
+                when (index) {
+
+                }
+            }
+        }
     }
 }

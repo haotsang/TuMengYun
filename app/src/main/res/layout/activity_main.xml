@@ -18,35 +18,37 @@
             android:layout_height="?attr/actionBarSize"
             android:gravity="center"
             android:orientation="horizontal"
-            android:paddingHorizontal="@dimen/layout_margin_16dp"
             android:background="@color/blue_bright">
-            <TextView
-                android:id="@+id/content_title"
+            <ImageView
+                android:id="@+id/content_scan"
                 android:layout_width="wrap_content"
+                android:scaleType="center"
                 android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="梦暴科技馆"
-                android:textColor="@color/white"
-                android:textSize="@dimen/text_size_12sp"
-                android:textStyle="bold"
-                app:drawableEndCompat="@drawable/baseline_arrow_drop_down_24" />
-
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:paddingHorizontal="@dimen/layout_margin_24dp"
+                android:src="@drawable/ic_top_scan" />
             <TextView
-                android:layout_marginHorizontal="14dp"
+                android:id="@+id/content_search"
+                android:layout_marginHorizontal="4dp"
                 android:layout_width="0dp"
                 android:layout_height="33dp"
                 android:layout_weight="1"
-                android:paddingStart="@dimen/layout_margin_6dp"
+                android:gravity="center"
+                android:text="梦暴科技馆"
+                android:textColor="@color/white"
+                android:paddingStart="@dimen/layout_margin_8dp"
+                android:paddingEnd="0dp"
                 android:background="@color/blue_dark"
                 app:drawableStartCompat="@drawable/ic_home_search" />
 
             <ImageView
                 android:id="@+id/content_menu"
                 android:layout_width="wrap_content"
-                android:minWidth="?attr/actionBarSize"
                 android:scaleType="center"
+                android:paddingHorizontal="@dimen/layout_margin_24dp"
                 android:layout_height="match_parent"
-                android:src="@drawable/baseline_menu_24" />
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_top_menu" />
         </LinearLayout>
 
         <androidx.fragment.app.FragmentContainerView

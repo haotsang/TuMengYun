@@ -164,6 +164,7 @@ object UserViewModel {
     }
 
     fun verify(viewModelScope: LifecycleCoroutineScope) {
+        if (user == null) return
         viewModelScope.launch(Dispatchers.IO) {
             val responseBase: ResponseBase? = try {
                 if (Prefs.isLoginFromPhone) {
@@ -233,26 +234,6 @@ object UserViewModel {
             } else {
                 LiveDataBus.send("livebus_login", Pair(false, "注销失败"))
             }
-        }
-    }
-
-    fun getReward(viewModelScope: LifecycleCoroutineScope) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val reward: Int = try {
-                UserRewardUtils.getReward(
-                    Gson().toJson(
-                        UserRewardBean().apply {
-                            this.uid = user?.id
-                            this.pin = region?.pin
-                        }
-                    )
-                )
-            } catch (e: Exception) {
-                e.printStackTrace()
-                0
-            }
-
-            LiveDataBus.send("livebus_get_reward", reward)
         }
     }
 

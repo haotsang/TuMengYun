@@ -25,7 +25,7 @@ class RegionActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        ViewUtils.setBarsFontLightColor(this, true)
+        ViewUtils.setBarsFontLightColor(this, status = true, navigation = true)
         binding = ActivityBaseListBinding.inflate(LayoutInflater.from(this))
         setContentView(binding.root)
 
@@ -71,14 +71,16 @@ class RegionActivity : AppCompatActivity() {
             }.create()
 
         binding.baseRecyclerView.adapter = adapter
+        /*
         binding.baseRecyclerView.setOnItemClickListener { holder, position ->
-//            val adminBean = list[position]
-//            UserViewModel.modifyPin(
-//                lifecycleScope,
-//                adminBean,
-//                UserViewModel.user?.account!!,
-//                adminBean.pin.toString()
-//            )
+            val adminBean = list[position]
+            UserViewModel.modifyPin(
+                lifecycleScope,
+                adminBean,
+                UserViewModel.user?.account!!,
+                adminBean.pin.toString()
+            )
         }
+        */
     }
 }
