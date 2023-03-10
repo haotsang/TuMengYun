@@ -49,10 +49,12 @@ object LabelViewModel {
 
     }
 
-    fun getLabelImg(viewModelScope: LifecycleCoroutineScope, labelId: String) {
+    fun getLabelImg(viewModelScope: LifecycleCoroutineScope, labelId: String?) {
         viewModelScope.launch(Dispatchers.IO) {
             val img = try {
-                LabelImgUtils.getLabelImgList(labelId)
+                if (labelId.isNullOrEmpty()) null
+                else
+                    LabelImgUtils.getLabelImgList(labelId)
             } catch (e: java.lang.Exception) {
                 e.printStackTrace()
                 null
@@ -83,10 +85,11 @@ object LabelViewModel {
         }
 
     }
-    fun getLabelImg2(viewModelScope: LifecycleCoroutineScope, labelId: String) {
+    fun getLabelImg2(viewModelScope: LifecycleCoroutineScope, labelId: String?) {
         viewModelScope.launch(Dispatchers.IO) {
             val img = try {
-                LabelImgUtils.getLabelImgList(labelId)
+                if (labelId.isNullOrEmpty()) null else
+                    LabelImgUtils.getLabelImgList(labelId)
             } catch (e: java.lang.Exception) {
                 e.printStackTrace()
                 null

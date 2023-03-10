@@ -1,20 +1,16 @@
 package com.example.myapplication.viewmodel
 
-import androidx.lifecycle.*
-import com.example.myapplication.MyApplication
+import androidx.lifecycle.LifecycleCoroutineScope
 import com.example.myapplication.entity.RegionBean
 import com.example.myapplication.entity.ResponseBase
 import com.example.myapplication.entity.UserBean
-import com.example.myapplication.entity.UserRewardBean
 import com.example.myapplication.http.RegionUtils
-import com.example.myapplication.http.UserRewardUtils
 import com.example.myapplication.http.UserUtils
 import com.example.myapplication.utils.Prefs
 import com.example.myapplication.utils.livebus.LiveDataBus
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 object UserViewModel {
 

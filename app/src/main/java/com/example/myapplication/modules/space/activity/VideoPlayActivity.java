@@ -7,6 +7,7 @@ import android.widget.MediaController;
 import android.widget.VideoView;
 
 import com.example.myapplication.R;
+import com.example.myapplication.utils.ViewUtils;
 
 
 public class VideoPlayActivity extends AppCompatActivity {
@@ -15,6 +16,8 @@ public class VideoPlayActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ViewUtils.INSTANCE.setFullscreenCompat(this, true);
+
         setContentView(R.layout.activity_video_play);
         //横屏
         //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);

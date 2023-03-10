@@ -9,65 +9,70 @@
     android:fitsSystemWindows="true"
     tools:openDrawer="end">
 
-    <LinearLayout
+    <com.drakeet.drawer.FullDraggableContainer
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:background="@color/blue_bright">
-            <ImageView
-                android:id="@+id/content_scan"
-                android:layout_width="wrap_content"
-                android:scaleType="center"
-                android:layout_height="match_parent"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:paddingHorizontal="@dimen/layout_margin_24dp"
-                android:src="@drawable/ic_top_scan" />
-            <TextView
-                android:id="@+id/content_search"
-                android:layout_marginHorizontal="4dp"
-                android:layout_width="0dp"
-                android:layout_height="33dp"
-                android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
                 android:gravity="center"
-                android:text="梦暴科技馆"
-                android:textColor="@color/white"
-                android:paddingStart="@dimen/layout_margin_8dp"
-                android:paddingEnd="0dp"
-                android:background="@color/blue_dark"
-                app:drawableStartCompat="@drawable/ic_home_search" />
+                android:orientation="horizontal"
+                android:background="@color/blue_bright">
+                <ImageView
+                    android:id="@+id/content_scan"
+                    android:layout_width="wrap_content"
+                    android:scaleType="center"
+                    android:layout_height="match_parent"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:paddingHorizontal="@dimen/layout_margin_24dp"
+                    android:src="@drawable/ic_top_scan" />
+                <TextView
+                    android:id="@+id/content_search"
+                    android:layout_marginHorizontal="4dp"
+                    android:layout_width="0dp"
+                    android:layout_height="33dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="梦暴科技馆"
+                    android:textColor="@color/white"
+                    android:paddingStart="@dimen/layout_margin_8dp"
+                    android:paddingEnd="0dp"
+                    android:background="@color/blue_dark"
+                    app:drawableStartCompat="@drawable/ic_home_search" />
 
-            <ImageView
-                android:id="@+id/content_menu"
-                android:layout_width="wrap_content"
-                android:scaleType="center"
-                android:paddingHorizontal="@dimen/layout_margin_24dp"
-                android:layout_height="match_parent"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_top_menu" />
+                <ImageView
+                    android:id="@+id/content_menu"
+                    android:layout_width="wrap_content"
+                    android:scaleType="center"
+                    android:paddingHorizontal="@dimen/layout_margin_24dp"
+                    android:layout_height="match_parent"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_top_menu" />
+            </LinearLayout>
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/nav_host_fragment_container"
+                android:name="androidx.navigation.fragment.NavHostFragment"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="@color/bg_color"
+                app:defaultNavHost="true"
+                app:navGraph="@navigation/nav_bottom_nav" />
+
+            <com.google.android.material.bottomnavigation.BottomNavigationView
+                android:id="@+id/bottom"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:menu="@menu/menu_bottom_nav"
+                app:labelVisibilityMode="labeled"/>
         </LinearLayout>
+    </com.drakeet.drawer.FullDraggableContainer>
 
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/nav_host_fragment_container"
-            android:name="androidx.navigation.fragment.NavHostFragment"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:background="@color/bg_color"
-            app:defaultNavHost="true"
-            app:navGraph="@navigation/nav_bottom_nav" />
-
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/bottom"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:menu="@menu/menu_bottom_nav"
-            app:labelVisibilityMode="labeled"/>
-    </LinearLayout>
 
     <LinearLayout
         android:layout_width="220dp"

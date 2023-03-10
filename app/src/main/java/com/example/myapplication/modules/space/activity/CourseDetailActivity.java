@@ -1,6 +1,7 @@
 package com.example.myapplication.modules.space.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -54,6 +55,10 @@ public class CourseDetailActivity extends AppCompatActivity implements View.OnCl
 
         TextViewIntroduce.setOnClickListener(this);
         TextViewVideo.setOnClickListener(this);
+
+        findViewById(R.id.textViewGoBack).setOnClickListener((view) -> finish());
+
+        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.blue_bright));
     }
 
     /**

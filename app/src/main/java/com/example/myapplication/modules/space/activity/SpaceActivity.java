@@ -22,6 +22,7 @@ import java.util.ArrayList;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 public class SpaceActivity extends AppCompatActivity implements View.OnClickListener {
     private TextView textViewGoBack, textViewTitle, textViewCourse, textViewExercises, textViewMy;
@@ -42,6 +43,8 @@ public class SpaceActivity extends AppCompatActivity implements View.OnClickList
         connectComponent();
         //设置进入主界面的索引是2的“我的”界面
         setBottomBarState(0);//1
+
+        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.blue_bright));
     }
 
     //关联界面控件
@@ -62,6 +65,12 @@ public class SpaceActivity extends AppCompatActivity implements View.OnClickList
 //        linearLayoutCourse.setOnClickListener(this);
 //        linearLayoutExercises.setOnClickListener(this);
 //        linearLayoutMy.setOnClickListener(this);
+        textViewGoBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
     }
 
     //清楚底部工具栏状态

@@ -370,7 +370,7 @@ class LabelActivity: BaseActivity() {
         }
 
         LabelViewModel.getLabel2(lifecycleScope, UserViewModel.region?.pin!!)
-        LabelViewModel.getLabelImg2(lifecycleScope, LabelViewModel.label?.id.toString())
+        LabelViewModel.getLabelImg2(lifecycleScope, LabelViewModel.label?.id?.toString())
 
 
     }
@@ -378,7 +378,7 @@ class LabelActivity: BaseActivity() {
     override fun onPause() {
         super.onPause()
         LabelViewModel.getLabel(lifecycleScope, UserViewModel.region?.pin!!)
-        LabelViewModel.getLabelImg(lifecycleScope, LabelViewModel.label?.id.toString())
+        LabelViewModel.getLabelImg(lifecycleScope, LabelViewModel.label?.id?.toString())
     }
 
     private fun updateViewStatus() {

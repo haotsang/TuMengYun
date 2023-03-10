@@ -42,7 +42,7 @@ class HomeFragment : Fragment() {
 
         LiveDataBus.with("livebus_user_change").observe(this) {
             LabelViewModel.getLabel(lifecycleScope, UserViewModel.region?.pin!!)
-            LabelViewModel.getLabelImg(lifecycleScope, LabelViewModel.label?.id.toString())
+            LabelViewModel.getLabelImg(lifecycleScope, LabelViewModel.label?.id?.toString())
 
             val user = it as UserBean?
             binding?.cardItem4?.cardTips?.text = "积分数量"
@@ -52,7 +52,7 @@ class HomeFragment : Fragment() {
         }
         LiveDataBus.with("livebus_region_change").observe(this) {
             LabelViewModel.getLabel(lifecycleScope, UserViewModel.region?.pin!!)
-            LabelViewModel.getLabelImg(lifecycleScope, LabelViewModel.label?.id.toString())
+            LabelViewModel.getLabelImg(lifecycleScope, LabelViewModel.label?.id?.toString())
 
             val region = it as RegionBean?
 
@@ -75,20 +75,18 @@ class HomeFragment : Fragment() {
         LiveDataBus.with("livebus_label_img_change").observe(this) {
             val imgList = it as List<LabelImgBean>?
 
-            val img = if (LabelViewModel.label != null && LabelViewModel.label?.visible == 1) {
+            val img = if (imgList != null && LabelViewModel.label != null && LabelViewModel.label?.visible == 1) {
                 imgList
             } else listOf(LabelImgBean())  //占位图
 
             labelImgList.clear()
-            if (img != null) {
-                labelImgList.addAll(img.map {
-                    BannerItem().apply {
-                        this.id = it.id
-                        this.imagePath = it.uri
-                        this.lid = it.lid
-                    }
-                })
-            }
+            labelImgList.addAll(img.map {
+                BannerItem().apply {
+                    this.id = it.id
+                    this.imagePath = it.uri
+                    this.lid = it.lid
+                }
+            })
             binding?.banner?.setDatas(labelImgList)
 
             println("#####  livebus_label_img_change  ${imgList?.size}")

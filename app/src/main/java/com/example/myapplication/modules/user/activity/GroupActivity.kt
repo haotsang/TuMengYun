@@ -39,7 +39,14 @@ class GroupActivity : BaseActivity() {
                 val arrow = itemView.findViewById<ImageView>(R.id.item_nav_arrow)
 
                 icon.setImageResource(R.drawable.ic_nav_group)
-                title.text = "${itemData.account}@${itemData.nickname}"
+
+                val role = when (itemData.role) {
+                    0 -> "普通用户"
+                    1 -> "工作人员"
+                    2 -> "管理员"
+                    else -> null
+                }
+                title.text = "${itemData.account}@${UserViewModel.region?.name}@${role}"
             }.create()
         binding.baseRecyclerView.adapter = adapter
 

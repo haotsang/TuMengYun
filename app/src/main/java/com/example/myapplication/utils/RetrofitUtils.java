@@ -81,12 +81,13 @@ public class RetrofitUtils {
 
         Gson gson = new GsonBuilder()
                 .setLenient()
+//                .setDateFormat("yyyy-MM-dd HH:mm:ss")
                 .create();
 
         Retrofit retrofit = new Retrofit.Builder()
                 .client(okHttpClient)
                 .baseUrl("http://106.15.94.206:8085/")
-//                .baseUrl("http://192.168.1.10:8085/")
+//                .baseUrl("http://192.168.1.10:8081/")127.0.0.1
                 .addCallAdapterFactory(new LiveDataCallAdapterFactory())
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
