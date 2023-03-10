@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.myapplication.R
 import com.example.myapplication.utils.ViewUtils
 
-class CrashActivity : AppCompatActivity() {
+class CrashActivity : BaseActivity() {
 
     companion object {
 

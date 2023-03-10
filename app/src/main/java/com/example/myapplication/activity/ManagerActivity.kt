@@ -5,11 +5,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import com.example.myapplication.R
-import com.example.myapplication.activity.label.LabelActivity
-import com.example.myapplication.activity.user.RegionActivity
-import com.example.myapplication.activity.user.StaffActivity
+import com.example.myapplication.modules.label.activity.LabelActivity
+import com.example.myapplication.modules.user.activity.RegionActivity
+import com.example.myapplication.modules.user.activity.StaffActivity
 import com.example.myapplication.adapter.KotlinDataAdapter
 import com.example.myapplication.databinding.ActivityBaseListBinding
 import com.example.myapplication.entity.SettingsItem
@@ -18,7 +17,7 @@ import com.example.myapplication.utils.ViewUtils
 import com.example.myapplication.utils.extensions.setOnItemClickListener
 import com.example.myapplication.viewmodel.UserViewModel
 
-class ManagerActivity: AppCompatActivity() {
+class ManagerActivity: BaseActivity() {
 
     private lateinit var binding: ActivityBaseListBinding
 

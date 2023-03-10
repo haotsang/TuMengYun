@@ -5,15 +5,12 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.os.Environment
-import android.provider.MediaStore
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.Glide
-import com.example.myapplication.BuildConfig
 import com.example.myapplication.R
 import com.example.myapplication.http.HttpUtils
 import com.example.myapplication.utils.GlideEngine
@@ -27,7 +24,7 @@ import java.io.FileNotFoundException
 import java.io.FileOutputStream
 
 
-class AfterServiceActivity : AppCompatActivity() {
+class AfterServiceActivity : BaseActivity() {
 
     private val list = mutableListOf<String>()
 

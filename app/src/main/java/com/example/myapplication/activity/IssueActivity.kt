@@ -8,7 +8,7 @@ import com.example.myapplication.R
 import com.example.myapplication.databinding.ActivityIssueBinding
 import com.example.myapplication.utils.ViewUtils
 
-class IssueActivity : AppCompatActivity() {
+class IssueActivity : BaseActivity() {
 
     private lateinit var binding: ActivityIssueBinding
 

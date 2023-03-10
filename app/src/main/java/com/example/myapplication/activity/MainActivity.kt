@@ -17,7 +17,6 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.lifecycleScope
@@ -25,10 +24,12 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.example.myapplication.R
-import com.example.myapplication.activity.user.*
 import com.example.myapplication.adapter.KotlinDataAdapter
 import com.example.myapplication.databinding.ActivityMainBinding
 import com.example.myapplication.entity.NavItem
+import com.example.myapplication.modules.user.activity.GroupActivity
+import com.example.myapplication.modules.user.activity.LoginActivity
+import com.example.myapplication.modules.user.activity.RegionActivity
 import com.example.myapplication.utils.Prefs
 import com.example.myapplication.utils.Utils
 import com.example.myapplication.utils.VersionUtils
@@ -42,7 +43,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController

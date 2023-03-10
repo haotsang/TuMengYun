@@ -63,22 +63,39 @@
         <activity android:name=".activity.ErrorActivity"  android:exported="false" />
         <activity android:name=".activity.ScanActivity"  android:exported="false" />
         <activity android:name=".activity.ManagerActivity"  android:exported="false" />
-        <activity android:name=".activity.label.LabelActivity"  android:exported="false" />
-        <activity android:name=".activity.user.GroupActivity"  android:exported="false" />
+        <activity android:name=".modules.label.activity.LabelActivity"  android:exported="false" />
+        <activity android:name=".modules.user.activity.GroupActivity"  android:exported="false" />
         <activity android:name=".activity.IssueActivity"  android:exported="false" />
-        <activity android:name=".activity.user.StaffActivity"  android:exported="false" />
-        <activity android:name=".activity.label.LabelTitleEditActivity"  android:exported="false" />
-        <activity android:name=".activity.label.QuestionActivity"  android:exported="false" />
-        <activity android:name=".activity.user.RegionActivity"  android:exported="false" />
+        <activity android:name=".modules.user.activity.StaffActivity"  android:exported="false" />
+        <activity android:name=".modules.label.activity.LabelTitleEditActivity"  android:exported="false" />
+        <activity android:name=".modules.label.activity.QuestionActivity"  android:exported="false" />
+        <activity android:name=".modules.user.activity.RegionActivity"  android:exported="false" />
         <activity
             android:name=".activity.CrashActivity"
             android:exported="false"
             android:process=":crash"
             android:theme="@style/NoTitle" />
-        <activity android:name=".activity.label.QuestionAddActivity"  android:exported="false" />
-        <activity android:name=".activity.label.QuestionListActivity"  android:exported="false" />
+        <activity android:name=".modules.label.activity.QuestionAddActivity"  android:exported="false" />
+        <activity android:name=".modules.label.activity.QuestionListActivity"  android:exported="false" />
         <activity android:name=".activity.MainActivity"  android:exported="false" />
-        <activity android:name="com.example.myapplication.activity.LoginActivity" />
+        <activity android:name="com.example.myapplication.modules.user.activity.LoginActivity" />
+
+
+        <!--        科普空间activity        -->
+        <activity android:name=".modules.space.activity.VideoPlayActivity" />
+        <activity android:name=".modules.space.activity.CourseDetailActivity" />
+        <activity android:name=".modules.space.activity.ExercisesDetailActivity" />
+        <activity android:name=".modules.space.activity.ChangeUserInfoActivity" />
+        <activity android:name=".modules.space.activity.UserInfoActivity" />
+        <activity android:name=".modules.space.activity.RegisterActivity" />
+        <activity android:name=".modules.space.activity.LoginActivity" />
+        <activity android:name=".modules.space.activity.WelcomeActivity" />
+        <activity android:name=".modules.space.activity.SpaceActivity"/>
+        <activity android:name=".modules.space.activity.SettingActivity" />
+        <activity android:name=".modules.space.activity.ChangePasswordActivity" />
+        <activity android:name=".modules.space.activity.FindPasswordActivity" />
+        <!--        科普空间activity        -->
+
 
         <provider
             android:name="androidx.core.content.FileProvider"

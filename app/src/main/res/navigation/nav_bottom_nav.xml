@@ -6,19 +6,19 @@
 
     <fragment
         android:id="@+id/nav_fragment1"
-        android:name="com.example.myapplication.fragment.HomeFragment"
+        android:name="com.example.myapplication.modules.home.fragment.HomeFragment"
         android:label="1" />
     <fragment
         android:id="@+id/nav_fragment2"
-        android:name="com.example.myapplication.fragment.SpaceFragment"
+        android:name="com.example.myapplication.modules.space.fragment.SpaceFragment"
         android:label="2" />
     <fragment
         android:id="@+id/nav_fragment3"
-        android:name="com.example.myapplication.fragment.ShopFragment"
+        android:name="com.example.myapplication.modules.shop.fragment.ShopFragment"
         android:label="3" />
     <fragment
         android:id="@+id/nav_fragment4"
-        android:name="com.example.myapplication.fragment.MineFragment"
+        android:name="com.example.myapplication.modules.mine.fragment.MineFragment"
         android:label="4" />
 
 </navigation>

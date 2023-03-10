@@ -15,7 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class CangkuActivity : AppCompatActivity() {
+class CangkuActivity : BaseActivity() {
 
     private val list = mutableListOf<CangKuItem>()
 

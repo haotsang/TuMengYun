@@ -3,12 +3,8 @@ package com.example.myapplication
 import android.app.Activity
 import android.app.Application
 import android.os.Bundle
-import androidx.core.view.WindowCompat
 import com.example.myapplication.activity.CrashActivity
 import com.example.myapplication.utils.NeverCrash
-import com.example.myapplication.utils.ViewUtils
-import com.luck.picture.lib.basic.PictureSelectorSupporterActivity
-import com.luck.picture.lib.basic.PictureSelectorTransparentActivity
 import kotlin.properties.Delegates
 
 class MyApplication : Application(), Application.ActivityLifecycleCallbacks {
@@ -40,15 +36,7 @@ class MyApplication : Application(), Application.ActivityLifecycleCallbacks {
 
 
     override fun onActivityCreated(activity: Activity, bundle: Bundle?) {
-        if (activity is PictureSelectorSupporterActivity ||
-            activity is PictureSelectorTransparentActivity) {
-            return
-        }
 
-        WindowCompat.setDecorFitsSystemWindows(activity.window, false)
-        ViewUtils.setFullScreenWindowLayoutInDisplayCutout(activity, true)
-        ViewUtils.setSystemBarTransparent(activity)
-        ViewUtils.initSystemBarColor(activity)
     }
 
     override fun onActivityStarted(activity: Activity) {
