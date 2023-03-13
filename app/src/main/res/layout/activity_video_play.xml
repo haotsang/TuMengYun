@@ -5,9 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".modules.space.activity.VideoPlayActivity">
-    <VideoView
-        android:id="@+id/videoViewPlay"
+<!--    <VideoView-->
+<!--        android:id="@+id/videoViewPlay"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent" />-->
+    <xyz.doikki.videoplayer.player.VideoView
+        android:id="@+id/player2"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-
 </RelativeLayout>

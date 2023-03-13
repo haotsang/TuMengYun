@@ -56,6 +56,8 @@ dependencies {
     implementation files('libs/additionnal.jar')
     implementation files('libs/mail.jar')
 
+    implementation 'xyz.doikki.android.dkplayer:dkplayer-java:3.3.7'
+    implementation 'xyz.doikki.android.dkplayer:dkplayer-ui:3.3.7'
     // 图片媒体选择器
     implementation 'io.github.lucksiege:pictureselector:v3.10.7'
     implementation 'com.github.loperSeven:DateTimePicker:0.6.2'

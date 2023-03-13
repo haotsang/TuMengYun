@@ -12,6 +12,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.example.myapplication.R
 import com.example.myapplication.entity.BannerItem
+import com.example.myapplication.utils.RetrofitUtils
 import com.youth.banner.adapter.BannerAdapter
 
 /**
@@ -30,7 +31,7 @@ class BannerImageAdapter2(imageUrls: MutableList<BannerItem>, val context: Conte
         val url = if (data.imagePath.isNullOrEmpty()) {
             R.drawable.bg
         } else {
-            "http://106.15.94.206:8081/img/" + data.imagePath
+            RetrofitUtils.TOMCAT_ROOT_URL + "img/" + data.imagePath
         }
         Glide.with(holder.itemView)
             .load(url)

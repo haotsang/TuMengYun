@@ -22,9 +22,10 @@ import com.example.myapplication.modules.space.view.TitleBarView;
 
 
 public class ChangeUserInfoActivity extends AppCompatActivity {
+
     private TextView textViewTitle, tv_save;
-    private RelativeLayout relativeLayoutTitleBar;
-    private TextView textViewGoBack;
+
+    private ImageView textViewGoBack;
     private String title, content;
     private int index;//index为1时表示修改昵称，为2时表示修改签名
     private EditText et_content;

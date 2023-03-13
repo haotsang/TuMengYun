@@ -22,6 +22,10 @@ import okhttp3.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 public class RetrofitUtils {
+
+    private static String MB_ROOT_URL = "http://106.15.94.206:8085/";
+    public static String TOMCAT_ROOT_URL = "http://106.15.94.206:8081/";
+
     private static RetrofitUtils retrofitUtils;
     private RetrofitUtils() {
     }
@@ -86,7 +90,7 @@ public class RetrofitUtils {
 
         Retrofit retrofit = new Retrofit.Builder()
                 .client(okHttpClient)
-                .baseUrl("http://106.15.94.206:8085/")
+                .baseUrl(MB_ROOT_URL)
 //                .baseUrl("http://192.168.1.10:8081/")127.0.0.1
                 .addCallAdapterFactory(new LiveDataCallAdapterFactory())
                 .addConverterFactory(GsonConverterFactory.create(gson))

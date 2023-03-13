@@ -9,6 +9,25 @@ public class Course extends ArrayList<Course> {
     public String intro;     //章节视频简介
     public String icon;      //广告栏上的图片
 
+    public String getCoverUrl() {
+        return coverUrl;
+    }
+
+    public void setCoverUrl(String coverUrl) {
+        this.coverUrl = coverUrl;
+    }
+
+    public String getVideoUrl() {
+        return videoUrl;
+    }
+
+    public void setVideoUrl(String videoUrl) {
+        this.videoUrl = videoUrl;
+    }
+
+    private String coverUrl;
+    private String videoUrl;
+
     public int getId() {
         return id;
     }

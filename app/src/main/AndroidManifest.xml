@@ -94,6 +94,7 @@
         <activity android:name=".modules.space.activity.SettingActivity" />
         <activity android:name=".modules.space.activity.ChangePasswordActivity" />
         <activity android:name=".modules.space.activity.FindPasswordActivity" />
+        <activity android:name="com.example.myapplication.modules.space.activity.VideoPlayerActivity2" />
         <!--        科普空间activity        -->
 
 

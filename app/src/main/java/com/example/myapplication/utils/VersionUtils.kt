@@ -51,7 +51,7 @@ object VersionUtils {
 
     @Throws(Exception::class)
     fun download(context: Context): String {
-        val url = "http://106.15.94.206:8081/img/app-release.apk"
+        val url = RetrofitUtils.TOMCAT_ROOT_URL + "img/app-release.apk"
         val file = File(context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "app-release.apk")
         if (file.exists()) {
             file.delete()
@@ -76,7 +76,7 @@ object VersionUtils {
 
     @Throws(Exception::class)
     fun okDownload(context: Context): String {
-        val url = "http://106.15.94.206:8081/img/app-release.apk"
+        val url = RetrofitUtils.TOMCAT_ROOT_URL + "img/app-release.apk"
         val file = File(context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "app-release.apk")
 
         val okHttpClient = OkHttpClient()

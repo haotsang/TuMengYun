@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,10 +23,10 @@ import com.example.myapplication.modules.space.utils.UserRW;
 import com.example.myapplication.modules.space.view.TitleBarView;
 
 public class UserInfoActivity extends AppCompatActivity implements View.OnClickListener {
-    private TextView textViewGoBack;
+    private ImageView textViewGoBack;
     private TextView textViewTitle;
     private TextView tv_nickName, tv_signature, tv_user_name, tv_sex;
-    private RelativeLayout rl_nickName, rl_sex, rl_signature, relativeLayoutTitleBar;
+    private RelativeLayout rl_nickName, rl_sex, rl_signature;
     private static final int CHANGE_NICKNAME = 1;//修改昵称的自定义常量
     private static final int CHANGE_SIGNATURE = 2;//修改个性签名的自定义常量
     private String spUserName;

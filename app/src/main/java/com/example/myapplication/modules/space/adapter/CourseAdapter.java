@@ -2,6 +2,7 @@ package com.example.myapplication.modules.space.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,9 +11,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.myapplication.R;
 import com.example.myapplication.modules.space.activity.CourseDetailActivity;
+import com.example.myapplication.modules.space.activity.VideoPlayActivity;
+import com.example.myapplication.modules.space.activity.VideoPlayerActivity2;
 import com.example.myapplication.modules.space.model.Course;
+import com.example.myapplication.utils.RetrofitUtils;
 
 import java.util.ArrayList;
 
@@ -86,10 +91,17 @@ public class CourseAdapter extends BaseAdapter {
                 @Override
                 public void onClick(View view) {
                     // 跳转到课程详情界面
-                    Intent intent = new Intent(mContext, CourseDetailActivity.class);
-                    intent.putExtra("ID", getItem(position * 2).getId());
-                    intent.putExtra("intro", getItem(position * 2).getIntro());
-                    mContext.startActivity(intent);
+//                    Intent intent = new Intent(mContext, CourseDetailActivity.class);
+//                    intent.putExtra("ID", getItem(position * 2).getId());
+//                    intent.putExtra("intro", getItem(position * 2).getIntro());
+//                    intent.putExtra("videoUrl", getItem(position * 2).getVideoUrl());
+//                    mContext.startActivity(intent);
+
+//                    Intent intent=new Intent(mContext, VideoPlayActivity.class);
+//                    intent.putExtra("videoUrl", getItem(position * 2).getVideoUrl());
+//                    mContext.startActivity(intent);
+
+                    VideoPlayerActivity2.Companion.start(mContext , getItem(position * 2).getVideoUrl(), getItem(position * 2).getTitle());
                 }
             });
         /**
@@ -119,10 +131,18 @@ public class CourseAdapter extends BaseAdapter {
         holder.LinearLayoutRight.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(mContext, CourseDetailActivity.class);
-                    intent.putExtra("ID", getItem(position * 2 + 1).getId());
-                    intent.putExtra("intro", getItem(position * 2 + 1).getIntro());
-                    mContext.startActivity(intent);
+//                    Intent intent=new Intent(mContext, VideoPlayActivity.class);
+//                    intent.putExtra("videoUrl", getItem(position * 2 + 1).getVideoUrl());
+//                    mContext.startActivity(intent);
+
+//                    Intent intent = new Intent(mContext, CourseDetailActivity.class);
+//                    intent.putExtra("ID", getItem(position * 2 + 1).getId());
+//                    intent.putExtra("intro", getItem(position * 2 + 1).getIntro());
+//                    intent.putExtra("videoUrl", getItem(position * 2 + 1).getVideoUrl());
+//                    mContext.startActivity(intent);
+
+                    VideoPlayerActivity2.Companion.start(mContext , getItem(position * 2 + 1).getVideoUrl(), getItem(position * 2 + 1).getTitle());
+
                 }
             });
 
@@ -131,38 +151,42 @@ public class CourseAdapter extends BaseAdapter {
     }
 
     private void setImage(ImageView imageView, int position) {
-        switch (position) {
-            case 0:
-                imageView.setBackgroundResource(R.drawable.chapter_1);
-                break;
-            case 1:
-                imageView.setBackgroundResource(R.drawable.chapter_2);
-                break;
-            case 2:
-                imageView.setBackgroundResource(R.drawable.chapter_3);
-                break;
-            case 3:
-                imageView.setBackgroundResource(R.drawable.chapter_4);
-                break;
-            case 4:
-                imageView.setBackgroundResource(R.drawable.chapter_5);
-                break;
-            case 5:
-                imageView.setBackgroundResource(R.drawable.chapter_6);
-                break;
-            case 6:
-                imageView.setBackgroundResource(R.drawable.chapter_7);
-                break;
-            case 7:
-                imageView.setBackgroundResource(R.drawable.chapter_8);
-                break;
-            case 8:
-                imageView.setBackgroundResource(R.drawable.chapter_9);
-                break;
-            case 9:
-                imageView.setBackgroundResource(R.drawable.chapter_10);
-                break;
-        }
+        String uri = RetrofitUtils.TOMCAT_ROOT_URL + getItem(position).getCoverUrl();
+        Glide.with(imageView).load(uri).into(imageView);
+
+
+//        switch (position) {
+//            case 0:
+//                imageView.setBackgroundResource(R.drawable.chapter_1);
+//                break;
+//            case 1:
+//                imageView.setBackgroundResource(R.drawable.chapter_2);
+//                break;
+//            case 2:
+//                imageView.setBackgroundResource(R.drawable.chapter_3);
+//                break;
+//            case 3:
+//                imageView.setBackgroundResource(R.drawable.chapter_4);
+//                break;
+//            case 4:
+//                imageView.setBackgroundResource(R.drawable.chapter_5);
+//                break;
+//            case 5:
+//                imageView.setBackgroundResource(R.drawable.chapter_6);
+//                break;
+//            case 6:
+//                imageView.setBackgroundResource(R.drawable.chapter_7);
+//                break;
+//            case 7:
+//                imageView.setBackgroundResource(R.drawable.chapter_8);
+//                break;
+//            case 8:
+//                imageView.setBackgroundResource(R.drawable.chapter_9);
+//                break;
+//            case 9:
+//                imageView.setBackgroundResource(R.drawable.chapter_10);
+//                break;
+//        }
     }
 
     class ViewHolder {

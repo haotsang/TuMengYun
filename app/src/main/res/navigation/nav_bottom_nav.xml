@@ -14,7 +14,7 @@
         android:label="2" />
     <fragment
         android:id="@+id/nav_fragment3"
-        android:name="com.example.myapplication.modules.shop.fragment.ShopFragment"
+        android:name="com.example.myapplication.modules.shop.fragment.LocationFragment"
         android:label="3" />
     <fragment
         android:id="@+id/nav_fragment4"

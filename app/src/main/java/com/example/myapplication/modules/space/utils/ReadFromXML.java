@@ -102,6 +102,10 @@ public class ReadFromXML {
                     } else if ("intro".equals(parser.getName())) {
                         String intro = parser.nextText();// 获取该节点的内容
                         course.setIntro(intro);
+                    } else if ("cover".equals(parser.getName())) { //封面图片
+                        course.setCoverUrl(parser.nextText());
+                    } else if ("video".equals(parser.getName())) { //视频链接
+                        course.setVideoUrl(parser.nextText());
                     }
                     break;
 

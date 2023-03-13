@@ -1,38 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<FrameLayout xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/blue_bright"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/relativeLayoutTitleBar"
     android:layout_width="match_parent"
-    android:layout_height="53dp">
+    android:layout_height="?attr/actionBarSize">
 
-    <TextView
+    <ImageView
         android:id="@+id/textViewGoBack"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/goback_background"
-        android:layout_alignParentLeft="true" />
-
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        style="@style/Widget.AppCompat.Toolbar.Button.Navigation"
+        android:src="@drawable/ic_arrow_back"
+        app:tint="@color/white" />
     <TextView
         android:id="@+id/textViewTitle"
-        android:text="科普空间"
-        android:textColor="#FFFFFF"
-        android:textStyle="bold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true" />
+        android:layout_gravity="center"
+        android:text="科普空间"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        android:textStyle="bold" />
     <TextView
         android:id="@+id/tv_save"
         android:layout_width="wrap_content"
-        android:layout_height="30dp"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="20dp"
-        android:layout_centerVertical="true"
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
         android:gravity="center"
-        android:textSize="16sp"
-        android:textColor="@android:color/white"
-        android:text="保存"
-        android:visibility="gone"
-        />
-</RelativeLayout>
+        android:textSize="@dimen/text_size_16sp"
+        android:layout_marginEnd="@dimen/layout_margin_6dp"
+        style="@style/Widget.AppCompat.Toolbar.Button.Navigation" />
+
+
+</FrameLayout>

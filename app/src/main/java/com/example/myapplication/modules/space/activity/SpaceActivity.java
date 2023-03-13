@@ -25,16 +25,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 public class SpaceActivity extends AppCompatActivity implements View.OnClickListener {
-    private TextView textViewGoBack, textViewTitle, textViewCourse, textViewExercises, textViewMy;
-    private ImageView imageViewCourse, imageViewExercises, imageViewMy;
+    private TextView textViewTitle, textViewCourse, textViewExercises, textViewMy;
+    private ImageView imageViewCourse, imageViewExercises, imageViewMy, textViewGoBack;
     private LinearLayout linearLayoutCourse, linearLayoutExercises, linearLayoutMy;
-    private RelativeLayout relativeLayoutTitleBar;
+    private FrameLayout relativeLayoutTitleBar;
     private FrameLayout frameLayoutCenter;
     private MyView myView;
     private ExercisesView exercisesView;
     private CourseView courseView;
     private ArrayList<Course> courseList = null;
     private ListView listViewCourse;
+
+    private int categorize;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +51,9 @@ public class SpaceActivity extends AppCompatActivity implements View.OnClickList
 
     //关联界面控件
     private void connectComponent() {
+        categorize = getIntent().getIntExtra("index", -1);
+
+
         textViewGoBack = findViewById(R.id.textViewGoBack);
         textViewTitle = findViewById(R.id.textViewTitle);
 //        textViewCourse = findViewById(R.id.textViewCourse);
@@ -95,7 +100,7 @@ public class SpaceActivity extends AppCompatActivity implements View.OnClickList
 //                relativeLayoutTitleBar.setVisibility(View.VISIBLE);
 //                textViewTitle.setText("课程");
                 if (courseView == null) {
-                    courseView = new CourseView(this);
+                    courseView = new CourseView(this, categorize);
                 }
                 frameLayoutCenter.addView(courseView.getView());//获取视图
                 break;

@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,7 +16,8 @@ import com.example.myapplication.modules.space.utils.MD5Utils;
 import com.example.myapplication.modules.space.utils.UserRW;
 
 public class RegisterActivity extends AppCompatActivity {
-private TextView textViewGoBack,textViewTitle;
+    private ImageView textViewGoBack;
+private TextView textViewTitle;
 private EditText editTextAddUsername,editTextAddPassword,editTextConfirmPassword;
 private Button buttonRegister;
     @Override

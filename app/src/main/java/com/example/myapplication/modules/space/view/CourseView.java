@@ -10,14 +10,18 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.viewpager.widget.ViewPager;
+import okhttp3.OkHttpClient;
 
 import com.example.myapplication.R;
 import com.example.myapplication.modules.space.adapter.CourseAdapter;
 import com.example.myapplication.modules.space.model.Course;
 import com.example.myapplication.modules.space.utils.CarouselShow;
+import com.example.myapplication.modules.space.utils.KotlinUtils;
 import com.example.myapplication.modules.space.utils.ReadFromXML;
+import com.example.myapplication.utils.RetrofitUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,7 +37,7 @@ public class CourseView {
     private ViewPager ViewPage_Detail;
     private LinearLayout point_detail;
     private Context context;
-    private ArrayList<Course> courseArrayList = null;
+    private ArrayList<Course> courseArrayList = new ArrayList<>();
 
 
     //轮播图图片资源
@@ -41,8 +45,9 @@ public class CourseView {
     private ArrayList<ImageView> viewpage_imageList;
     //判断是否自动滚动ViewPage
     private boolean isRunning = true;
-
-    public CourseView(Activity activity){
+    private int categorize;
+    public CourseView(Activity activity, int categorize){
+        this.categorize = categorize;
         this.activity=activity;
         layoutInflater=LayoutInflater.from(activity);//根据activity获取布局填充器
     }
@@ -60,9 +65,35 @@ public class CourseView {
 
         //获取数据(适配器和数据关联)
         listViewCourse = courseView.findViewById(R.id.listViewCourses);
-        getCourseData();
+//        getCourseData();
         CourseAdapter courseAdapter = new CourseAdapter(activity, courseArrayList);
         listViewCourse.setAdapter(courseAdapter);
+
+        TextView tv = courseView.findViewById(R.id.courseType);
+        String type = null;
+        switch (categorize) {
+            case 0:
+                type = "物理科学";
+                break;
+            case 1:
+                type = "化学";
+                break;
+            case 2:
+                type = "生物";
+                break;
+            case 3:
+                type = "数学";
+                break;
+            case 4:
+                type = "生命安全";
+                break;
+            case 5:
+                type = "DIY小制作";
+                break;
+        }
+        tv.setText(type);
+
+        getCourseData();
     }
 
 //轮播
@@ -184,13 +215,49 @@ public class CourseView {
      * 获取课程信息
      */
     private void getCourseData() {
-        InputStream inputStream = null;
-
+        String type = null;
+        switch (categorize) {
+            case 0:
+                type = "physical";
+                break;
+            case 1:
+                type = "chemistry";
+                break;
+            case 2:
+                type = "biology";
+                break;
+            case 3:
+                type = "math";
+                break;
+            case 4:
+                type = "safety";
+                break;
+            case 5:
+                type = "diy";
+                break;
+        }
+        String url = RetrofitUtils.TOMCAT_ROOT_URL + "video/" + type + "/chapter.xml";
         try {
-            inputStream = activity.getAssets().open("chaptertitle.xml");
-            courseArrayList = ReadFromXML.getCourseInfos(inputStream);//getCourseInfos(is)方法在下面会有说明
-        } catch (IOException e) {
-            e.printStackTrace();
+            new Thread(() -> {
+                try {
+                    InputStream inputStream2 = KotlinUtils.INSTANCE.getCourseData(url);
+
+
+                    ArrayList<Course> subList = new ArrayList<>(ReadFromXML.getCourseInfos(inputStream2));
+
+                    activity.runOnUiThread(()-> {
+                        courseArrayList.clear();
+                        courseArrayList.addAll(subList);
+                        ((CourseAdapter) listViewCourse.getAdapter()).notifyDataSetChanged();
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }).start();
+
+//            InputStream inputStream = null;
+//            inputStream = activity.getAssets().open("chaptertitle.xml");
+//            courseArrayList = ReadFromXML.getCourseInfos(inputStream);//getCourseInfos(is)方法在下面会有说明
         } catch (Exception e) {
             e.printStackTrace();
         }
