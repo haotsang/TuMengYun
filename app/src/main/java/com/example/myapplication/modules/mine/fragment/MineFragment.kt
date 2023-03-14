@@ -60,11 +60,20 @@ class MineFragment : Fragment() {
                     LoginActivity.start(requireContext(), "login")
                 }
                 "6" -> {
-                    Prefs.userInfo = ""
-                    Prefs.isSaveStatus = false
+                    CustomDialog.Builder2(requireContext())
+                        .setIcon(R.drawable.ic_alert_ask)
+                        .setTitle("确认退出登录？")
+                        .setCancelListener {  }
+                        .setConfirmListener {
+                            Prefs.userInfo = ""
+                            Prefs.isSaveStatus = false
 
-                    UserViewModel.user = null
-                    backUp()
+                            UserViewModel.user = null
+                            backUp()
+                        }
+                        .show()
+
+
                 }
                 "7" -> {
                     CustomDialog.Builder2(requireContext())

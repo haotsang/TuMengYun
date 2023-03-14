@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:fitsSystemWindows="true"
+    android:background="@color/blue_bright">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/toolbar_back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            style="@style/Widget.AppCompat.Toolbar.Button.Navigation"
+            android:src="@drawable/ic_arrow_back"
+            app:tint="@color/white" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="添加展品"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/base_overflow"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
+            android:gravity="center"
+            android:text="确认添加"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_16sp"
+            android:layout_marginEnd="@dimen/layout_margin_6dp"
+            style="@style/Widget.AppCompat.Toolbar.Button.Navigation" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:paddingVertical="@dimen/layout_margin_16dp"
+        android:background="@color/bg_color">
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="@dimen/layout_margin_24dp"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="@dimen/layout_margin_12dp"
+            app:cardElevation="1dp"
+            app:cardUseCompatPadding="true"
+            app:contentPadding="0dp"
+            app:strokeColor="#37000000"
+            app:strokeWidth="0dp">
+
+            <ScrollView
+                android:id="@+id/scrollController"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:transcriptMode="alwaysScroll">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/layout_margin_24dp"
+                    android:paddingVertical="@dimen/layout_margin_16dp"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="@dimen/layout_margin_6dp"
+                        android:text="展品名称："
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/editTextText_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="?attr/actionBarSize"
+                        android:layout_marginVertical="@dimen/layout_margin_6dp"
+                        android:background="@drawable/shape_answer_normal"
+                        android:hint="输入展品名称"
+                        android:inputType="text"
+                        android:padding="14dp" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:layout_marginVertical="@dimen/layout_margin_6dp"
+                        android:background="@color/ripper" />
+
+                    <LinearLayout
+                        android:id="@+id/linear_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical"/>
+
+                </LinearLayout>
+            </ScrollView>
+        </com.google.android.material.card.MaterialCardView>
+    </FrameLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/continue_add"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="继续添加详情"
+        android:textColor="@color/white"
+        android:background="@null"/>
+
+
+</LinearLayout>

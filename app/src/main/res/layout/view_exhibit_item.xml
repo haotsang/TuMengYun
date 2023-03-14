@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+    android:orientation="vertical">
+    <TextView
+        android:id="@+id/exhibit_tips"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="@dimen/layout_margin_6dp"
+        android:textStyle="bold"
+        android:text="详情1："/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <EditText
+            android:id="@+id/exhibit_edit"
+            android:layout_width="0dp"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_weight="1"
+            android:padding="14dp"
+            android:layout_marginVertical="@dimen/layout_margin_6dp"
+            android:background="@drawable/shape_answer_normal"
+            android:inputType="text"
+            android:hint="输入介绍" />
+
+        <ImageView
+            android:id="@+id/exhibit_img"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/baseline_image_24"
+            style="@style/Widget.AppCompat.Toolbar.Button.Navigation"/>
+        <ImageView
+            android:id="@+id/exhibit_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/baseline_delete_forever_24"
+            style="@style/Widget.AppCompat.Toolbar.Button.Navigation"/>
+
+    </LinearLayout>
+
+</LinearLayout>

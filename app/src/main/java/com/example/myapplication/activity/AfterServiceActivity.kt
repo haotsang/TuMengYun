@@ -52,9 +52,7 @@ class AfterServiceActivity : BaseActivity() {
 
                 val photoView = v.findViewById<ImageView>(R.id.photo_thumbnail)
                 photoView.setOnClickListener {
-                    startActivity(Intent(this@AfterServiceActivity, DetailsActivity::class.java).apply {
-                        putExtra("path", list[position])
-                    })
+//                    DetailsActivity.start(this@AfterServiceActivity, list[position])
                 }
 //                photoView.setImageBitmap(BitmapFactory.decodeFile(list[position]))
                 Glide.with(photoView.context).load(list[position]).into(photoView)

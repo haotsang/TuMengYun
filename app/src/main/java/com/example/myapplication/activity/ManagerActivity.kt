@@ -12,6 +12,7 @@ import com.example.myapplication.modules.user.activity.StaffActivity
 import com.example.myapplication.adapter.KotlinDataAdapter
 import com.example.myapplication.databinding.ActivityBaseListBinding
 import com.example.myapplication.entity.SettingsItem
+import com.example.myapplication.modules.area.activity.AreaInfoSettingsActivity
 import com.example.myapplication.utils.Prefs
 import com.example.myapplication.utils.ViewUtils
 import com.example.myapplication.utils.extensions.setOnItemClickListener
@@ -28,7 +29,7 @@ class ManagerActivity: BaseActivity() {
         SettingsItem("settings_1", "场馆监控", "未添加", R.drawable.ic_admin_jiankong),
         SettingsItem("settings_2", "数据检测", "", R.drawable.ic_admin_monitor),
         SettingsItem("settings_3", "报损", "", R.drawable.ic_admin_baosun),
-        SettingsItem("settings_4", "场馆设置", "", R.drawable.ic_admin_pos_setting),
+        SettingsItem("settings_cg", "场馆设置", "", R.drawable.ic_admin_pos_setting),
         SettingsItem("settings_5", "供应商信息", "", R.drawable.ic_admin_supply),
         SettingsItem("settings_staff", "工作人员", "", R.drawable.ic_admin_staff),
     )
@@ -73,6 +74,9 @@ class ManagerActivity: BaseActivity() {
                 )
                 "settings_staff" -> {
                     startActivity(Intent(this@ManagerActivity, StaffActivity::class.java))
+                }
+                "settings_cg" -> {
+                    startActivity(Intent(this@ManagerActivity, AreaInfoSettingsActivity::class.java))
                 }
             }
         }

@@ -58,7 +58,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.AfterServiceActivity"  android:exported="false" />
-        <activity android:name=".activity.DetailsActivity"  android:exported="false" />
         <activity android:name=".activity.CangkuActivity"  android:exported="false" />
         <activity android:name=".activity.ErrorActivity"  android:exported="false" />
         <activity android:name=".activity.ScanActivity"  android:exported="false" />
@@ -95,6 +94,9 @@
         <activity android:name=".modules.space.activity.ChangePasswordActivity" />
         <activity android:name=".modules.space.activity.FindPasswordActivity" />
         <activity android:name="com.example.myapplication.modules.space.activity.VideoPlayerActivity2" />
+        <activity android:name="com.example.myapplication.modules.area.activity.VrActivity" />
+        <activity android:name="com.example.myapplication.modules.area.activity.AreaInfoSettingsActivity" />
+        <activity android:name="com.example.myapplication.modules.area.activity.AddExhibitActivity" />
         <!--        科普空间activity        -->
 
 

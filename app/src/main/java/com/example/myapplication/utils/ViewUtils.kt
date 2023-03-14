@@ -15,6 +15,19 @@ import com.example.myapplication.utils.extensions.toColor
 
 object ViewUtils {
 
+    fun hideStatusBar(activity: Activity, fullscreen: Boolean) {
+        val window = activity.window
+        val decorView = window.decorView
+        if (fullscreen) {
+            WindowInsetsControllerCompat(window, decorView).let { controller ->
+                controller.hide(WindowInsetsCompat.Type.statusBars())
+                controller.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            }
+        } else {
+            WindowInsetsControllerCompat(window, decorView).show(WindowInsetsCompat.Type.statusBars())
+        }
+    }
+
     fun setFullscreenCompat(activity: Activity, fullscreen: Boolean) {
         val window = activity.window
         val decorView = window.decorView
