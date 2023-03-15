@@ -71,6 +71,14 @@
                 app:menu="@menu/menu_bottom_nav"
                 app:labelVisibilityMode="labeled"/>
         </LinearLayout>
+
+        <ImageView
+            android:id="@+id/animal_view"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_gravity="center|end"
+            android:contentDescription="@null" />
+
     </com.drakeet.drawer.FullDraggableContainer>
 
 

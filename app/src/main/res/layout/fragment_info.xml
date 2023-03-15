@@ -85,7 +85,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="@dimen/layout_margin_16dp"
                 android:layout_marginHorizontal="@dimen/layout_margin_24dp"
-                android:text="展项名称：（点击展品查看详情）"
+                android:text="展项名称：（点击展品名称可查看详情）"
                 android:textSize="@dimen/text_size_16sp"
                 android:textStyle="bold"
                 android:textColor="@color/black" />

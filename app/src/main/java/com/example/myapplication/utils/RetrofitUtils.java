@@ -90,8 +90,8 @@ public class RetrofitUtils {
 
         Retrofit retrofit = new Retrofit.Builder()
                 .client(okHttpClient)
-                .baseUrl(MB_ROOT_URL)
-//                .baseUrl("http://192.168.1.10:8081/")127.0.0.1
+//                .baseUrl(MB_ROOT_URL)
+                .baseUrl("http://192.168.1.8:8085/")//127.0.0.1
                 .addCallAdapterFactory(new LiveDataCallAdapterFactory())
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();

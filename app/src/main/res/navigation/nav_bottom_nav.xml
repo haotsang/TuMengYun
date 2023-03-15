@@ -14,7 +14,7 @@
         android:label="2" />
     <fragment
         android:id="@+id/nav_fragment3"
-        android:name="com.example.myapplication.modules.area.fragment.AreaFragment"
+        android:name="com.example.myapplication.modules.area.fragment.ExhibitFragment"
         android:label="3" />
     <fragment
         android:id="@+id/nav_fragment4"

@@ -11,25 +11,25 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.example.myapplication.R
-import com.example.myapplication.entity.BannerSimpleItem
+import com.example.myapplication.modules.area.entity.ExhibitDesc
 import com.youth.banner.adapter.BannerAdapter
 
-class InfoBannerAdapter(imageUrls: MutableList<BannerSimpleItem>, val context: Context) :
-    BannerAdapter<BannerSimpleItem, InfoBannerAdapter.ImageHolder>(imageUrls) {
+class InfoBannerAdapter(imageUrls: MutableList<ExhibitDesc>, val context: Context) :
+    BannerAdapter<ExhibitDesc, InfoBannerAdapter.ImageHolder>(imageUrls) {
 
     override fun onCreateHolder(parent: ViewGroup?, viewType: Int): ImageHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.item_banner, parent, false)
         return ImageHolder(view)
     }
 
-    override fun onBindView(holder: ImageHolder, data: BannerSimpleItem, position: Int, size: Int) {
+    override fun onBindView(holder: ImageHolder, data: ExhibitDesc, position: Int, size: Int) {
         Glide.with(holder.itemView)
             .load(data.url)
             .placeholder(R.drawable.bg)
             .apply(RequestOptions.bitmapTransform(RoundedCorners(30)))
             .into(holder.imageView)
 
-        holder.tvTitle.text = data.title
+        holder.tvTitle.text = data.content
     }
 
     class ImageHolder(view: View) : RecyclerView.ViewHolder(view) {

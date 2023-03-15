@@ -24,16 +24,13 @@ class AddExhibitActivity : BaseActivity() {
 
         binding.toolbarBack.setOnClickListener { finish() }
         binding.baseOverflow.setOnClickListener {
-
             if (binding.linearContainer.childCount > 0) {
                 finish()
             } else {
                 Toast.makeText(this, "你还没有添加详情", Toast.LENGTH_SHORT).show()
             }
-
         }
 
-        binding.linearContainer.addView(newChild())
 
         binding.continueAdd.setOnClickListener {
             if (binding.linearContainer.childCount > 5) {
@@ -45,6 +42,7 @@ class AddExhibitActivity : BaseActivity() {
             binding.scrollController.post { binding.scrollController.fullScroll(View.FOCUS_DOWN) }
         }
 
+        binding.linearContainer.addView(newChild())
 
     }
 

@@ -12,7 +12,7 @@ import com.example.myapplication.modules.user.activity.StaffActivity
 import com.example.myapplication.adapter.KotlinDataAdapter
 import com.example.myapplication.databinding.ActivityBaseListBinding
 import com.example.myapplication.entity.SettingsItem
-import com.example.myapplication.modules.area.activity.AreaInfoSettingsActivity
+import com.example.myapplication.modules.area.activity.ExhibitListActivity
 import com.example.myapplication.utils.Prefs
 import com.example.myapplication.utils.ViewUtils
 import com.example.myapplication.utils.extensions.setOnItemClickListener
@@ -76,7 +76,7 @@ class ManagerActivity: BaseActivity() {
                     startActivity(Intent(this@ManagerActivity, StaffActivity::class.java))
                 }
                 "settings_cg" -> {
-                    startActivity(Intent(this@ManagerActivity, AreaInfoSettingsActivity::class.java))
+                    startActivity(Intent(this@ManagerActivity, ExhibitListActivity::class.java))
                 }
             }
         }
